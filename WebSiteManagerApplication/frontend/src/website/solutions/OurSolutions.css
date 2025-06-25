@@ -1,0 +1,366 @@
+/* --------- Common Styles --------- */
+.solutions-section {
+  padding: 10px 30px;
+  background: #fff;
+  text-align: left;
+  min-height: 600px;
+}
+
+.solutions-section h1 {
+  /* color: #f59e0b;
+  text-align: left;
+  font-size: 20px;
+  font-weight: 600; */
+
+  color: #f59e0b;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.solutions-section h2 {
+  /* color: #000;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.5;
+  max-width: 800px;
+  margin-left: 40px; */
+  font-size: 36px;
+  margin-bottom: 20px;
+  padding: 2px 20px;
+}
+
+/* .solutions-subtitle .dash {
+  color: #ff9800;
+  margin-right: 5px;
+} */
+
+.solutions-container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  padding: 10px 20px;
+  max-width: 1500px;
+  margin: auto;
+  margin-bottom: 30px;
+
+}
+
+.solution-card {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  text-align: left;
+  position: relative;
+}
+
+.solution-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #014268;
+}
+
+.solution-card p {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.read-more {
+  color: #2196f3;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* --------- Style Switcher --------- */
+.solutions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  max-width: 1200px;
+  margin-left: 40px;
+  margin-right: auto;
+}
+
+.solutions-style-switcher {
+  position: relative;
+}
+
+.menu-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.style-menu {
+  position: absolute;
+  top: 32px;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  list-style: none;
+  padding: 8px 0;
+  width: 200px;
+}
+
+.style-menu li {
+  padding: 10px 16px;
+  cursor: pointer;
+  color: #1a202c;
+}
+
+.style-menu li:hover {
+  background-color: #f0f4f8;
+}
+
+/* --------- Style One (Numbered Cards) --------- */
+.style-one .solution-card {
+  background: white;
+  border-radius: 10px;
+  padding: 30px 25px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.style-one .solution-card:hover {
+  background-color: #2196f3;
+  color: white;
+  transform: translateY(-10px);
+}
+
+.style-one .solution-card:hover .solution-number,
+.style-one .solution-card:hover p {
+  color: white;
+}
+
+.style-one .solution-number {
+  font-size: 48px;
+  font-weight: bold;
+  color: #e0e0e0;
+  margin-bottom: 10px;
+  transition: color 0.3s ease;
+}
+
+/* --------- Style Two (Image Cards) --------- */
+.style-two .solution-card {
+  overflow: hidden;
+}
+
+.style-two .solution-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+}
+
+.style-two .solution-image {
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+  margin-bottom: 15px;
+}
+
+/* --------- Style Three (Hover Effect) --------- */
+.style-three .solution-card {
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.style-three .solution-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+}
+
+.style-three .solution-image {
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+  margin-bottom: 15px;
+  transition: opacity 0.3s ease;
+}
+
+.style-three .solution-card:hover .solution-image {
+  opacity: 0;
+}
+
+.style-three .solution-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+.style-three .solution-card:hover .solution-content {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+}
+
+/* --------- Style Four (Image Hover with Title and Description Side by Side) --------- */
+/* --------- Style Four (Blurred Blue Overlay with Title and Description Side by Side) --------- */
+.style-four .solutions-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  
+}
+
+.style-four .solution-card {
+  width: calc(33% - 16px); /* 3 cards per row with gap */
+  height: 300px;
+  padding: 0;
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: none;
+}
+
+/* 
+.style-four .solution-card:nth-child(4),
+.style-four .solution-card:nth-child(n+5),
+.style-four .solution-card:nth-child(5) {
+  width: calc(33% - 16px); 
+} */
+
+.style-four .solution-thumb {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.style-four .solution-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+  transition: all 0.4s ease-out;
+}
+
+.style-four .solution-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(1, 66, 104, 0.6); /* Blue overlay with opacity */
+  /* backdrop-filter: blur(0.1px); Blurred effect */
+  border-radius: 15px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+.style-four .solution-card:hover .solution-overlay {
+  opacity: 1;
+  visibility: visible;
+  -webkit-animation: scale-up-ver-top 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+          animation: scale-up-ver-top 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+}
+
+.style-four .solution-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+}
+
+.style-four .solution-content h3 {
+  flex: 1;
+  margin-right: 20px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.style-four .solution-content p {
+  flex: 2;
+  font-size: 15px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limit to 3 lines */
+  -webkit-box-orient: vertical;
+}
+
+@media (max-width: 991.98px) {
+  .style-four .solution-card {
+    width: calc(50% - 12px); /* 2 cards per row on medium screens */
+  }
+}
+
+@media (max-width: 767.98px) {
+  .style-four .solution-card {
+    width: 100%; /* 1 card per row on small screens */
+  }
+
+  .style-four .solution-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .style-four .solution-content h3 {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}
+
+
+/* Animation Class for Scale Up Vertical Top */
+.scale-up-ver-top {
+  -webkit-animation: scale-up-ver-top 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+          animation: scale-up-ver-top 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+}
+
+/* Keyframes for Scale Up Vertical Top Animation */
+@-webkit-keyframes scale-up-ver-top {
+  0% {
+    -webkit-transform: scaleY(0.4);
+            transform: scaleY(0.4);
+    -webkit-transform-origin: 100% 0%;
+            transform-origin: 100% 0%;
+  }
+  100% {
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+    -webkit-transform-origin: 100% 0%;
+            transform-origin: 100% 0%;
+  }
+}
+@keyframes scale-up-ver-top {
+  0% {
+    -webkit-transform: scaleY(0.4);
+            transform: scaleY(0.4);
+    -webkit-transform-origin: 100% 0%;
+            transform-origin: 100% 0%;
+  }
+  100% {
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+    -webkit-transform-origin: 100% 0%;
+            transform-origin: 100% 0%;
+  }
+}

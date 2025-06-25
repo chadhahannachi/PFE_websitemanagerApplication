@@ -1,0 +1,651 @@
+/* --------- Common Styles --------- */
+.services-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+.services-section {
+  padding: 10px 30px;
+  background-color: #f6f6f6;
+  text-align: left;
+  height: 700px;
+  /* transition: filter 0.3s ease; Smooth transition for blur effect */
+}
+
+.services-section h1 {
+  color: #f59e0b;
+  /* text-align: left; */
+  font-size: 20px;
+  font-weight: 600;
+  display: block; /* Assure que les enfants s'affichent en bloc */
+}
+
+.section-subtitle {
+  color: #f59e0b;
+  text-align: left;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 30px 60px;
+
+}
+
+.cards-container,
+.services-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+  position: relative;
+}
+
+/* Apply blur to the background when a card is hovered */
+.services-wrapper:has(.card.expanded) .services-section {
+  filter: blur(3px);
+}
+
+/* Ensure the hovered card and its siblings are not blurred */
+.card {
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, width 0.3s ease, height 0.3s ease, z-index 0s;
+}
+
+.card.expanded {
+  filter: none !important; /* Ensure the expanded card is not blurred */
+  z-index: 10; /* Bring the expanded card to the front */
+}
+
+/* --------- Style One (List Cards) --------- */
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 10px 20px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  color: #0d1b3f;
+  width: 280px;
+  height: 440px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+/* Expanded state on hover */
+.card.expanded {
+  width: 450px; /* Increased width */
+  height: auto; /* Allow the height to adjust based on content */
+  min-height: 480px; /* Minimum height to ensure it doesn't shrink too much */
+  transform: translateY(-10px); /* Slight lift effect */
+  z-index: 10; /* Ensure the expanded card is above others */
+  padding-bottom: 20px; /* Add extra padding to accommodate long descriptions */
+}
+
+.card p {
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+  flex-grow: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 8; /* Limit to 8 lines by default */
+  line-clamp: 8; /* Standard property for compatibility */
+  text-overflow: ellipsis; /* Add ellipsis for truncated text */
+  transition: all 0.3s ease;
+}
+
+/* Show full description on hover */
+.card p.expanded {
+  -webkit-line-clamp: unset; /* Remove line limit */
+  line-clamp: unset; /* Standard property */
+  overflow: visible; /* Allow the full description to be visible */
+  flex-grow: 0; /* Allow the paragraph to take only the space it needs */
+}
+
+.card li::before {
+  content: '✔ ';
+  color: #3b82f6;
+  margin-right: 5px;
+}
+
+.card:hover {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.card:hover h2,
+.card:hover ul,
+.card:hover li::before {
+  color: white;
+}
+
+.card h2 {
+  font-size: 20px;
+  margin: 15px 0 10px;
+  font-weight: 700;
+  color: #0d1b3f;
+}
+
+.service-icon {
+  height: 50px;
+  object-fit: contain;
+}
+
+
+/* --------- Style Two (Modern Cards) --------- */
+.services-container.style-two {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin: 0 auto;
+  max-width: 100%;
+  padding: 0 15px;
+  margin-bottom: 30px;
+}
+
+.style-two .service-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: left;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+  width: 280px;
+  height: 440px;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.style-two .service-card:hover {
+  background-color: #f59e0b;
+  color: white;
+  transform: translateY(-5px);
+}
+
+/* Container for the image and shapes */
+.style-two .image-container {
+  position: relative;
+  width: 60px;
+  height: 60px;
+}
+
+.style-two .service-image {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin-bottom: 3px;
+  position: relative;
+  z-index: 2; /* Ensure the image is above the shapes */
+  left: 20%;
+
+}
+
+/* Styles for the shapes */
+.style-two .shape {
+  position: absolute;
+  z-index: 1; /* Behind the image */
+}
+
+/* Shape one (main orange splatter) */
+.style-two .shape.one {
+  top: 50%;
+  left: 70%;
+  transform: translate(-50%, -50%);
+  width: 100px; /* Larger than the image to create a background effect */
+  height: 89px;
+  color: #eeeeee; /* Orange color for the splatter */
+}
+
+/* Shape two (small circle) */
+.style-two .shape.two {
+  top: -5px;
+  right: -5px;
+  width: 8px;
+  height: 8px;
+  color: #fff; /* White color for the circle */
+}
+
+/* Shape three (small cross) */
+.style-two .shape.three {
+  bottom: -5px;
+  right: -5px;
+  width: 9px;
+  height: 9px;
+  color: #fff; /* White color for the cross */
+}
+
+/* Rotation animation for shape three */
+@keyframes rotateme {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.style-two .rotateme {
+  animation: rotateme 10s linear infinite;
+}
+
+.style-two .service-card h3 {
+  font-size: 25px;
+  font-weight: 700;
+  margin-bottom: 1px;
+  color: #0d1b3f;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+}
+
+.style-two .service-card p {
+  font-size: 18px;
+  color: #555;
+  line-height: 1.5;
+  margin: 0 0 15px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 8;
+  -webkit-box-orient: vertical;
+  flex-grow: 1;
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+}
+
+.style-two .service-card p.expanded {
+  -webkit-line-clamp: unset;
+  overflow: auto;
+}
+
+.style-two .read-more {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 8px 16px;
+  font-size: 12px;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: #2196f3;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+  margin-top: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.style-two .service-card:hover h3,
+.style-two .service-card:hover p,
+.style-two .service-card:hover .read-more {
+  color: white;
+  border-color: white;
+}
+
+@media (max-width: 768px) {
+  .style-two .service-card {
+    width: 100%;
+    max-width: 350px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .services-container.style-two {
+    justify-content: space-around;
+  }
+}
+
+@media (max-width: 767px) {
+  .services-container.style-two {
+    gap: 12px;
+  }
+  
+  .style-two .service-card {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+/* --------- Nouveau style de bouton --------- */
+.read-more-btn {
+  user-select: none;
+  -moz-user-select: none;
+  background: #eeeeee;
+  border: none;
+  border-radius: 10px;
+  color: #184969;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.5;
+  margin-top: auto;
+  margin-bottom: 0;
+  padding: 12px 20px;
+  text-align: center;
+  text-transform: uppercase;
+  transition: all 0.3s ease-out;
+  vertical-align: middle;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  align-self: flex-start;
+  width: max-content;
+}
+
+.read-more-btn::before {
+  content: "";
+  position: absolute;
+  transition-duration: 800ms;
+  width: 200%;
+  height: 200%;
+  top: 110%;
+  left: 50%;
+  background: #014268;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+.read-more-btn:hover {
+  color: white;
+}
+
+.read-more-btn:hover::before {
+  top: -40%;
+}
+
+.style-two .service-card:hover .read-more-btn {
+  background: #eeeeee;
+  color: white;
+}
+
+.style-two .service-card:hover .read-more-btn::before {
+  background: #014268;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* .services-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  padding: 15px;
+}
+
+.service-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  text-align: left;
+}
+
+.image-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.service-image {
+  position: absolute;
+  object-fit: contain;
+  z-index: 2;
+}
+
+.style-editor-panel {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  max-width: 350px;
+  max-height: 80vh;
+  overflow-y: auto;
+  font-size: 0.9rem;
+}
+
+.style-editor-panel h3 {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+.style-editor-panel h4 {
+  font-size: 1rem;
+  margin: 15px 0 10px;
+}
+
+.style-editor-panel h5 {
+  font-size: 0.95rem;
+  margin: 10px 0 8px;
+}
+
+.style-editor-panel label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+.style-editor-panel input,
+.style-editor-panel textarea,
+.style-editor-panel select {
+  width: 100%;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.style-editor-panel textarea {
+  min-height: 60px;
+  resize: none;
+}
+
+.style-editor-panel input[type="color"] {
+  height: 30px;
+  padding: 0;
+  width: 50px;
+}
+
+.style-editor-panel input[type="range"] {
+  width: 100%;
+}
+
+.style-editor-panel input[type="number"] {
+  width: 100px;
+}
+
+.style-editor-panel button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.style-editor-panel button:hover {
+  background-color: #f5f5f5;
+}
+
+.element-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: #fff;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  z-index: 1000;
+}
+
+.element-controls button {
+  cursor: pointer;
+  font-size: 16px;
+  color: #000;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.element-controls button:hover {
+  background: #f5f5f5;
+}
+
+.service-card h3,
+.service-card p {
+  margin: 10px 0;
+}
+
+.service-card button {
+  margin-top: auto;
+  align-self: flex-start;
+} */
+
+.services-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  padding: 15px;
+}
+
+.service-card {
+  position: relative;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.draggable-element {
+  position: absolute;
+}
+
+.drag-handle {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.style-editor-panel {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  max-width: 350px;
+  max-height: 80vh;
+  overflow-y: auto;
+  font-size: 0.9rem;
+}
+
+.style-editor-panel h3 {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+.style-editor-panel h4 {
+  font-size: 1rem;
+  margin: 15px 0 10px;
+}
+
+.style-editor-panel h5 {
+  font-size: 0.95rem;
+  margin: 10px 0 8px;
+}
+
+.style-editor-panel label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+.style-editor-panel input,
+.style-editor-panel textarea,
+.style-editor-panel select {
+  width: 100%;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.style-editor-panel textarea {
+  min-height: 60px;
+  resize: none;
+}
+
+.style-editor-panel input[type="color"] {
+  height: 30px;
+  padding: 0;
+  width: 50px;
+}
+
+.style-editor-panel input[type="range"] {
+  width: 100%;
+}
+
+.style-editor-panel input[type="number"] {
+  width: 100px;
+}
+
+.style-editor-panel input[type="number"][style*="width: 60px"] {
+  width: 60px;
+}
+
+.style-editor-panel button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.style-editor-panel button:hover {
+  background-color: #f5f5f5;
+}
+
+.element-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: #fff;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  z-index: 1000;
+}
+
+.element-controls button {
+  cursor: pointer;
+  font-size: 16px;
+  color: #000;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.element-controls button:hover {
+  background: #f5f5f5;
+}

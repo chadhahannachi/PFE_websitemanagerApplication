@@ -1,0 +1,165 @@
+/* .testimonials-section {
+  background-color: #ffffff;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 36px;
+  margin-bottom: 40px;
+  color: #333;
+}
+
+.testimonial-slider .slick-slide {
+  padding: 30px;
+  transition: transform 0.3s ease;
+}
+
+.testimonial-slider .slick-center .testimonial-card {
+  transform: scale(1.05);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+}
+
+.testimonial-card {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  padding: 40px 30px 30px;
+  position: relative;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.avatar {
+  margin: -60px auto 10px;
+  border: 4px solid white;
+  box-shadow: 0 0 0 4px #f5f8fa;
+}
+
+.name {
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 10px;
+  color: #111;
+}
+
+.role {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.quote {
+  font-style: italic;
+  font-size: 16px;
+  color: #444;
+}
+
+.slick-dots li button:before {
+  color: #888;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #ff9800;
+} */
+
+
+.testimonials-section {
+  background-color: white;
+  /* padding: 10px 20px; */
+  text-align: center;
+}
+
+.section-title {
+  font-size: 36px;
+  margin-bottom: 40px;
+  color: #333;
+}
+
+.testimonial-slider {
+  position: relative;
+}
+
+.testimonial-slider .slick-slide {
+  padding: 65px;
+  transition: all 0.5s ease-in-out;
+}
+
+.testimonial-slide {
+  opacity: 0.6;
+  filter: blur(2px);
+  transform: scale(0.8);
+  z-index: 1;
+  transition: all 0.5s ease-in-out;
+}
+
+.testimonial-slide.active,
+.testimonial-slide:hover {
+  opacity: 1;
+  filter: none;
+  transform: scale(1.2);
+  z-index: 10;
+}
+
+.testimonial-card {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  padding: 40px 30px 30px;
+  text-align: center;
+  max-width: 400px;
+  margin: 0 auto;
+  transition: all 0.5s ease-in-out;
+}
+
+.testimonial-slide.active .testimonial-card,
+.testimonial-slide:hover .testimonial-card {
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.avatar {
+  margin: -60px auto 10px;
+  border: 4px solid white;
+  box-shadow: 0 0 0 4px #f5f8fa;
+}
+
+.name {
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 10px;
+  color: #111;
+}
+
+.role {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.quote {
+  font-style: italic;
+  font-size: 16px;
+  color: #444;
+}
+
+.slick-dots li button:before {
+  color: #888;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #ff9800;
+}
+
+.slick-prev,
+.slick-next {
+  z-index: 20;
+  width: 40px;
+  height: 40px;
+}
+
+.slick-prev:before,
+.slick-next:before {
+  font-size: 30px;
+  color: #333;
+}

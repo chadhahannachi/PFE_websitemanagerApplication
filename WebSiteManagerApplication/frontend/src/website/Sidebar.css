@@ -1,0 +1,156 @@
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    background: #ecf0f1;
+    color: #ecf0f1;
+    z-index: 1000;
+    transition: width 0.3s ease, transform 0.3s ease;
+  }
+  
+  .sidebar.expanded {
+    width: 200px;
+    padding: 1px;
+    transform: translateX(0);
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .sidebar-content {
+    max-height: calc(100vh - 50px); 
+    overflow-y: auto;
+  }
+  
+  .sidebar.collapsed {
+    width: 0;
+    padding: 0;
+    transform: translateX(0); 
+    box-shadow: none; 
+  }
+  
+  .toggle-button {
+    position: absolute;
+    top: 20px;
+    right: -40px; /* Bouton dépasse de la sidebar en mode élargi */
+    background: #3498db;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease, right 0.3s ease, transform 0.3s ease;
+    z-index: 1001;
+  }
+  
+  .sidebar.collapsed .toggle-button {
+    right: -40px; /* Positionne le bouton complètement à l'extérieur de la sidebar (visible à gauche de l'écran) */
+    transform: translateX(0); /* Aucune translation supplémentaire */
+    
+  }
+  
+  .toggle-button:hover {
+    background: #2980b9;
+  }
+  
+  .sidebar h3 {
+    font-size: 1.6rem;
+    margin-bottom: 25px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-align: center;
+    color: #ecf0f1;
+  }
+  
+  .sidebar-section {
+    margin-bottom: 10px;
+    padding-left: 20px;
+  }
+  
+  .sidebar-section h4 {
+    font-size: 0.8rem;
+    margin-bottom: 0.1px;
+    font-weight: 500;
+    color: #bdc3c7;
+  }
+  
+  .sidebar-section select {
+    width: 100%;
+    padding: 1px;
+    font-size: 1rem;
+    background: #34495e;
+    color: #ecf0f1;
+    border: none;
+    border-radius: 6px;
+    outline: none;
+    transition: background 0.3s ease;
+  }
+  
+  .sidebar-section select:hover {
+    background: #3e5c76;
+  }
+  
+  .sidebar-section select option {
+    background: #34495e;
+    color: #ecf0f1;
+  }
+  
+  .save-button {
+    width: 100%;
+    padding: 12px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.1s ease;
+  }
+  
+  .save-button:hover {
+    background: #2980b9;
+    transform: translateY(-1px);
+  }
+  
+  .save-button:active {
+    transform: translateY(0);
+  }
+  
+  .success-message {
+    margin-top: 15px;
+    padding: 8px;
+    background: #2ecc71;
+    color: white;
+    font-size: 0.9rem;
+    text-align: center;
+    border-radius: 4px;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .sidebar-loading,
+  .sidebar-error {
+    padding: 20px;
+    color: #ecf0f1;
+    text-align: center;
+  }
+  
+  .sidebar-error {
+    background: #e74c3c;
+    border-radius: 4px;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }

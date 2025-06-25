@@ -1,0 +1,118 @@
+version: '3.8'
+
+services:
+  # API Gateway (NestJS)
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - LICENSE_SERVICE_URL=http://license-service:8000
+      - WEBSITE_MANAGER_URL=http://website-manager-backend:5000
+    depends_on:
+      - license-service
+      - website-manager-backend
+    networks:
+      - app-network
+
+  # License Service (Laravel)
+  license-service:
+    build:
+      context: ./LicenceMicroservice
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./LicenceMicroservice:/var/www/html
+      - ./LicenceMicroservice/vendor:/var/www/html/vendor
+    environment:
+      - DB_CONNECTION=mysql
+      # - DB_HOST=127.0.0.1
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=microservicelicence
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # Website Manager Backend (NestJS)
+  website-manager-backend:
+    build:
+      context: ./WebSiteManagerApplication/backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/website-manager
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # Website Manager Frontend (React)
+  website-manager-frontend:
+    build:
+      context: ./WebSiteManagerApplication/frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./WebSiteManagerApplication/frontend:/app
+      - /app/node_modules
+    depends_on:
+      - website-manager-backend
+    networks:
+      - app-network
+
+  # MySQL Database
+  mysql:
+    image: mysql:8.0.36
+    platform: linux/amd64
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_DATABASE=microservicelicence
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ALLOW_EMPTY_PASSWORD=no
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot", "--silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - app-network
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  mongodb_data: 

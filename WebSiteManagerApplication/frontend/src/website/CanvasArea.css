@@ -1,0 +1,13 @@
+.drag-handle {
+    position: absolute;
+    left: -20px;
+    top: 10px;
+    cursor: move;
+    font-size: 16px;
+    color: #666;
+    user-select: none;
+  }
+  
+  .drag-handle:hover {
+    color: #000;
+  }

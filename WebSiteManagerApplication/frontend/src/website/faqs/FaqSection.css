@@ -1,0 +1,311 @@
+.faq-section {
+  background-color: #f8f9ff;
+  padding: 80px 20px;
+  height: 600px;
+  }
+  
+  .faq-title {
+    font-size: 36px;
+    text-align: center;
+    color: #000000;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+  
+  .faq-container {
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  .faq-item {
+    border-radius: 10px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    border: none;
+    transition: box-shadow 0.3s ease;
+    background: #f5f5f5;
+  }
+  
+  .faq-item.active {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .faq-question {
+    background: none;
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 15px;
+    font-size: 15px;
+    color: #000000;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s ease;
+  }
+
+  
+  .faq-toggle {
+    font-size: 24px;
+    color: #000000;
+  }
+  
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    background-color: #f7fafd;
+    padding: 0 20px;
+  }
+  
+  .faq-item.active .faq-answer {
+    max-height: 200px;
+    padding: 20px;
+  }
+  
+  .faq-answer p {
+    margin: 0;
+    color: #555;
+    line-height: 1.6;
+  }
+  
+  /* src/components/FaqStyles.css */
+
+/* --------- Commun --------- */
+.faq-container,
+.faq-grid {
+  max-width: 900px;
+  margin: auto;
+  transition: all 0.3s ease-in-out;
+}
+
+
+/* --------- Style Two (Minimal Card) --------- */
+.style-two {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+.style-two .faq-card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+.style-two .faq-card:hover {
+  transform: translateY(-4px);
+}
+/* .style-two h4 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #1a202c;
+} */
+/* .style-two p {
+  color: #4a5568;
+  line-height: 1.6;
+} */
+
+/* --------- Header & Menu --------- */
+.faq-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+.faq-style-switcher {
+  position: relative;
+}
+.menu-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+.style-menu {
+  position: absolute;
+  top: 32px;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  z-index: 10;
+  list-style: none;
+  padding: 8px 0;
+  width: 200px;
+}
+.style-menu li {
+  padding: 10px 16px;
+  cursor: pointer;
+  color: #1a202c;
+}
+.style-menu li:hover {
+  background-color: #f0f4f8;
+}
+
+/* Style Three  */
+/* Style Three (Image-inspired style) */
+/* .faq-style-three-wrapper {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: left;
+} */
+/* Container for the entire section (image + FAQ) */
+.faq-style-three-container {
+  display: flex;
+  align-items: center; /* Changed from flex-start to center for vertical alignment */
+  gap: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 10px 20px; /* Increased padding for better spacing */
+}
+
+/* Image wrapper */
+.faq-image-wrapper {
+  flex: 1;
+  max-width: 1000px;
+  display: flex;
+  align-items: center; /* Ensure the image is centered within its wrapper */
+}
+
+.faq-image {
+  width: 100%;
+  height: auto;
+  max-height: 700px; /* Optional: Limit the image height to avoid it being too tall */
+  border-radius: 0;
+  object-fit: cover;
+}
+
+/* FAQ content wrapper */
+.faq-style-three-wrapper {
+  flex: 1;
+  max-width: 600px;
+  text-align: left;
+}
+
+/* Ensure consistent spacing for the title and subtitle */
+.faq-title {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.faq-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.faq-item {
+  border-radius: 10px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.faq-question-btn {
+  background-color: #f59e0b; /* Orange color from the image */
+  color: #fff;
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 15px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top-radius: 10px;
+  
+}
+
+.faq-question-btn:hover {
+  background-color: #f59e0b; /* Slightly darker orange on hover */
+}
+
+.faq-toggle {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+  background-color: #f59e0b;
+  padding: 0 20px;
+}
+
+.faq-item.active .faq-answer {
+  max-height: 300px; /* Adjust based on content size */
+  padding: 15px 20px;
+}
+
+.faq-answer p {
+  margin: 0;
+  color: #ffffff;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .faq-style-three-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .faq-image-wrapper {
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .faq-style-three-wrapper {
+    max-width: 100%;
+    padding-top: 0; /* Remove padding-top on mobile for better spacing */
+  }
+}
+
+
+/* FaqSection.css */
+.save-changes-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 24px;
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.save-changes-button:hover {
+  background-color: #0056b3;
+}
+
+.save-changes-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
+}
+
+
+
