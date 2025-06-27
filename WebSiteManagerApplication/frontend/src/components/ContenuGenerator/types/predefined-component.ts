@@ -136,7 +136,7 @@ export const predefinedComponents: PredefinedComponent[] = [
     baseCss: `
       .container {
         padding: 2rem;
-        max-width: 900px;
+        max-width: 1200px;
         margin: 0 auto;
       }
       .feature-list {
