@@ -1,7 +1,7 @@
 import React from 'react';
 import './Modal.css';
 
-const Modal = ({ isOpen, onClose, children }) => {
+const ModalCharte = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
 
   return (
@@ -16,4 +16,4 @@ const Modal = ({ isOpen, onClose, children }) => {
   );
 };
 
-export default Modal;
+export default ModalCharte;

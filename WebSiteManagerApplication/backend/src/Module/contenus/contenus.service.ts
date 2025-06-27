@@ -439,4 +439,17 @@ async updateServiceStyles(id: string, styles: Record<string, any>) {
       throw error;
     }
   }
+
+  async getContenusByEntreprise(entrepriseId: string) {
+    console.log('Recherche contenus pour entrepriseId:', JSON.stringify(entrepriseId));
+    const isValidObjectId = Types.ObjectId.isValid(entrepriseId);
+    const query = {
+      entreprise: isValidObjectId ? new Types.ObjectId(entrepriseId) : entrepriseId,
+      isPublished: true // Assuming you want only published content
+    };
+    const result = await this.contenuSpecifiqueModel.find(query).exec();
+    console.log('Résultat MongoDB:', result);
+    return result;
+  }
+
 }

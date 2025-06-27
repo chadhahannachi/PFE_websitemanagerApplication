@@ -98,4 +98,15 @@ export class ContenuController {
     }
   }
   
+  @Get('entreprise/:entrepriseId')
+  async getContenusByEntreprise(@Param('entrepriseId') entrepriseId: string){
+    console.log('Param reçu dans le controller:', JSON.stringify(entrepriseId));
+    try {
+      const contenus = await this.contenuService.getContenusByEntreprise(entrepriseId);
+      return contenus;
+    } catch (error) {
+      this.logger.error('Error fetching contenus:', error);
+      throw error;
+    }
+  }
 }

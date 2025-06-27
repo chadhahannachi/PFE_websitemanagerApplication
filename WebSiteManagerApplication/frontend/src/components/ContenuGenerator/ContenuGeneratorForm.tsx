@@ -22,7 +22,7 @@ import {
   IconButton,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { predefinedComponents, PredefinedComponent } from '../../types/predefined-component.ts';
+import { predefinedComponents, PredefinedComponent } from './types/predefined-component.ts';
 
 interface ContenuGeneratorFormProps {
   entrepriseId: string;

@@ -90,6 +90,7 @@ import SolutionSectionDisplay from '../GeneratedWebsite/solutions/SolutionSectio
 import SliderDisplay from '../GeneratedWebsite/slider/SliderDisplay';
 import NewSectionDisplay from '../GeneratedWebsite/news/NewSectionDisplay';
 import TestimonialsDisplay from '../GeneratedWebsite/testimonials/TestimonialsDisplay';
+import GeneratedContent from '../components/ContenuGenerator/GeneratedContent.tsx';
 
 const HomePage = () => {
   const { entrepriseId, entrepriseName } = useParams();
@@ -197,12 +198,41 @@ const HomePage = () => {
     }
   };
 
+
+  const [customSections, setCustomSections] = useState([]);
+
+  // const fetchCustomSections = async () => {
+  //   try {
+  //     const response = await axios.get(`http://localhost:5000/contenus/entreprise/${entrepriseId}`);
+  // setCustomSections(response.data.contenus || []);
+  //   } catch (err) {
+  //     console.error('Erreur lors du chargement des contenus IA:', err);
+  //   }
+  // };
+
+
+  const fetchCustomSections = async () => {
+    if (!entrepriseId) return;
+    try {
+      const response = await axios.get(`http://localhost:5000/contenus/ContenuSpecifique/entreprise/${entrepriseId}`);
+      const sections = response.data.map((content) => ({
+        id: content._id,
+        content,
+      }));
+      setCustomSections(response.data); // si response.data est bien un tableau de contenus
+    } catch (err) {
+      console.error('Erreur lors du chargement des contenus IA:', err);
+    }
+  };
+
   // useEffect(() => {
   //   fetchUserEntreprise();
   // }, []);
 
   useEffect(() => {
     fetchPreferences();
+    fetchCustomSections();
+
   }, [entrepriseId]);
 
   // useEffect(() => {
@@ -210,6 +240,9 @@ const HomePage = () => {
   //     fetchPreferences();
   //   }
   // }, [userEntreprise]);
+
+
+
 
   if (loading) return <div>Chargement...</div>;
   if (error) return <div>Erreur : {error}</div>;
@@ -228,6 +261,12 @@ const HomePage = () => {
       <div id="testimonials"><TestimonialsDisplay entrepriseId={entrepriseId} /></div>
       <div id="faq"><FaqSectionDisplay styleIndex={styles.faqStyle} entrepriseId={entrepriseId} /></div>
       <div id="contact"><ContactUs styleIndex={styles.contactStyle} /></div>
+      
+      {(customSections || []).map && customSections.map((content) => (
+        <div key={content._id} id={content._id}>
+          <GeneratedContent content={content} />
+        </div>
+      ))}
       <Footer/>
     </div>
   );

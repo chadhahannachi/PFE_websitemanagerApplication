@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
-import { Contenu } from '../../types/contenu';
+import { Contenu } from './types/contenu';
 
 interface GeneratedContentProps {
   content: Contenu;
@@ -28,7 +28,9 @@ const GeneratedContent: React.FC<GeneratedContentProps> = ({ content }) => {
           <!DOCTYPE html>
           <html>
           <head>
-            <style>${content.css_style}</style>
+            <style>
+            body { margin: 0; }
+            ${content.css_style}</style>
           </head>
           <body>
             ${content.html_component}
@@ -50,8 +52,8 @@ const GeneratedContent: React.FC<GeneratedContentProps> = ({ content }) => {
   }
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography variant="h5" component="h2" gutterBottom>
+    <Box >
+      {/* <Typography variant="h5" component="h2" gutterBottom>
         Aperçu du Composant Généré
       </Typography>
 
@@ -66,13 +68,32 @@ const GeneratedContent: React.FC<GeneratedContentProps> = ({ content }) => {
             Pour modifier les couleurs, retournez à l'onglet 'Générer le contenu' et ajustez vos préférences stylistiques.
           </Typography>
         </AccordionDetails>
-      </Accordion>
+      </Accordion> */}
 
-      <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, overflow: 'hidden' }}>
-        <iframe
+      <Box sx={{ border: '1px solid #e0e0e0' , backgroundColor: '#fff'}}>
+        {/* <iframe
           ref={iframeRef}
           title="Generated Content Preview"
           style={{ width: '100%', height: '600px', border: 'none' }}
+        /> */}
+
+        <iframe
+          ref={iframeRef}
+          title="Generated Content Preview"
+          style={{ width: '100%', border: 'none' }}
+          onLoad={() => {
+            if (iframeRef.current) {
+              const iframe = iframeRef.current;
+              try {
+                const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                if (doc && doc.body && doc.body.scrollHeight) {
+                  iframe.style.height = (doc.body.scrollHeight + 8) + 'px';
+                }
+              } catch (e) {
+                // ignore cross-origin errors
+              }
+            }
+          }}
         />
       </Box>
     </Box>

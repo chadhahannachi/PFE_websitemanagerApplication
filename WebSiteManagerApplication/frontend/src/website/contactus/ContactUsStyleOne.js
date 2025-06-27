@@ -99,26 +99,26 @@ export default function ContactUsStyleOne({ contentType = 'contactus', styleKey 
 
   
   const defaultStyles = {
-    sectionName: { fontSize: '2rem', fontWeight: 'bold', color: '#000' },
-    description: { fontSize: '1rem', color: '#666' },
+    sectionName: { fontSize: '1.7rem', fontWeight: 'bold', color: '#000' },
+    description: { fontSize: '1rem', color: '#000000' },
     adresse: { fontSize: '1rem', color: '#333' },
     phone: { fontSize: '1rem', color: '#333' },
     email: { fontSize: '1rem', color: '#333' },
     links: { color: '#333' },
-    labelOffice: { fontSize: '1rem', fontWeight: 'bold', color: '#333' },
-    labelPhone: { fontSize: '1rem', fontWeight: 'bold', color: '#333' },
-    labelEmail: { fontSize: '1rem', fontWeight: 'bold', color: '#333' }
+    labelOffice: { fontSize: '1.2rem', fontWeight: 'bold', color: '#000' },
+    labelPhone: { fontSize: '1.2rem', fontWeight: 'bold', color: '#000' },
+    labelEmail: { fontSize: '1.2rem', fontWeight: 'bold', color: '#000' }
   };
 
   const defaultPositions = {
-    sectionName: { top: 0, left: 0 },
-    description: { top: 20, left: 0 },
-    adresse: { top: 40, left: 50 },
-    phone: { top: 60, left: 50 },
-    email: { top: 60, left: 50 },
-    labelOffice: { top: 40, left: 0 },
-    labelPhone: { top: 60, left: 0 },
-    labelEmail: { top: 60, left: 0 }
+    sectionName: { top: -41, left: -89 },
+    description: { top: 2, left: -26 },
+    adresse: { top: 36, left: 35 },
+    phone: { top: 53, left: 31 },
+    email: { top: 61, left: 30 },
+    labelOffice: { top: 31, left: -32 },
+    labelPhone: { top: 52, left: -32 },
+    labelEmail: { top: 61, left: -26 }
   };
 
   const defaultTexts = {

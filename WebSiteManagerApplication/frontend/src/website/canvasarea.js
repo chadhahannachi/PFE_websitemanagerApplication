@@ -50,8 +50,9 @@ import Footer from './footer/Footer';
 import FaqSection from './faqs/FaqSection';
 import Units from './units/Units';
 import OurServices from './services/OurServices';
+import GeneratedContent from '../components/ContenuGenerator/GeneratedContent.tsx';
 
-const CanvasArea = ({ styles, sectionOrder, sectionVisibility }) => {
+const CanvasArea = ({ styles, sectionOrder, sectionVisibility, customSections = [], onOpenGenModal }) => {
   const sections = {
     home: <Slider styleIndex={styles.sliderStyle} />,
     partners: <OurPartners styleIndex={styles.partnersStyle} />,
@@ -66,16 +67,26 @@ const CanvasArea = ({ styles, sectionOrder, sectionVisibility }) => {
     contact: <ContactUs styleIndex={styles.contactStyle} />,
   };
 
+  const customSectionMap = {};
+  customSections.forEach(({ id, content }) => {
+    customSectionMap[id] = <GeneratedContent content={content} />;
+  });
+
   return (
     <div>
       <Navbar />
       {sectionOrder.map((sectionId) => (
         sectionVisibility[sectionId] && (
           <div key={sectionId} id={sectionId}>
-            {sections[sectionId]}
+            {sections[sectionId] || customSectionMap[sectionId]}
           </div>
         )
       ))}
+      <div style={{ textAlign: 'center', margin: '2rem 0' }}>
+        <button className="generate-content-btn" onClick={onOpenGenModal} style={{ fontSize: '1.2rem', padding: '1rem 2rem', borderRadius: 8, background: '#1976d2', color: '#fff', border: 'none', cursor: 'pointer' }}>
+          + Générer du contenu
+        </button>
+      </div>
       <Footer />
     </div>
   );
