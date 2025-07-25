@@ -17,6 +17,11 @@ export class EntrepriseController {
     return this.entrepriseService.findAll();
   }
 
+  @Get('archived')
+  findArchived() {
+    return this.entrepriseService.findArchived();
+  }
+  
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.entrepriseService.findOne(id);
@@ -25,6 +30,18 @@ export class EntrepriseController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateEntrepriseDto: UpdateEntrepriseDto) {
     return this.entrepriseService.update(id, updateEntrepriseDto);
+  }
+
+  @Patch(':id/archive')
+  archive(@Param('id') id: string) {
+    return this.entrepriseService.archiveEntreprise(id);
+  }
+
+
+
+  @Patch(':id/restore')
+  restore(@Param('id') id: string) {
+    return this.entrepriseService.restoreEntreprise(id);
   }
 
   @Delete(':id')

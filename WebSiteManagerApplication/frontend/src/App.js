@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
@@ -43,7 +43,7 @@ import TemoignagesManagement from "./BackofficeComponents/TemoignagesManagement"
 import PartenairesManagement from "./BackofficeComponents/PartenairesManagement";
 import ContenuSpecifiquesManagement from "./BackofficeComponents/ContenuSpecifiqueManagement";
 import NavbarManagement from "./BackofficeComponents/NavbarManagement";
-import FormulaireComponent from "./FormulaireComponent";
+import FormulaireComponent from "./BackofficeComponents/FormulaireComponent.js";
 import LanguagesManagement from "./BackofficeComponents/LanguagesManager";
 import KeywordsManagement from "./BackofficeComponents/ReferencementManager";
 import CookiesManagement from "./BackofficeComponents/CookiesManager";
@@ -73,9 +73,8 @@ import Testimonials from "./website/testimonials/Testimonials";
 import Slider from "./website/slider/Slider";
 import HomePage from "./website/HomePage";
 import WorkspaceLayout from "./website/WorkspaceLayout";
-// import WebsiteEditor from "./website/WebsiteEditor";
-// import Editor from "./website/WebsiteEditor";
-// import TextEditor from "./website/TextEditorBlock";
+import { TourProvider } from '@reactour/tour';
+
 import CharteGraphique from "./charteGraphique/charteGraphique";
 import ContentManager from "./website/contenuSpecifique/ContentManager";
 import Home3 from "./Home/app/home-3/page.tsx";
@@ -91,6 +90,28 @@ import LicenceDetail from "./Home/components/LicenceDetail/LicenceDetail";
 import { ContenuGenerator } from "./components/ContenuGenerator/index.tsx";
 import AboutusSectionBackoffice from "./BackofficeComponents/aboutusSectionBackoffice.js";
 import ContactUsSection from "./BackofficeComponents/ContactUsSection.js";
+import SliderStyleTwo from "./website/slider/SliderStyleTwo.js";
+import ProtectedRoute from "./ProtectedRoute.js";
+import PublicWebsite from "./GeneratedWebsite/PublicWebsite.js";
+import ComingSoon from "./Home/app/ComingSoon.js";
+import TypographyDisplay from "./TypographyDisplay.js";
+
+const tourSteps = [
+  { selector: '.workspace-header', content: 'Bienvenue ! Ceci est l\'en-tête.' },
+  { selector: '.workspace-sidebar', content: 'Gérez les sections ici.' },
+  { selector: '.view-button', content: 'Prévisualisez votre site ici.' },
+  { selector: '.zoom-controls', content: 'Ajustez le zoom ici.' },
+  { selector: '.properties-panel', content: 'Personnalisez les propriétés ici.' },
+  { selector: '.custom-panel-body', content: 'Personnalisez les propriétés ainsi que la visibilité de chaque section ici.' },
+  { selector: '.custom-style-btn', content: 'choisir le style préféré pour chaque section' },
+  { selector: '#save-preferences', content: 'Cliquez ici pour enregistrer vos preferences.' },
+  { selector: '.canvas-container', content: 'Cliquez sur un élément pour le modifier.' },
+  { selector: '#afficher-couleurs', content: 'Afficher les couleurs de votre entreprise.' },
+  { selector: '#personnaliser-navbar', content: 'Personnaliser le navbar ici.' },
+  { selector: '#personnaliser-chatbot', content: 'Personnaliser le chatbot ici.' },
+  { selector: '#generate-content', content: 'Générer un nouveau contenu avec l`IA selon vos preferences ici.' },
+  
+];
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -112,60 +133,43 @@ function App() {
   };
 
   return (
-    <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Routes>
+    <TourProvider steps={tourSteps}>
+      <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Routes>
+
           {/* Routes avec Layout (Sidebar et Topbar) */}
-          <Route path="/" element={<Layout><Dashboard /></Layout>} />
+          <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
           <Route path="/team" element={<Layout><Team /></Layout>} />
           <Route path="/contacts" element={<Layout><Contacts /></Layout>} />
-          
           <Route path="/invoices" element={<Layout><Invoices /></Layout>} />
-          
           <Route path="/form" element={<Layout><Form /></Layout> } />
-          
           <Route path="/bar" element={<Layout><Bar /></Layout> } />
-          
           <Route path="/pie" element={<Layout><Pie /></Layout> } />
-          
           <Route path="/line" element={<Layout><Line /></Layout> } />
-            
           <Route path="/line" element={ <Layout><Line /></Layout>}/>
           <Route path="/faq" element={<Layout><FAQ /></Layout>}/>
           <Route path="/calendar" element={<Layout><Calendar/></Layout>}/>
-
           <Route path="/geography" element={<Layout><Geography /></Layout>}/>
-
-
           <Route path="/ListSuperAdminABshore" element={<Layout><ListAdminABshore /></Layout>}/>
           <Route path="/update-user/:id" element={<Layout> <UpdateUser /> </Layout>}/>
           <Route path="/registration" element={<Layout><SignupForm /></Layout> }/>
-
           <Route path="/AddMemberByAdminEnt" element={<Layout><AddMemberByAdminEnt /></Layout>} />
-
           <Route path="/ListSuperAdminEnt" element={<Layout><ListSuperAdminEnt/></Layout> } />
           <Route path="/ListModerateur" element={<Layout><ListModerateur/></Layout>} />
-
           <Route path="/EntrepriseManager" element={<Layout><EntrepriseManager /></Layout>}/>
-
           <Route path="/profile" element={ <Layout><Profile /></Layout> }/>
-
           <Route path="/pagesmanagement" element={<Layout><PagesManagement/></Layout> } />
-
           <Route path="/slidesmanagement" element={ <Layout><SlidesManagement/></Layout> }/>
-
           <Route path="/carrousselsmanagement" element={ <Layout><CarrousselsManagement/></Layout> }/>
-
           <Route path="/solutionsmanagement" element={ <Layout><SolutionsManagement/></Layout> }/>
-
           <Route path="/unitesmanagement" element={<Layout> <UnitesManagement/></Layout>}/>
           <Route path="/servicesmanagement" element={<Layout> <ServicesManagement/></Layout>}/>
           <Route path="/actualitesmanagement" element={<Layout> <ActualitesManagement/></Layout>}/>
           <Route path="/articlesmanagement" element={<Layout> <ArticlesManagement/></Layout>}/>
           <Route path="/aProposmanagement" element={<Layout> <APropossManagement/></Layout>}/>
           <Route path="/aboutusSectionBackoffice" element={<Layout> <AboutusSectionBackoffice/></Layout>}/>
-
           <Route path="/evenementmanagement" element={<Layout> <EvenementsManagement/></Layout>}/>
           <Route path="/faqmanagement" element={<Layout> <FAQsManagement/></Layout>}/>
           <Route path="/temoignagesmanagement" element={<Layout> <TemoignagesManagement/></Layout>}/>
@@ -178,7 +182,6 @@ function App() {
           <Route path="/cookiesmanagement" element={<Layout> <CookiesManagement/></Layout>}/>
           <Route path="/contactus" element={<Layout> <ContactUsSection/></Layout>}/>
 
-
           <Route path="/add-super-admin-company/:entrepriseId" element={<Layout><AddSuperAdminCompany /></Layout>} />
           <Route path="/mycompany" element={<Layout><MyCompany /></Layout>} />
 
@@ -187,15 +190,15 @@ function App() {
           <Route path="/requestresetpwd" element={<RequestPasswordReset />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-
-
-
           <Route path="/frontoffice" element={<SectionRenderer sections={sections}/>} />
 
           <Route path="/carroussels" element={<Carroussel sections={sections}/>} />
           <Route path="/addcarroussel" element={<AddCarroussel/>} />
-
-
+          <Route path="/contentm" element={<ContentManager />} />
+          <Route path="/licenceRequestList" element={<Layout><LicenceRequestManagement /></Layout>} />
+          <Route path="/licence-requests/:id" element={<LicenceRequestDetails />} />
+          <Route path="/CharteGraphique" element={<CharteGraphique />} />
+          <Route path="/contenugenerator/:entrepriseId" element={<ContenuGenerator />}/>
 
           {/* <Route path="/contenu" element={<ContenuPage/>} /> */}
           {/* <Route path="/contenumenu" element={<ContenuMenu/>} />
@@ -206,34 +209,46 @@ function App() {
         {/* <Route path="/carrousseldisplay" element={<CarrouselDisplay />} /> */}
 
 
-        {/* <Route path="/homepage" element={<HomePage />} /> */}
-        <Route path="/workspacelayout" element={<WorkspaceLayout />} />
-        {/* <Route path="/Editor" element={<Editor />} /> */}
-        <Route path="/CharteGraphique" element={<CharteGraphique />} />
-        <Route path="/contentm" element={<ContentManager />} />
-        <Route path="/homepage/:entrepriseId/:entrepriseName" element={<HomePage />} />
 
-          <Route path="/hometh" element={<RootLayout><Home3 /></RootLayout>} />
-          <Route path="/authentication" element={<RootLayout>< AuthenticationPage/></RootLayout>} />
-          <Route path="/authentication/forgot-password" element={<RootLayout>< ForgotPasswordPage/></RootLayout>} />
-          <Route path="/checkout" element={<RootLayout>< CheckoutPage/></RootLayout>} />
-          <Route path="/pay-done" element={<RootLayout>< PayDonePage/></RootLayout>} />
+
+
+
+
+
+        <Route path="/workspacelayout" element={<ProtectedRoute><WorkspaceLayout /></ProtectedRoute>} />
+        <Route path="/homepage/:entrepriseId/:entrepriseName" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+
+
+      {/* if isPublic true et status licence paid */}
+        <Route path="/PublicWebsite/:entrepriseId/:entrepriseName" element={<ProtectedRoute><PublicWebsite /></ProtectedRoute>} />
+
+
+        {/* <Route path="/workspacelayout" element={<WorkspaceLayout />} />
+        <Route path="/homepage/:entrepriseId/:entrepriseName" element={<HomePage />} /> */}
+
+
+        <Route path="/" element={<RootLayout><Home3 /></RootLayout>} />
+        <Route path="/authentication" element={<RootLayout>< AuthenticationPage/></RootLayout>} />
+        <Route path="/authentication/forgot-password" element={<RootLayout>< ForgotPasswordPage/></RootLayout>} />
+        <Route path="/checkout" element={<RootLayout>< CheckoutPage/></RootLayout>} />
+        <Route path="/pay-done" element={<RootLayout>< PayDonePage/></RootLayout>} />
+        <Route path="/new-password/:token" element={<NewPasswordPage />} />
+        <Route path="/licence/:id" element={<LicenceDetail />} />
+        
+        <Route path="/ComingSoon" element={<RootLayout><ComingSoon /></RootLayout>} />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+
           
-          <Route path="/new-password/:token" element={<NewPasswordPage />} />
-
-          <Route path="/licenceRequestList" element={<Layout><LicenceRequestManagement /></Layout>} />
-          <Route path="/licence-requests/:id" element={<LicenceRequestDetails />} />
-          <Route path="/licence/:id" element={<LicenceDetail />} />
+        <Route path="/TypographyDisplay/:entrepriseId" element={<RootLayout><TypographyDisplay /></RootLayout>} />
 
 
-<Route 
-            path="/contenugenerator/:entrepriseId" 
-            element={<ContenuGenerator />}
-          />
+
 
         </Routes>
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+        </ThemeProvider>
+      </ColorModeContext.Provider>
+    </TourProvider>
   );
 
 

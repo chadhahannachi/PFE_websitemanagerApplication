@@ -25,9 +25,10 @@ import { LicenseModule } from './Module/License/license.module';
 import { StripeModule } from './Module/stripe/stripe.module';
 import { PaymentModule } from './Module/payment/payment.module';
 import { NotificationModule } from './Module/notification/notification.module';
+import { ChatbotModule } from './Module/chatbot/chatbot.module';
 
 @Module({
-  imports: [
+  imports: [ 
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
@@ -55,6 +56,7 @@ import { NotificationModule } from './Module/notification/notification.module';
     StripeModule,
     PaymentModule,
     NotificationModule,
+    ChatbotModule,
   ],
   controllers: [AppController],
   providers: [AppService],

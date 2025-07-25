@@ -1,41 +1,54 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsUpDownLeftRight, faTimes, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import PropTypes from 'prop-types';
 
 const API_URL = 'http://localhost:5000/couleurs';
 
-export default function EditorUnitContent({ unites, initialPosition = { top: 0, left: 0 }, initialStyles = {}, onSelect, onStyleChange }) {
+export default function EditorUnitContent({ 
+  unites, 
+  initialPosition = { top: 0, left: 0 }, 
+  initialStyles = {}, 
+  onSelect, 
+  onPositionChange, 
+  onStyleChange 
+}) {
   const [position, setPosition] = useState({
     top: initialPosition.top || 0,
     left: typeof initialPosition.left === 'number' ? initialPosition.left : 0,
   });
-  const [styles, setStyles] = useState({
-    width: initialPosition.width || '45%',  // Ajout de la largeur
-    title: {
-      color: initialStyles.title?.color || '#358dcc',
-      fontSize: initialStyles.title?.fontSize || '20px',
-      fontFamily: initialStyles.title?.fontFamily || 'inherit',
-      fontWeight: initialStyles.title?.fontWeight || '600',
-    },
-    description: {
-      color: initialStyles.description?.color || '#666',
-      fontSize: initialStyles.description?.fontSize || '18px',
-      fontFamily: initialStyles.description?.fontFamily || 'inherit',
-    }
-  });
-  const [unitData, setUnitData] = useState(unites);
+
+  // Utiliser unitData comme unique source de vérité pour les styles
+  const [unitData, setUnitData] = useState(
+    unites.map((unit) => ({
+      ...unit,
+      styles: unit.styles || {
+        title: {
+          color: initialStyles.title?.color || '#358dcc',
+          fontSize: initialStyles.title?.fontSize || '20px',
+          fontWeight: initialStyles.title?.fontWeight || '600',
+        },
+        description: {
+          color: initialStyles.description?.color || '#666',
+          fontSize: initialStyles.description?.fontSize || '18px',
+        },
+        width: initialPosition.width || '45%',
+      },
+    }))
+  );
+
   const [isDragging, setIsDragging] = useState(false);
   const [isEditingStyles, setIsEditingStyles] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
   const offset = useRef({ x: 0, y: 0 });
-
+  const pendingStyles = useRef({});
+  
   const [colors, setColors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userEntreprise, setUserEntreprise] = useState(null);
-
 
   useEffect(() => {
     if (isDragging) {
@@ -63,12 +76,14 @@ export default function EditorUnitContent({ unites, initialPosition = { top: 0, 
 
   const handleMouseMove = (e) => {
     if (isDragging) {
-      requestAnimationFrame(() => {
-        setPosition({
-          top: e.clientY - offset.current.y,
-          left: e.clientX - offset.current.x,
-        });
-      });
+      const newPosition = {
+        top: e.clientY - offset.current.y,
+        left: e.clientX - offset.current.x,
+      };
+      setPosition(newPosition);
+      if (onPositionChange) {
+        onPositionChange(newPosition);
+      }
     }
   };
 
@@ -82,35 +97,59 @@ export default function EditorUnitContent({ unites, initialPosition = { top: 0, 
     if (onSelect) onSelect('unitContent');
   };
 
-  // const handleStyleChange = (property, value, group) => {
-  //   if (group) {
-  //     setStyles(prev => ({
-  //       ...prev,
-  //       [group]: {
-  //         ...prev[group],
-  //         [property]: value
+  // Met à jour les styles de toutes les unités de unitData
+  // const handleStyleChange = (property, value, subProperty) => {
+  //   setUnitData((prevUnits) => {
+  //     const newUnits = prevUnits.map((unit) => {
+  //       const updatedStyles = {
+  //         ...unit.styles,
+  //         [subProperty]: {
+  //           ...unit.styles[subProperty],
+  //           [property]: value,
+  //         },
+  //       };
+  //       if (unit._id) {
+  //         onStyleChange?.(unit._id, updatedStyles);
   //       }
-  //     }));
-  //   } else {
-  //     setStyles(prev => ({
-  //       ...prev,
-  //       [property]: value
-  //     }));
-  //   }
+  //       return {
+  //         ...unit,
+  //         styles: updatedStyles,
+  //       };
+  //     });
+  //     return newUnits;
+  //   });
   // };
-
-  const handleStyleChange = (property, value, group) => {
-  const newStyles = { ...styles };
-  if (group) newStyles[group][property] = value;
-  else newStyles[property] = value;
-
-  setStyles(newStyles);
-  if (onStyleChange) onStyleChange(newStyles); 
+  const handleStyleChange = (property, value, subProperty) => {
+  setUnitData((prevUnits) => {
+    const newUnits = prevUnits.map((unit) => {
+      const updatedStyles = {
+        ...unit.styles,
+        [subProperty]: {
+          ...unit.styles[subProperty],
+          [property]: value,
+        },
+      };
+      const unitId = unit._id || unit.id;
+      if (unitId) {
+        onStyleChange?.(unitId, updatedStyles);
+      }
+      return {
+        ...unit,
+        styles: updatedStyles,
+      };
+    });
+    return newUnits;
+  });
 };
+
+  // Toggle pour le style gras, etc.
+  const toggleTextStyle = (property, group, value, defaultValue) => {
+    const currentValue = unitData[0]?.styles?.[group]?.[property] || defaultValue;
+    handleStyleChange(property, currentValue === value ? defaultValue : value, group);
+  };
 
   const renderControlButtons = () => {
     if (!isSelected) return null;
-
     return (
       <div
         className="element-controls"
@@ -160,7 +199,6 @@ export default function EditorUnitContent({ unites, initialPosition = { top: 0, 
       </div>
     );
   };
-
 
   // Fetch user enterprise
   useEffect(() => {
@@ -216,6 +254,12 @@ export default function EditorUnitContent({ unites, initialPosition = { top: 0, 
     }
   }, [userEntreprise]);
 
+  // Récupérer les styles courants de la première unité pour le panneau d'édition
+  const currentStyles = unitData[0]?.styles || {
+    title: { color: '#358dcc', fontSize: '20px', fontWeight: '600' },
+    description: { color: '#666', fontSize: '18px' },
+    width: '45%',
+  };
 
   return (
     <div
@@ -285,7 +329,7 @@ export default function EditorUnitContent({ unites, initialPosition = { top: 0, 
                         width: '20px',
                         height: '20px',
                         backgroundColor: c.couleur,
-                        border: styles.title.color === c.couleur ? '2px solid #000' : '1px solid #ccc',
+                        border: currentStyles.title.color === c.couleur ? '2px solid #000' : '1px solid #ccc',
                         borderRadius: '4px',
                         cursor: 'pointer',
                         transition: 'border 0.2s ease',
@@ -297,7 +341,7 @@ export default function EditorUnitContent({ unites, initialPosition = { top: 0, 
               )}
               <input
                 type="color"
-                value={styles.title.color}
+                value={currentStyles.title.color}
                 onChange={(e) => handleStyleChange('color', e.target.value, 'title')}
               />
             </div>
@@ -308,20 +352,23 @@ export default function EditorUnitContent({ unites, initialPosition = { top: 0, 
                 min="10"
                 max="50"
                 step="1"
-                value={parseInt(styles.title.fontSize)}
+                value={parseInt(currentStyles.title.fontSize)}
                 onChange={(e) => handleStyleChange('fontSize', `${e.target.value}px`, 'title')}
               />
             </div>
-            <div>
-              <label>Title Font Weight: </label>
-              <select
-                value={styles.title.fontWeight}
-                onChange={(e) => handleStyleChange('fontWeight', e.target.value, 'title')}
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                onClick={() => toggleTextStyle('fontWeight', 'title', '700', 'normal')}
+                style={{
+                  padding: '5px 10px',
+                  backgroundColor: currentStyles.title.fontWeight === '700' ? '#ccc' : '#fff',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                }}
               >
-                <option value="400">Normal</option>
-                <option value="600">Semi-bold</option>
-                <option value="700">Bold</option>
-              </select>
+                <strong>B</strong>
+              </button>
             </div>
 
             <h4>Description Styles</h4>
@@ -351,7 +398,7 @@ export default function EditorUnitContent({ unites, initialPosition = { top: 0, 
                         width: '20px',
                         height: '20px',
                         backgroundColor: c.couleur,
-                        border: styles.description.color === c.couleur ? '2px solid #000' : '1px solid #ccc',
+                        border: currentStyles.description.color === c.couleur ? '2px solid #000' : '1px solid #ccc',
                         borderRadius: '4px',
                         cursor: 'pointer',
                         transition: 'border 0.2s ease',
@@ -363,7 +410,7 @@ export default function EditorUnitContent({ unites, initialPosition = { top: 0, 
               )}
               <input
                 type="color"
-                value={styles.description.color}
+                value={currentStyles.description.color}
                 onChange={(e) => handleStyleChange('color', e.target.value, 'description')}
               />
             </div>
@@ -374,46 +421,45 @@ export default function EditorUnitContent({ unites, initialPosition = { top: 0, 
                 min="10"
                 max="30"
                 step="1"
-                value={parseInt(styles.description.fontSize)}
+                value={parseInt(currentStyles.description.fontSize)}
                 onChange={(e) => handleStyleChange('fontSize', `${e.target.value}px`, 'description')}
               />
             </div>
 
             <div>
-  <label>Content Width: </label>
-  <input
-    type="range"
-    min="20"
-    max="80"
-    step="5"
-    value={parseInt(styles.width)}
-    onChange={(e) => handleStyleChange('width', `${e.target.value}%`)}
-  />
-  <span> {styles.width}</span>
-</div>
-
+              <label>Content Width: </label>
+              <input
+                type="range"
+                min="20"
+                max="80"
+                step="5"
+                value={parseInt(currentStyles.width)}
+                onChange={(e) => handleStyleChange('width', `${e.target.value}%`, 'width')}
+              />
+              <span> {currentStyles.width}</span>
+            </div>
           </div>
         </div>
       )}
       <div
-  className="text-content"
-  style={{
-    position: 'absolute',
-    top: position.top,
-    left: position.left,
-    width: styles.width,  // Utilisation de la largeur
-    flex: 1,
-    minWidth: '250px',
-    cursor: 'pointer',
-  }}
-  onClick={handleElementClick}
->
+        className="text-content"
+        style={{
+          position: 'absolute',
+          top: position.top,
+          left: position.left,
+          width: currentStyles.width,
+          flex: 1,
+          minWidth: '250px',
+          cursor: 'pointer',
+        }}
+        onClick={handleElementClick}
+      >
         <div>
           {unitData.length > 0 ? (
             unitData.map((unit, index) => (
-              <div key={index}>
+              <div key={unit._id || index}>
                 <h2 style={{
-                  ...styles.title,
+                  ...unit.styles.title,
                   marginBottom: '20px',
                   padding: '2px 30px',
                 }}>
@@ -437,7 +483,7 @@ export default function EditorUnitContent({ unites, initialPosition = { top: 0, 
                 </h2>
                 
                 <p style={{
-                  ...styles.description,
+                  ...unit.styles.description,
                   marginBottom: '20px',
                   marginTop: '1px',
                   paddingLeft: '40px',
@@ -454,3 +500,12 @@ export default function EditorUnitContent({ unites, initialPosition = { top: 0, 
     </div>
   );
 }
+
+// EditorUnitContent.propTypes = {
+//   unites: PropTypes.array.isRequired,
+//   initialPosition: PropTypes.object,
+//   initialStyles: PropTypes.object,
+//   onSelect: PropTypes.func,
+//   onPositionChange: PropTypes.func,
+//   onStyleChange: PropTypes.func
+// };

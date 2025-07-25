@@ -5,29 +5,62 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsUpDownLeftRight, faTimes, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 
-export default function EditorEventStyleTwo({ events = [], initialPosition = { top: 0, left: 0 }, initialStyles = { width: 1200, backgroundColor: '#ffffff', borderRadius: '10px' }, cardStyles, onSelect, onPositionChange, onUpdate, onStyleChange, onCardStyleChange }) {
-  const [position, setPosition] = useState(initialPosition);
-  const [gridStyles, setGridStyles] = useState(initialStyles);
-  const [eventData, setEventData] = useState(events);
-  const [isSelected, setIsSelected] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isResizing, setIsResizing] = useState(false);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  // const [editingEventIndex, setEditingEventIndex] = useState(null);
-  // const [editingField, setEditingField] = useState(null);
-  const [inputRef, setInputRef] = useState(null);
-  const [colors, setColors] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [isEditingStyles, setIsEditingStyles] = useState(false);
+export default function EditorEventStyleTwo({ events = [], initialPosition = { top: 0, left: 0 }, initialStyles = { width: 1500, backgroundColor: '#ffffff', borderRadius: '10px' }, cardStyles, onSelect, onPositionChange, onUpdate, onStyleChange, onCardStyleChange }) {
+  // --- State ---
+  const [position, setPosition] = useState({
+    top: initialPosition.top || 0,
+    left: initialPosition.left || 0,
+  });
+  const [gridStyles, setGridStyles] = useState({
+    width: parseFloat(initialStyles.width) || 1500,
+    backgroundColor: initialStyles.backgroundColor || '#ffffff',
+    borderRadius: initialStyles.borderRadius || '10px',
+  });
   const [cardCustomStyles, setCardCustomStyles] = useState(cardStyles || {
     backgroundColor: '#fff',
     borderRadius: '10px',
     width: 300,
     height: 500,
+    title: {
+      color: '#014268',
+      fontSize: '18px',
+      fontFamily: 'Arial',
+      fontWeight: '600',
+      textAlign: 'left',
+      fontStyle: 'normal',
+      textDecoration: 'none',
+    },
+    description: {
+      color: '#555',
+      fontSize: '14px',
+      fontFamily: 'Arial',
+      textAlign: 'left',
+      fontWeight: 'normal',
+      fontStyle: 'normal',
+      textDecoration: 'none',
+    },
+    date: {
+      color: '#999',
+      fontSize: '14px',
+      fontFamily: 'Arial',
+      textAlign: 'left',
+      fontWeight: 'normal',
+      fontStyle: 'normal',
+      textDecoration: 'none',
+    },
   });
+  const [eventData, setEventData] = useState(events);
+  const [isSelected, setIsSelected] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isEditingStyles, setIsEditingStyles] = useState(false);
+  const [draggingOffset, setDraggingOffset] = useState({ x: 0, y: 0 });
+  const [resizing, setResizing] = useState(null);
+  const offset = useRef({ x: 0, y: 0, width: 0 });
+  const [colors, setColors] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Charger les couleurs depuis l'API
+  // --- Effects ---
   useEffect(() => {
     const fetchColors = async () => {
       setLoading(true);
@@ -38,13 +71,11 @@ export default function EditorEventStyleTwo({ events = [], initialPosition = { t
         });
         setColors(response.data);
       } catch (error) {
-        console.error('Error fetching colors:', error);
         setError('Erreur lors du chargement des couleurs');
       } finally {
         setLoading(false);
       }
     };
-
     fetchColors();
   }, []);
 
@@ -52,78 +83,73 @@ export default function EditorEventStyleTwo({ events = [], initialPosition = { t
     setEventData(events);
   }, [events]);
 
-  // useEffect(() => {
-  //   if (inputRef && editingEventIndex !== null) {
-  //     inputRef.focus();
-  //   }
-  // }, [editingEventIndex, editingField, inputRef]);
-
   useEffect(() => {
     if (cardStyles) {
       setCardCustomStyles(cardStyles);
     }
   }, [cardStyles]);
 
-  const handleMouseDown = (e) => {
-    if (e.target === e.currentTarget) {
-      setIsDragging(true);
-      const rect = e.currentTarget.getBoundingClientRect();
-      setDragOffset({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      });
-      e.preventDefault();
+  useEffect(() => {
+    if (isDragging || resizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    } else {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
     }
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, resizing]);
+
+  // --- Drag & Drop ---
+  const handleMouseDown = (e) => {
+    e.stopPropagation();
+    offset.current = {
+      x: e.clientX - position.left,
+      y: e.clientY - position.top,
+    };
+    setIsDragging(true);
   };
 
   const handleMouseMove = (e) => {
     if (isDragging) {
-      const newPosition = {
-        top: e.clientY - dragOffset.y,
-        left: e.clientX - dragOffset.x,
-      };
-      setPosition(newPosition);
-      onPositionChange?.(newPosition);
+      requestAnimationFrame(() => {
+        const newPosition = {
+          top: e.clientY - offset.current.y,
+          left: e.clientX - offset.current.x,
+        };
+        setPosition(newPosition);
+        onPositionChange?.(newPosition);
+      });
+    } else if (resizing) {
+      const deltaX = e.clientX - offset.current.x;
+      let newWidth = gridStyles.width;
+      if (resizing === 'bottom-right') {
+        newWidth = offset.current.width + deltaX;
+      }
+      newWidth = Math.max(newWidth, 300);
+      setGridStyles((prev) => ({ ...prev, width: newWidth }));
     }
   };
 
   const handleMouseUp = () => {
     setIsDragging(false);
+    setResizing(null);
   };
 
   const handleResizeMouseDown = (handle, e) => {
-    setIsResizing(true);
     e.stopPropagation();
+    setResizing(handle);
+    offset.current = {
+      x: e.clientX,
+      width: gridStyles.width,
+    };
   };
 
-  const handleElementClick = (e) => {
-    if (e.target === e.currentTarget) {
-      setIsSelected(true);
-      onSelect?.();
-    }
-  };
-
-  // const handleEditEvent = (index, field) => {
-  //   setEditingEventIndex(index);
-  //   setEditingField(field);
-  // };
-
-  // const handleEventChange = (e, index, field) => {
-  //   const newEventData = [...eventData];
-  //   if (field === 'title') {
-  //     newEventData[index].title = e.target.value;
-  //   } else if (field === 'desc') {
-  //     newEventData[index].desc = e.target.value;
-  //   } else if (field === 'date') {
-  //     newEventData[index].date = e.target.value;
-  //   }
-  //   setEventData(newEventData);
-  // };
-
+  // --- Style Change Logic (identique) ---
   const handleStyleChange = (property, value, subProperty) => {
-    console.log('handleStyleChange appelé:', { property, value, subProperty });
-    console.log('eventData avant modification:', eventData);
-    
     setEventData((prevEvents) => {
       const newEvents = prevEvents.map((event) => {
         const updatedStyles = {
@@ -133,21 +159,14 @@ export default function EditorEventStyleTwo({ events = [], initialPosition = { t
             [property]: value,
           },
         };
-        
-        console.log(`Styles mis à jour pour l'événement ${event.id}:`, updatedStyles);
-        
-        // Appeler onStyleChange pour chaque événement
         if (event.id) {
           onStyleChange?.(event.id, updatedStyles);
         }
-        
         return {
           ...event,
           styles: updatedStyles,
         };
       });
-      
-      console.log('eventData après modification:', newEvents);
       return newEvents;
     });
   };
@@ -158,18 +177,7 @@ export default function EditorEventStyleTwo({ events = [], initialPosition = { t
     handleStyleChange(property, currentValue === value ? defaultValue : value, subProperty);
   };
 
-  // const handleBlur = () => {
-  //   setEditingEventIndex(null);
-  //   setEditingField(null);
-  // };
-
-  // const handleKeyDown = (e) => {
-  //   if (e.key === 'Enter') {
-  //     handleBlur();
-  //   }
-  // };
-
-  // Menu contextuel (comme EditorEventGrid)
+  // --- UI Renders ---
   const renderControlButtons = () => {
     if (!isSelected) return null;
     return (
@@ -225,66 +233,24 @@ export default function EditorEventStyleTwo({ events = [], initialPosition = { t
 
   const renderResizeHandles = () => {
     if (!isSelected) return null;
-
+    const handleSize = 10;
     return (
-      <>
-        <div
-          style={{
-            position: 'absolute',
-            top: '-5px',
-            left: '-5px',
-            width: '10px',
-            height: '10px',
-            backgroundColor: '#007bff',
-            cursor: 'nw-resize',
-            zIndex: 1001,
-          }}
-          onMouseDown={(e) => handleResizeMouseDown('nw', e)}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            top: '-5px',
-            right: '-5px',
-            width: '10px',
-            height: '10px',
-            backgroundColor: '#007bff',
-            cursor: 'ne-resize',
-            zIndex: 1001,
-          }}
-          onMouseDown={(e) => handleResizeMouseDown('ne', e)}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '-5px',
-            left: '-5px',
-            width: '10px',
-            height: '10px',
-            backgroundColor: '#007bff',
-            cursor: 'sw-resize',
-            zIndex: 1001,
-          }}
-          onMouseDown={(e) => handleResizeMouseDown('sw', e)}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '-5px',
-            right: '-5px',
-            width: '10px',
-            height: '10px',
-            backgroundColor: '#007bff',
-            cursor: 'se-resize',
-            zIndex: 1001,
-          }}
-          onMouseDown={(e) => handleResizeMouseDown('se', e)}
-        />
-      </>
+      <div
+        style={{
+          position: 'absolute',
+          top: position.top,
+          left: position.left + gridStyles.width - handleSize / 2,
+          width: handleSize,
+          height: handleSize,
+          backgroundColor: '#007bff',
+          cursor: 'ew-resize',
+          zIndex: 1001,
+        }}
+        onMouseDown={(e) => handleResizeMouseDown('bottom-right', e)}
+      />
     );
   };
 
-  // Panel d'édition contextuel (même style que EditorEventGrid)
   const renderEditPanel = () => {
     if (!isEditingStyles) return null;
     return (
@@ -320,21 +286,16 @@ export default function EditorEventStyleTwo({ events = [], initialPosition = { t
           <FontAwesomeIcon icon={faTimes} />
         </button>
         <div className="style-controls">
-          <h5>Style de la grille</h5>
+          <h5>Largeur de la grille</h5>
           <div>
-            <label>Largeur de la grille : </label>
+            <label>Largeur : </label>
             <input
               type="number"
               min="300"
               value={gridStyles.width}
-              onChange={(e) => {
-                const newStyles = { ...gridStyles, width: parseInt(e.target.value) };
-                setGridStyles(newStyles);
-                onUpdate?.(newStyles);
-              }}
+              onChange={(e) => setGridStyles((prev) => ({ ...prev, width: parseInt(e.target.value) }))}
             />
           </div>
-          
           <h5>Style des cartes</h5>
           <div>
             <label>Background Color : </label>
@@ -361,9 +322,13 @@ export default function EditorEventStyleTwo({ events = [], initialPosition = { t
             <input
               type="number"
               min="100"
-              max="600"
-              value={cardCustomStyles.width}
-              onChange={e => setCardCustomStyles(prev => { const next = { ...prev, width: parseInt(e.target.value) }; onCardStyleChange(next); return next; })}
+              max="300"
+              value={cardCustomStyles.width > 300 ? 300 : cardCustomStyles.width}
+              onChange={e => {
+                let value = parseInt(e.target.value);
+                if (value > 300) value = 300;
+                setCardCustomStyles(prev => { const next = { ...prev, width: value }; onCardStyleChange(next); return next; });
+              }}
             />
           </div>
           <div>
@@ -766,6 +731,7 @@ export default function EditorEventStyleTwo({ events = [], initialPosition = { t
     <div
       style={{
         position: 'relative',
+        height: 'auto',
         cursor: isDragging ? 'grabbing' : 'default',
       }}
       onMouseDown={handleMouseDown}
@@ -777,7 +743,7 @@ export default function EditorEventStyleTwo({ events = [], initialPosition = { t
       {renderResizeHandles()}
       {renderEditPanel()}
       <div
-        className="events-container style-two"
+        className="events-container style-three"
         style={{
           position: 'relative',
           top: position.top,
@@ -786,9 +752,23 @@ export default function EditorEventStyleTwo({ events = [], initialPosition = { t
           borderRadius: gridStyles.borderRadius,
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '100px',
-          padding: '20px',
+          gap: '5px',
+          // padding: '20px',
+          overflow: 'hidden',
+
         }}
+        // style={{
+        //   position: 'relative',
+        //   top: position.top,
+        //   left: position.left,
+        //   width: gridStyles.width,
+        //   display: 'flex',
+        //   flexWrap: 'wrap',
+        //   gap: 0,
+        //   borderRadius: '20px',
+        //   overflow: 'hidden',
+        //   // width: '100%',
+        // }}
         onClick={handleGridClick}
       >
         {eventData.map((event, index) => (
@@ -820,43 +800,10 @@ export default function EditorEventStyleTwo({ events = [], initialPosition = { t
               }}
             >
               <h3 style={{ ...event.styles.title, marginBottom: '10px' }}>
-                {/* {editingEventIndex === index && editingField === 'title' ? (
-                  <input
-                    ref={setInputRef}
-                    type="text"
-                    value={event.title || ''}
-                    onChange={(e) => handleEventChange(e, index, 'title')}
-                    onBlur={handleBlur}
-                    onKeyDown={handleKeyDown}
-                    style={{ width: '100%', fontSize: event.styles.title.fontSize }}
-                  />
-                ) : (
-                  <span onClick={() => handleEditEvent(index, 'title')}>
-                    {event.title}
-                  </span>
-                )} */}
-                  {event.title}
+                {event.title}
               </h3>
 
               <p style={{ ...event.styles.description, marginBottom: '15px' }}>
-                {/* {editingEventIndex === index && editingField === 'desc' ? (
-                  <textarea
-                    ref={setInputRef}
-                    value={event.desc || ''}
-                    onChange={(e) => handleEventChange(e, index, 'desc')}
-                    onBlur={handleBlur}
-                    style={{
-                      width: '100%',
-                      fontSize: event.styles.description.fontSize,
-                      resize: 'none',
-                      height: '60px',
-                    }}
-                  />
-                ) : (
-                  <span onClick={() => handleEditEvent(index, 'desc')}>
-                    {event.desc}
-                  </span>
-                )} */}
                 {event.desc}
               </p>
               <div
@@ -868,22 +815,7 @@ export default function EditorEventStyleTwo({ events = [], initialPosition = { t
               >
                 <CalendarMonthIcon className="calendar-icon" style={{ marginRight: '5px', color: event.styles.date.color }} />
                 <span style={{ ...event.styles.date }}>
-                  {/* {editingEventIndex === index && editingField === 'date' ? (
-                    <input
-                      ref={setInputRef}
-                      type="text"
-                      value={event.date || ''}
-                      onChange={(e) => handleEventChange(e, index, 'date')}
-                      onBlur={handleBlur}
-                      onKeyDown={handleKeyDown}
-                      style={{ width: '150px', fontSize: event.styles.date.fontSize }}
-                    />
-                  ) : (
-                    <span onClick={() => handleEditEvent(index, 'date')}>
-                      {event.date}
-                    </span>
-                  )} */}
-                    {event.date}
+                  {event.date}
                 </span>
               </div>
             </div>

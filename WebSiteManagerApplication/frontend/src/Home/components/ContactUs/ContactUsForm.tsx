@@ -53,8 +53,18 @@ const ContactUsForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Récupère le prix mensuel du plan sélectionné
+    const selectedType = licenceTypes.find(t => t.type === formData.type);
+    const monthlyPrice = selectedType ? selectedType.price : 0;
+    // Calcule le prix total
+    const duration = Number(formData.duration_months) || 1;
+    const totalPrice = monthlyPrice * duration;
+
     try {
-      const response = await axios.post('http://localhost:5000/licence-requests', formData);
+      const response = await axios.post('http://localhost:5000/licence-requests', {
+        ...formData,
+        price: totalPrice, // On envoie le prix total
+      });
       console.log('Licence request created:', response.data);
       // Reset form after successful submission
       setFormData({
@@ -65,19 +75,19 @@ const ContactUsForm = () => {
         type: "",
         description: "",
         price: 0,
-        duration_months:0,
+        duration_months: 0,
         requested_at: new Date().toISOString()
       });
       alert('Licence request submitted successfully!');
     } catch (error) {
-      console.error('Error creating licence request:', error);
+      console.error('Error creating licence request:', error, error?.response?.data);
       alert('Error submitting licence request. Please try again.');
     }
   };
 
   return (
     <>
-      <div className="contat-us-area pb-150">
+      <div className="contat-us-area pb-150" style={{ marginTop: '-80px' }}>
         <div className="container">
           <div className="section-title">
             <span className="top-title">LICENCE REQUEST</span>
@@ -155,7 +165,7 @@ const ContactUsForm = () => {
                               >
                                 <div className="card-body">
                                   <h5 className="card-title text-capitalize">{licenceType.type}</h5>
-                                  <h6 className="card-subtitle mb-2 text-muted">${licenceType.price}/month</h6>
+                                  <h6 className="card-subtitle mb-2 text-muted">{licenceType.price} DT/month</h6>
                                 </div>
                               </div>
                             </div>

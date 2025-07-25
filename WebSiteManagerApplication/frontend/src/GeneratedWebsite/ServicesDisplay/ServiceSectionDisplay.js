@@ -4,10 +4,11 @@ import { jwtDecode } from 'jwt-decode';
 import '../../website/services/OurServices.css';
 import ServiceStyleOne from '../../website/services/ServiceStyleOne';
 import ServiceStyleTwoDisplay from './ServiceStyleTwoDisplay';
+import ServiceStyleOneDisplay from './ServiceStyleOneDisplay';
 
 // Liste des styles disponibles
 const styles = [
-  { name: 'List Cards', component: ServiceStyleOne },
+  { name: 'List Cards', component: ServiceStyleOneDisplay },
   { name: 'Modern Cards', component: ServiceStyleTwoDisplay },
 ];
 
@@ -83,12 +84,13 @@ export default function ServiceSectionDisplay({ styleIndex, entrepriseId }) {
         `http://localhost:5000/contenus/Service/entreprise/${entrepriseId}`
       );
       const publishedServices = response.data
-        .filter((service) => service.isPublished)
+        // .filter((service) => service.isPublished)
         .map((service) => ({
           _id: service._id,
           title: service.titre,
           img: service.image || 'https://via.placeholder.com/150',
           description: service.description,
+          styles: service.styles
         }));
       setServices(publishedServices);
     } catch (error) {
@@ -134,7 +136,7 @@ export default function ServiceSectionDisplay({ styleIndex, entrepriseId }) {
   }
 
   return (
-    <section className="services-section" style={{ position: 'relative', padding: '40px 0' }}>
+    <section className="services-section" style={{ position: 'relative' }}>
       {/* <h1 className="section-title">Our Services</h1> */}
       {services.length > 0 ? (
         <ServiceComponent services={services} entrepriseId={entrepriseId} />

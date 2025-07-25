@@ -10,8 +10,12 @@ const styles = [
   { name: 'Modern Slider', component: SliderStyleTwoDisplay },
 ];
 
-export default function SliderDisplay({ styleIndex, entrepriseId  }) {
+export default function SliderDisplay({ styleIndex, entrepriseId, sliderStyles = {} }) {
   const SliderComponent = styles[styleIndex]?.component || SliderStyleOne;
 
+  // Si le composant est SliderStyleTwoDisplay, passer sliderStyles
+  if (SliderComponent === SliderStyleTwoDisplay) {
+    return <SliderComponent entrepriseId={entrepriseId} sliderStyles={sliderStyles} />;
+  }
   return <SliderComponent entrepriseId={entrepriseId} />;
 }

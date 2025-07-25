@@ -11,8 +11,11 @@ export class Formulaire extends Document {
   @Prop({ required: true })
   titre: string;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Champ' }] })
-  champs: Champ[];
+  // @Prop({ type: [{ type: Types.ObjectId, ref: 'Champ' }] })
+  // champs: Champ[];
+
+  @Prop({ type: Object, default: {} })
+  champs: Record<string, any>;
 
   @Prop({ type: Types.ObjectId, ref: 'Entreprise' })
   entreprise: Entreprise;

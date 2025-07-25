@@ -70,23 +70,45 @@ class LicenceController extends Controller
 
     
 
-    public function update(Request $request, Licence $licence)
-    {
-        $data = $request->validate([
-            'status' => 'sometimes|in:pending,paid,expired,cancelled',
-            'start_date' => 'sometimes|date',
-            'end_date' => 'sometimes|date|after:start_date',
-            'price' => 'sometimes|numeric',
-            'description' => 'nullable|string',
-            'license_key' => 'sometimes|string',
-            'validated_at' => 'nullable|date',
-            'activated_at' => 'nullable|date',
-        ]);
+    // public function update(Request $request, Licence $licence)
+    // {
+    //     $data = $request->validate([
+    //         'type' => 'required|in:basic,professional,enterprise',
+    //         'status' => 'sometimes|in:pending,paid,expired,cancelled',
+    //         'start_date' => 'sometimes|date',
+    //         'end_date' => 'sometimes|date|after:start_date',
+    //         'price' => 'sometimes|numeric',
+    //         'description' => 'nullable|string',
+    //         'license_key' => 'sometimes|string',
+    //         'validated_at' => 'nullable|date',
+    //         'activated_at' => 'nullable|date',
+    //     ]);
 
-        $licence->update($data);
+    //     $licence->update($data);
 
-        return response()->json($licence);
-    }
+    //     return response()->json($licence);
+    // }
+
+    public function update(Request $request, $id)
+{
+    $licence = Licence::findOrFail($id);
+    
+    $data = $request->validate([
+        'type' => 'sometimes|in:basic,professional,enterprise',
+        'status' => 'sometimes|in:pending,paid,expired,cancelled',
+        'start_date' => 'sometimes|date',
+        'end_date' => 'sometimes|date|after:start_date',
+        'price' => 'sometimes|numeric',
+        'description' => 'nullable|string',
+        'license_key' => 'sometimes|string',
+        'validated_at' => 'nullable|date',
+        'activated_at' => 'nullable|date',
+    ]);
+
+    $licence->update($data);
+
+    return response()->json($licence);
+}
 
     public function destroy(Licence $licence)
     {

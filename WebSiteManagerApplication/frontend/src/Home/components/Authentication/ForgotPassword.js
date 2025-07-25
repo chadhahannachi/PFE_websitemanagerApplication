@@ -1,43 +1,7 @@
-
-// import React from "react"; 
-
-// const ForgotPassword = () => {
-//   return (
-//     <>
-//       <div className="login-register-area ptb-175">
-//         <div className="container">
-//           <div className="row justify-content-center">
-//             <div className="col-lg-6">
-//               <form className="login-register-form">
-//                 <h4>Forgot your Password</h4>
-
-//                 <div className="form-group">
-//                   <input type="email" className="form-control" placeholder="Email" />
-//                 </div>
-
-                 
-//                 <div className="form-group">
-//                   <button
-//                     type="submit"
-//                     className="default-btn active rounded-10 w-100 text-center d-block border-0"
-//                   >
-//                     Reset Password
-//                   </button>
-//                 </div> 
-//               </form>
-//             </div> 
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default ForgotPassword;
-
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import banner from '../../images/page-banner/banner.jpeg'
+import { Link } from "react-router-dom";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -79,55 +43,84 @@ const ForgotPassword = () => {
   };
 
   return (
-    <>
-      <div className="login-register-area ptb-175">
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-lg-6">
-              <form className="login-register-form" onSubmit={handleSubmit}>
-                <h4>Forgot your Password</h4>
-
-                <div className="form-group">
-                  <input
-                    type="email"
-                    className="form-control"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="form-group">
+    <div className="banner-area banner-bg-2 bg-color-fff7ed overflow-hidden">
+      <div className="container-fluid mw-1640" style={{ marginTop: '-100px' }}>
+        <div className="row align-items-center" style={{ marginTop: '-80px' }}>
+          {/* Colonne gauche */}
+          <div className="col-lg-6 col-md-6 d-flex flex-column justify-content-center ps-lg-5 ps-3" style={{ minHeight: '100vh', }}>
+            <div className="page-banner-content mb-4">
+              <h2>Login Register</h2>
+              <ul className="p-0 mb-0 list-unstyled d-flex align-items-center">
+                <li>
+                  <Link to='/'>Home</Link>
+                </li>
+                <li className="ms-2"> Login Register</li>
+              </ul>
+            </div>
+            <div style={{ maxWidth: 550 }} >
+            <form className="login-register-form" onSubmit={handleSubmit}>
+              <h4>Forgot your Password</h4>
+              <div className="form-group">
+                <input
+                  type="email"
+                  className="form-control"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <button
+                  type="submit"
+                  className="default-btn active rounded-10 w-100 text-center d-block border-0"
+                >
+                  Reset Password
+                </button>
+              </div>
+              {openSnackbar && (
+                <div
+                  className={`alert alert-${messageType === "success" ? "success" : "danger"} mt-3`}
+                  role="alert"
+                >
+                  {message}
                   <button
-                    type="submit"
-                    className="default-btn active rounded-10 w-100 text-center d-block border-0"
-                  >
-                    Reset Password
-                  </button>
+                    type="button"
+                    className="btn-close float-end"
+                    onClick={handleCloseSnackbar}
+                    aria-label="Close"
+                  ></button>
                 </div>
-
-                {openSnackbar && (
-                  <div
-                    className={`alert alert-${messageType === "success" ? "success" : "danger"} mt-3`}
-                    role="alert"
-                  >
-                    {message}
-                    <button
-                      type="button"
-                      className="btn-close float-end"
-                      onClick={handleCloseSnackbar}
-                      aria-label="Close"
-                    ></button>
-                  </div>
-                )}
-              </form>
+              )}
+            </form></div>
+          </div>
+          {/* Colonne droite */}
+          <div className="col-lg-6 col-md-6 d-flex flex-column ps-lg-5 ps-3" style={{ marginTop: '-40px' }}>
+          <div className="page-banner-img position-relative z-1 mt-3 ps-lg-5" style={{ marginTop: '-40px' }}>
+              <img
+                src={banner}
+                alt="Page banner"
+                style={{ width: "100%", maxWidth: 700, height: "50%",  maxHeight: 500, borderRadius: '30px' }}
+              />
+              
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
 export default ForgotPassword;
+
+
+
+
+
+
+
+
+
+
+
+

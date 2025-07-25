@@ -377,6 +377,31 @@
   }
 }
 
+@media (max-width: 900px) {
+  .aboutus-responsive {
+    min-height: unset !important;
+    padding: 10px !important;
+  }
+  .aboutus-stack {
+    position: static !important;
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    margin: 0 !important;
+    pointer-events: none;
+    text-align: center !important;
+  }
+  .aboutus-image {
+    position: static !important;
+    display: block;
+    margin: 20px auto 0 auto !important;
+    left: unset !important;
+    top: unset !important;
+    width: 80vw !important;
+    max-width: 350px !important;
+    height: auto !important;
+  }
+}
 
 
 .resize-handle {

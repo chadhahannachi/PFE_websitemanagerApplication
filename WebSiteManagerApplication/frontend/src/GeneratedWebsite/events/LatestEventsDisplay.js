@@ -5,11 +5,12 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import EventStyleThreeDisplay from './EventStyleThreeDisplay';
 import EventStyleOne from '../../website/events/EventStyleOne';
-import EventStyleTwo from '../../website/events/EventStyleTwo';
+import EventStyleTwoDisplay from './EventStyleTwoDisplay';
+import EventStyleOneDisplay from './EventStyleOneDisplay';
 
 const styles = [
-  { name: 'Intro with Cards', component: EventStyleOne },
-  { name: 'Image Cards', component: EventStyleTwo },
+  { name: 'Intro with Cards', component: EventStyleOneDisplay },
+  { name: 'Image Cards', component: EventStyleTwoDisplay },
   { name: 'Rounded Container', component: EventStyleThreeDisplay },
 ];
 
@@ -90,7 +91,7 @@ export default function LatestEventsDisplay({ styleIndex, entrepriseId }) {
       );
       // Filtrer uniquement les événements publiés et mapper les champs
       const publishedEvents = response.data
-        .filter(event => event.isPublished)
+        // .filter(event => event.isPublished)
         .map(event => ({
           title: event.titre,
           img: event.image || "https://via.placeholder.com/150", // Image par défaut si aucune image
@@ -100,6 +101,7 @@ export default function LatestEventsDisplay({ styleIndex, entrepriseId }) {
             year: 'numeric'
           }) : 'Date non spécifiée',
           desc: event.description,
+          styles: event.styles
         }));
       setEvents(publishedEvents);
     } catch (error) {
@@ -132,10 +134,10 @@ export default function LatestEventsDisplay({ styleIndex, entrepriseId }) {
 
   return (
     <section className="events">
-      <div className="events-header">
+      {/* <div className="events-header">
         {styleIndex !== 0 && <h1>OUR LATEST EVENTS</h1>}
       </div>
-      {styleIndex !== 0 && <h2>DISCOVER ALL THE NEWS AND NOVELTIES OF OUR COMPANY</h2>}
+      {styleIndex !== 0 && <h2>DISCOVER ALL THE NEWS AND NOVELTIES OF OUR COMPANY</h2>} */}
       {events.length > 0 ? (
         <EventComponent events={events} entrepriseId={entrepriseId} />
       ) : (

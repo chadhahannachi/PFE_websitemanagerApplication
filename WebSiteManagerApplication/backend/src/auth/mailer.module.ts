@@ -11,21 +11,24 @@ import { join } from 'path';
         port: 587,
         auth: {
           user: 'chadhahannachi675@gmail.com',
-          pass: 'ekwp skrg fxfh lnus',
+          // pass: 'ekwp skrg fxfh lnus',
+          pass: 'kbji wain fphi nukh',
+ 
         },
       },
       defaults: {
         from: 'chadhahanachi675@gmail.com',
       },
       
-    //   template: {
-    //     dir: join(__dirname, 'templates'),
-    //     adapter: new HandlebarsAdapter(),
-    //     options: {
-    //       strict: true,
-    //     },
-    //   },
+      template: {
+        dir: join(__dirname, 'templates'),
+        adapter: new HandlebarsAdapter(),
+        options: {
+          strict: true,
+        },
+      },
     }),
   ],
+  exports: [MailerModule],
 })
 export class MailerConfigModule {}

@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
 interface Notification {
-  message: string;
+  message: string; 
   timestamp: Date;
   read: boolean;
 }
@@ -32,7 +32,7 @@ const NotificationBell: React.FC = () => {
   useEffect(() => {
     const newSocket = io('http://localhost:5000', {
       withCredentials: true,
-      auth: { token: localStorage.getItem('access_token') }
+      auth: { token: localStorage.getItem('token') }
     });
 
     newSocket.on('connect', () => {
@@ -49,6 +49,15 @@ const NotificationBell: React.FC = () => {
 
     newSocket.on('newLicenceRequest', (message: string) => {
       console.log('📩 Notification reçue:', message);
+      setNotifications(prev => [{
+        message,
+        timestamp: new Date(),
+        read: false
+      }, ...prev].slice(0, 50));
+    });
+
+    newSocket.on('newFormResponse', (message: string) => {
+      console.log('📝 Nouvelle réponse de formulaire reçue:', message);
       setNotifications(prev => [{
         message,
         timestamp: new Date(),

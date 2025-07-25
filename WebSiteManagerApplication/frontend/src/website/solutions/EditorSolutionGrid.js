@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsUpDownLeftRight, faTimes, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
@@ -6,20 +6,23 @@ import { jwtDecode } from 'jwt-decode';
 
 const API_URL = 'http://localhost:5000/couleurs';
 
-export default function EditorSolutionGrid({ solutions = [], initialPosition = { top: 0, left: 0 }, initialStyles = { width: 1200, minHeight: 440 }, onSelect, onPositionChange, onUpdate, onStyleChange }) {
+const EditorSolutionGrid = forwardRef(({ solutions = [], initialPosition = { top: 0, left: 0 }, initialStyles = { width: 1200, minHeight: 440 }, onSelect, onPositionChange, onUpdate, onStyleChange }, ref) => {
   const [position, setPosition] = useState({
     top: initialPosition.top || 0,
     left: initialPosition.left || 0,
   });
-  const [gridStyles, setGridStyles] = useState({
+    const [gridStyles, setGridStyles] = useState({
     width: parseFloat(initialStyles.width) || 1200,
     minHeight: parseFloat(initialStyles.minHeight) || 440,
+    gap: initialStyles.gap || '15px 20px',
   });
   const [cardStyles, setCardStyles] = useState({
     card: {
       backgroundColor: initialStyles.card?.backgroundColor || '#ffffff',
       hoverBackgroundColor: initialStyles.card?.hoverBackgroundColor || '#f8f9fa',
       borderRadius: initialStyles.card?.borderRadius || '8px',
+      width: initialStyles.card?.width || 300,
+      minHeight: initialStyles.card?.minHeight || 150,
     },
     number: {
       color: initialStyles.number?.color || '#333333',
@@ -56,6 +59,15 @@ export default function EditorSolutionGrid({ solutions = [], initialPosition = {
   const [isSaving, setIsSaving] = useState(false);
   const saveTimeoutRef = useRef(null);
   const pendingStyles = useRef({});
+
+  // Exposer pendingStyles et gridStyles au composant parent
+  useImperativeHandle(ref, () => ({
+    pendingStyles,
+    getGridStyles: () => ({
+      gridStyles,
+      cardStyles
+    })
+  }));
 
   // Fetch user enterprise
   useEffect(() => {
@@ -209,6 +221,53 @@ export default function EditorSolutionGrid({ solutions = [], initialPosition = {
       },
     })));
   }, [solutions, cardStyles]);
+
+  // Mettre à jour les styles quand initialStyles change
+  useEffect(() => {
+    if (initialStyles) {
+      console.log('Updating grid styles from initialStyles:', initialStyles);
+      
+      // Mettre à jour gridStyles
+      setGridStyles(prev => ({
+        ...prev,
+        width: parseFloat(initialStyles.width) || prev.width,
+        minHeight: parseFloat(initialStyles.minHeight) || prev.minHeight,
+        gap: initialStyles.gap || prev.gap,
+      }));
+      
+      // Mettre à jour cardStyles
+      setCardStyles(prev => ({
+        ...prev,
+        card: {
+          ...prev.card,
+          backgroundColor: initialStyles.card?.backgroundColor || prev.card.backgroundColor,
+          hoverBackgroundColor: initialStyles.card?.hoverBackgroundColor || prev.card.hoverBackgroundColor,
+          borderRadius: initialStyles.card?.borderRadius || prev.card.borderRadius,
+          width: initialStyles.card?.width || prev.card.width,
+          minHeight: initialStyles.card?.minHeight || prev.card.minHeight,
+        },
+        number: {
+          ...prev.number,
+          color: initialStyles.number?.color || prev.number.color,
+          fontSize: initialStyles.number?.fontSize || prev.number.fontSize,
+        },
+        title: {
+          ...prev.title,
+          color: initialStyles.title?.color || prev.title.color,
+          fontSize: initialStyles.title?.fontSize || prev.title.fontSize,
+          fontFamily: initialStyles.title?.fontFamily || prev.title.fontFamily,
+          textAlign: initialStyles.title?.textAlign || prev.title.textAlign,
+        },
+        description: {
+          ...prev.description,
+          color: initialStyles.description?.color || prev.description.color,
+          fontSize: initialStyles.description?.fontSize || prev.description.fontSize,
+          fontFamily: initialStyles.description?.fontFamily || prev.description.fontFamily,
+          textAlign: initialStyles.description?.textAlign || prev.description.textAlign,
+        },
+      }));
+    }
+  }, [initialStyles]);
 
   useEffect(() => {
     if (isDragging || resizing || draggingElement) {
@@ -381,16 +440,14 @@ export default function EditorSolutionGrid({ solutions = [], initialPosition = {
           console.log(`Updated solution ${index} styles:`, solution.styles);
         });
 
-        // Notifier le changement de style pour chaque solution
+        // Stocker les styles modifiés dans pendingStyles sans appeler onStyleChange
         newSolutions.forEach((solution, index) => {
           console.log(`Checking solution ${index} for id:`, solution.id);
           if (solution.id) {
             console.log(`Storing styles for solution ${solution.id}:`, solution.styles);
             pendingStyles.current[solution.id] = solution.styles;
-            if (onStyleChange) {
-              console.log(`Calling onStyleChange for ${solution.id}`);
-              onStyleChange(solution.id, solution.styles);
-            }
+            // Supprimer l'appel à onStyleChange pour éviter la boucle infinie
+            // onStyleChange sera appelé seulement lors de la sauvegarde
           } else {
             console.warn(`Solution ${index} has no id:`, solution);
           }
@@ -957,6 +1014,92 @@ export default function EditorSolutionGrid({ solutions = [], initialPosition = {
                 onChange={(e) => setGridStyles((prev) => ({ ...prev, minHeight: parseInt(e.target.value) }))}
               />
             </div>
+            <div>
+              <label>Card Width: </label>
+              <input
+                type="number"
+                min="200"
+                max="500"
+                value={cardStyles.card.width || 300}
+                onChange={(e) => {
+                  const newWidth = parseInt(e.target.value);
+                  setCardStyles((prev) => ({
+                    ...prev,
+                    card: { ...prev.card, width: newWidth }
+                  }));
+                  // Mettre à jour toutes les cartes
+                  setSolutionData((prev) => 
+                    prev.map(solution => ({
+                      ...solution,
+                      styles: {
+                        ...solution.styles,
+                        card: { ...solution.styles?.card, width: newWidth }
+                      }
+                    }))
+                  );
+                }}
+              />
+            </div>
+            <div>
+              <label>Card Min Height: </label>
+              <input
+                type="number"
+                min="150"
+                max="400"
+                value={cardStyles.card.minHeight || 150}
+                onChange={(e) => {
+                  const newMinHeight = parseInt(e.target.value);
+                  setCardStyles((prev) => ({
+                    ...prev,
+                    card: { ...prev.card, minHeight: newMinHeight }
+                  }));
+                  // Mettre à jour toutes les cartes
+                  setSolutionData((prev) => 
+                    prev.map(solution => ({
+                      ...solution,
+                      styles: {
+                        ...solution.styles,
+                        card: { ...solution.styles?.card, minHeight: newMinHeight }
+                      }
+                    }))
+                  );
+                }}
+              />
+            </div>
+            <div>
+              <label>Horizontal Gap: </label>
+              <input
+                type="number"
+                min="5"
+                max="50"
+                value={parseInt(gridStyles.gap.split(' ')[1]) || 20}
+                onChange={(e) => {
+                  const newHorizontalGap = parseInt(e.target.value);
+                  const currentVerticalGap = parseInt(gridStyles.gap.split(' ')[0]) || 15;
+                  setGridStyles((prev) => ({
+                    ...prev,
+                    gap: `${currentVerticalGap}px ${newHorizontalGap}px`
+                  }));
+                }}
+              />
+            </div>
+            <div>
+              <label>Vertical Gap: </label>
+              <input
+                type="number"
+                min="5"
+                max="50"
+                value={parseInt(gridStyles.gap.split(' ')[0]) || 15}
+                onChange={(e) => {
+                  const newVerticalGap = parseInt(e.target.value);
+                  const currentHorizontalGap = parseInt(gridStyles.gap.split(' ')[1]) || 20;
+                  setGridStyles((prev) => ({
+                    ...prev,
+                    gap: `${newVerticalGap}px ${currentHorizontalGap}px`
+                  }));
+                }}
+              />
+            </div>
           </div>
         </div>
       )}
@@ -970,7 +1113,7 @@ export default function EditorSolutionGrid({ solutions = [], initialPosition = {
           minHeight: gridStyles.minHeight,
           display: 'flex',
           flexWrap: 'wrap',
-          gap: '30px',
+          gap: gridStyles.gap,
           padding: '10px 20px',
         }}
         onClick={handleElementClick}
@@ -987,6 +1130,10 @@ export default function EditorSolutionGrid({ solutions = [], initialPosition = {
               position: 'relative',
               overflow: 'hidden',
               transition: 'background-color 0.3s ease',
+              width: `${solution.styles?.card?.width || cardStyles.card.width || 300}px`,
+              height: 'fit-content',
+              minHeight: `${solution.styles?.card?.minHeight || cardStyles.card.minHeight || 150}px`,
+              flex: '0 0 auto',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = solution.styles?.card?.hoverBackgroundColor || cardStyles.card.hoverBackgroundColor;
@@ -1121,4 +1268,6 @@ export default function EditorSolutionGrid({ solutions = [], initialPosition = {
       </div>
     </div>
   );
-}       
+});
+
+export default EditorSolutionGrid;       

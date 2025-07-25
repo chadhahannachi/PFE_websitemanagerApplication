@@ -1,3 +1,4 @@
+
 // import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 // import { CreateFormulaireDto } from './dto/create-formulaire.dto';
 // import { UpdateFormulaireDto } from './dto/update-formulaire.dto';
@@ -6,13 +7,14 @@
 // import { CreateChampDto } from './dto/create-champ.dto';
 // import { UpdateChampDto } from './dto/update-champ.dto';
 // import { CreateInputChampDto } from './dto/create-inputChamp.dto';
+// import { InputChamp } from './schemas/inputChamp.schema';
 
 // @Controller('formulaires')
 // export class FormulaireController {
 //   constructor(private readonly formulaireService: FormulaireService) {}
 
 //   @Post()
-//   create(@Body() createFormulaireDto: CreateFormulaireDto) {
+//   async create(@Body() createFormulaireDto: CreateFormulaireDto): Promise<Formulaire> {
 //     return this.formulaireService.create(createFormulaireDto);
 //   }
 
@@ -44,7 +46,7 @@
 
 //   // Gestion des champs
 //   @Post('/champs')
-//   createChamp(@Body() createChampDto: CreateChampDto) {
+//   async createChamp(@Body() createChampDto: CreateChampDto) {
 //     return this.formulaireService.createChamp(createChampDto);
 //   }
 
@@ -70,7 +72,7 @@
 
 //   // Gestion des réponses (InputChamp)
 //   @Post('/repondre')
-//   createInputChamp(@Body() createInputChampDto: CreateInputChampDto) {
+//   async createInputChamp(@Body() createInputChampDto: CreateInputChampDto): Promise<InputChamp> {
 //     return this.formulaireService.createInputChamp(createInputChampDto);
 //   }
 
@@ -92,6 +94,8 @@
 // }
 
 
+
+
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { CreateFormulaireDto } from './dto/create-formulaire.dto';
 import { UpdateFormulaireDto } from './dto/update-formulaire.dto';
@@ -101,6 +105,7 @@ import { CreateChampDto } from './dto/create-champ.dto';
 import { UpdateChampDto } from './dto/update-champ.dto';
 import { CreateInputChampDto } from './dto/create-inputChamp.dto';
 import { InputChamp } from './schemas/inputChamp.schema';
+import { ReponseFormulaire } from './schemas/ReponseFormulaire.schema';
 
 @Controller('formulaires')
 export class FormulaireController {
@@ -137,51 +142,35 @@ export class FormulaireController {
   }
 
 
-  // Gestion des champs
-  @Post('/champs')
-  async createChamp(@Body() createChampDto: CreateChampDto) {
-    return this.formulaireService.createChamp(createChampDto);
+  // CRUD pour ReponseFormulaire
+  @Post('reponse')
+  async createReponse(@Body() dto: { values: Record<string, any>, formulaire: string }): Promise<ReponseFormulaire> {
+    return this.formulaireService.createReponseFormulaire(dto);
   }
 
-  @Get('/champs')
-  findAllChamps() {
-    return this.formulaireService.findAllChamps();
+  @Get('reponse')
+  async findAllReponse(): Promise<ReponseFormulaire[]> {
+    return this.formulaireService.findAllReponseFormulaire();
   }
 
-  @Get('/champs/:id')
-  findOneChamp(@Param('id') id: string) {
-    return this.formulaireService.findOneChamp(id);
+  @Get('reponse/:id')
+  async findOneReponse(@Param('id') id: string): Promise<ReponseFormulaire> {
+    return this.formulaireService.findOneReponseFormulaire(id);
   }
 
-  @Patch('/champs/:id')
-  updateChamp(@Param('id') id: string, @Body() updateChampDto: UpdateChampDto) {
-    return this.formulaireService.updateChamp(id, updateChampDto);
+  @Patch('reponse/:id')
+  async updateReponse(@Param('id') id: string, @Body() dto: { values?: Record<string, any>, formulaire?: string }): Promise<ReponseFormulaire> {
+    return this.formulaireService.updateReponseFormulaire(id, dto);
   }
 
-  @Delete('/champs/:id')
-  removeChamp(@Param('id') id: string) {
-    return this.formulaireService.removeChamp(id);
+  @Delete('reponse/:id')
+  async removeReponse(@Param('id') id: string): Promise<ReponseFormulaire> {
+    return this.formulaireService.removeReponseFormulaire(id);
   }
 
-  // Gestion des réponses (InputChamp)
-  @Post('/repondre')
-  async createInputChamp(@Body() createInputChampDto: CreateInputChampDto): Promise<InputChamp> {
-    return this.formulaireService.createInputChamp(createInputChampDto);
-  }
-
-  @Get('/reponses')
-  findAllInputChamps() {
-    return this.formulaireService.findAllInputChamps();
-  }
-
-  @Get('/reponses/:id')
-  findOneInputChamp(@Param('id') id: string) {
-    return this.formulaireService.findOneInputChamp(id);
-  }
-
-  @Delete('/reponses/:id')
-  removeInputChamp(@Param('id') id: string) {
-    return this.formulaireService.removeInputChamp(id);
+  @Get('reponse/formulaire/:formulaireId')
+  async getReponsesByFormulaire(@Param('formulaireId') formulaireId: string): Promise<ReponseFormulaire[]> {
+    return this.formulaireService.findReponsesByFormulaire(formulaireId);
   }
 
 }

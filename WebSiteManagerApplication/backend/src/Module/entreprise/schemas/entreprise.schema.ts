@@ -19,11 +19,20 @@ export class Entreprise extends Document {
   adresse: string;
 
   @Prop()
+  logo: string;
+
+  @Prop()
   idRequestLicence: string;
 
   @Prop({required: true})
   raisonSociale: string;
   
+  @Prop()
+  isDeleted: boolean;
+
+  @Prop()
+  isPublic: boolean;
+
 }
 
 export const EntrepriseSchema = SchemaFactory.createForClass(Entreprise);

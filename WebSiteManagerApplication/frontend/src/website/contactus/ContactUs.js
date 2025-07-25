@@ -57,13 +57,16 @@ const styles = [
   { name: 'Modern Layout', component: ContactUsStyleTwo },
 ];
 
-export default function ContactUs({ styleIndex }) {
-  const [backgroundColor, setBackgroundColor] = useState('#ffffff');
-  const ContactComponent = styles[styleIndex]?.component || ContactUsStyleOne;
+// export default function ContactUs({ styleIndex }) {
+  // const [backgroundColor, setBackgroundColor] = useState('#ffffff');
+  // const ContactComponent = styles[styleIndex]?.component || ContactUsStyleOne;
+  export default function ContactUs() {
+     const [backgroundColor, setBackgroundColor] = useState('#ffffff');
 
   return (
-    <section className="contact-us" style={{ backgroundColor }}>
-      <ContactComponent onBackgroundColorChange={setBackgroundColor} />
+    // <section className="contact-us" style={{ backgroundColor }}>
+    <section >
+      <ContactUsStyleOne onBackgroundColorChange={setBackgroundColor} />
     </section>
   );
 }

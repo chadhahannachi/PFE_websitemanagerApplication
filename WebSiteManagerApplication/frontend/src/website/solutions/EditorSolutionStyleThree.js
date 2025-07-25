@@ -1197,7 +1197,7 @@ export default function EditorSolutionStyleThree({ solutions = [], initialPositi
       textAlign: 'left',
       fontStyle: 'normal',
       textDecoration: 'none',
-      marginBottom: '10px',
+      // marginBottom: '10px',
       transition: 'transform 0.3s ease', // Ajout de la transition pour le glissement
     },
     description: {
@@ -1208,8 +1208,8 @@ export default function EditorSolutionStyleThree({ solutions = [], initialPositi
       fontWeight: 'normal',
       fontStyle: 'normal',
       textDecoration: 'none',
-      lineHeight: '1.5',
-      margin: 0,
+      // lineHeight: '2',
+      // margin: 0,
       transition: 'transform 0.3s ease', // Ajout de la transition pour le glissement
     },
     image: {
@@ -2122,14 +2122,14 @@ export default function EditorSolutionStyleThree({ solutions = [], initialPositi
               />
               <h3 style={{ 
                 ...solution.styles?.title,
-                margin: 0,
+                marginBottom: '10px',
                 transform: isHovered ? 'translateY(-150px)' : 'translateY(0)', // Glissement vers le haut
               }}>
                 {solution.title}
               </h3>
               <p style={{ 
                 ...solution.styles?.description,
-                margin: 0,
+                margin: 5,
                 transform: isHovered ? 'translateY(-150px)' : 'translateY(0)', // Glissement vers le haut
               }}>
                 {truncatedDescription}{' '}

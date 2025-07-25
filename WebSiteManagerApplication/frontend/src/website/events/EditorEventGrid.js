@@ -839,44 +839,11 @@ export default function EditorEventGrid({ events = [], initialPosition = { top: 
             >
               <div>
                 <h3 style={{ ...event.styles.title, marginBottom: '10px' }}>
-                  {/* {editingEventIndex === index && editingField === 'title' ? (
-                    <input
-                      ref={inputRef}
-                      type="text"
-                      value={event.title || ''}
-                      onChange={(e) => handleEventChange(e, index, 'title')}
-                      onBlur={handleBlur}
-                      onKeyDown={handleKeyDown}
-                      style={{ width: '100%', fontSize: event.styles.title.fontSize }}
-                    />
-                  ) : (
-                    <span onClick={() => handleEditEvent(index, 'title')}>
-                      {event.title}
-                    </span>
-                  )} */}
                     
                     {event.title}
 
                 </h3>
                 <p style={{ ...event.styles.description, marginBottom: '15px' }}>
-                  {/* {editingEventIndex === index && editingField === 'desc' ? (
-                    <textarea
-                      ref={inputRef}
-                      value={event.desc || ''}
-                      onChange={(e) => handleEventChange(e, index, 'desc')}
-                      onBlur={handleBlur}
-                      style={{
-                        width: '100%',
-                        fontSize: event.styles.description.fontSize,
-                        resize: 'none',
-                        height: '60px',
-                      }}
-                    />
-                  ) : (
-                    <span onClick={() => handleEditEvent(index, 'desc')}>
-                      {event.desc}
-                    </span>
-                  )} */}
                     {event.desc}
                 </p>
               </div>

@@ -1,53 +1,3 @@
-// import React from 'react';
-// import './Units.css';
-// import company from '../../images/company.jpg';
-
-// export default function UnitStyleOne({ unites }) {
-//   return (
-//     <div className="units-wrapper">
-//       <div className="text-content">
-//         <h1>Our Units</h1>
-//         <p> - A reliable partner to meet all your development and digital services needs.</p>
-//         <div>
-//           {unites.length > 0 ? (
-//             unites.map((unit, index) => (
-//               <div key={index}>
-//                 <h2>
-//                   {unit.image && (
-//                     <img
-//                       src={unit.image}
-//                       alt={unit.titre || "Image de l'unité"}
-//                       style={{
-//                         width: '40px',
-//                         height: '40px',
-//                         objectFit: 'cover',
-//                         marginRight: '8px',
-//                         verticalAlign: 'middle',
-//                       }}
-//                       onError={(e) => {
-//                         e.target.src = "https://via.placeholder.com/40";
-//                       }}
-//                     />
-//                   )}
-//                   {unit.titre}
-//                 </h2>
-//                 <p>{unit.description}</p>
-//               </div>
-//             ))
-//           ) : (
-//             <p>Aucune unité publiée pour le moment.</p>
-//           )}
-//         </div>
-//       </div>
-//       <div className="image-content">
-//            <img src={company} alt="Logo" />
-//       </div>
-//     </div>
-//   );
-// }
-
-
-
 import React, { useState, useEffect } from 'react';
 import './Units.css';
 import company from '../../images/company.jpg';
@@ -57,44 +7,72 @@ import EditorUnitContent from './EditorUnitContent';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
+import PropTypes from 'prop-types';
+import ReactDOM from 'react-dom';
 
-export default function UnitStyleOne({ unites, contentType = 'unite', styleKey = 'styleOne'  }) {
+
+const SuccessNotification = ({ show, message }) => {
+  if (!show) return null;
+  
+  return ReactDOM.createPortal(
+    <div style={{
+      position: 'fixed',
+      top: '20px',
+      right: '20px',
+      backgroundColor: '#c6c6c6',
+      color: 'white',
+      padding: '15px 25px',
+      borderRadius: '8px',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      zIndex: 10000,
+      fontSize: '16px',
+      fontWeight: '500',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '10px',
+      animation: 'slideInRight 0.3s ease-out',
+      border: '1px solid #c6c6c6',
+      pointerEvents: 'none'
+    }}>
+      <div style={{
+        width: '20px',
+        height: '20px',
+        borderRadius: '50%',
+        backgroundColor: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#c6c6c6',
+        fontSize: '14px',
+        fontWeight: 'bold'
+      }}>
+        ✓
+      </div>
+      {message}
+    </div>,
+    document.body
+  );
+};
+
+export default function UnitStyleOne({ unites, contentType = 'unite', styleKey = 'styleOne' }) {
   const [selectedElement, setSelectedElement] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const [positions, setPositions] = useState( {
+  const [positions, setPositions] = useState({
     sectionName: { top: 0, left: 0 },
     subtitle: { top: 60, left: 0 },
     img: { 
       top: 160, 
       left: '60%',
-      marginLeft: '20px',
-      width: '45%'
+      // marginLeft: '20px',
+      // width: '45%'
     },
     unitContent: { 
       top: 120, 
       left: 0,
-      width: '50%'
+      // width: '50%'
     }
   });
-
-  // const initialPositions = {
-  //   sectionName: { top: 0, left: 0 },
-  //   subtitle: { top: 60, left: 0 },
-  //   img: { 
-  //     top: 160, 
-  //     left: '60%',
-  //     marginLeft: '20px',
-  //     width: '45%'
-  //   },
-  //   unitContent: { 
-  //     top: 120, 
-  //     left: 0,
-  //     width: '50%'
-  //   }
-  // };
-
 
   const [styles, setStyles] = useState({
     sectionName: { 
@@ -113,62 +91,25 @@ export default function UnitStyleOne({ unites, contentType = 'unite', styleKey =
       width: '400px', 
       height: 'auto', 
       borderRadius: '0px',
-      position: 'absolute',
-      left: '50%'
+      // position: 'absolute',
+      // left: '50%'
     },
     unitContent: {
-      title: {
-        color: '#358dcc',
-        fontSize: '20px',
-        fontWeight: '600',
-      },
-      description: {
-        color: '#666',
-        fontSize: '18px',
-      }
+      color: '#333', // valeur par défaut
+      fontSize: '16px',
+      fontFamily: 'inherit',
+      fontWeight: '400',
     }
   });
-
-  // const initialStyles = {
-  //   sectionName: { 
-  //     color: '#f59e0b', 
-  //     fontSize: '20px', 
-  //     fontFamily: 'inherit',
-  //     fontWeight: '600',
-  //   },
-  //   subtitle: { 
-  //     color: '#000', 
-  //     fontSize: '38px', 
-  //     fontFamily: 'inherit',
-  //     fontWeight: '600',
-  //   },
-  //   img: { 
-  //     width: '400px', 
-  //     height: 'auto', 
-  //     borderRadius: '0px',
-  //     position: 'absolute',
-  //     left: '50%'
-  //   },
-  //   unitContent: {
-  //     title: {
-  //       color: '#358dcc',
-  //       fontSize: '20px',
-  //       fontWeight: '600',
-  //     },
-  //     description: {
-  //       color: '#666',
-  //       fontSize: '18px',
-  //     }
-  //   }
-  // };
-
 
   const [texts, setTexts] = useState({
     sectionName: 'Our Unite',
     subtitle: 'A reliable partner to meet all your development and digital services needs.',
   });
+
   const [pendingUnitStyles, setPendingUnitStyles] = useState({});
   const [userEntreprise, setUserEntreprise] = useState(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   // Validation functions
   const isValidPosition = (pos) => pos && typeof pos === 'object' && typeof pos.top === 'number' && typeof pos.left === 'number';
@@ -230,14 +171,13 @@ export default function UnitStyleOne({ unites, contentType = 'unite', styleKey =
     }
 
     try {
-      console.log(`Fetching preferences for entrepriseId: ${userEntreprise}`);
       const response = await axios.get(
         `http://localhost:5000/preferences/entreprise/${userEntreprise}/preferences`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log('Fetched preferences:', response.data);
+      
       const fetchedPreferences = response.data.preferences?.[contentType]?.[styleKey] || {};
 
       const newPositions = {
@@ -250,9 +190,10 @@ export default function UnitStyleOne({ unites, contentType = 'unite', styleKey =
         unitContent: isValidPosition(fetchedPreferences.positions?.unitContent)
           ? fetchedPreferences.positions.unitContent
           : positions.unitContent,
-        img: isValidPosition(fetchedPreferences.positions?.img)
+          img: isValidPosition(fetchedPreferences.positions?.img)
           ? fetchedPreferences.positions.img
           : positions.img,
+          
       };
 
       const newStyles = {
@@ -279,12 +220,11 @@ export default function UnitStyleOne({ unites, contentType = 'unite', styleKey =
           : texts.subtitle,
       };
 
-      console.log('Applying positions:', newPositions);
-      console.log('Applying styles:', newStyles);
-      console.log('Applying texts:', newTexts);
+
       setPositions(newPositions);
       setStyles(newStyles);
       setTexts(newTexts);
+
     } catch (error) {
       console.error('Error fetching preferences:', error);
       toast.error('Erreur lors du chargement des préférences');
@@ -305,12 +245,14 @@ export default function UnitStyleOne({ unites, contentType = 'unite', styleKey =
     }
   }, [userEntreprise]);
 
+ 
+
   const handlePositionChange = (element, newPosition) => {
-    console.log(`Position change triggered for ${element}:`, newPosition);
+    // console.log(`Position change triggered for ${element}:`, newPosition);
     if (isValidPosition(newPosition)) {
       setPositions((prev) => {
         const newPositions = { ...prev, [element]: newPosition };
-        console.log(`Updated positions state:`, newPositions);
+        // console.log(`Updated positions state:`, newPositions);
         return newPositions;
       });
     } else {
@@ -318,25 +260,32 @@ export default function UnitStyleOne({ unites, contentType = 'unite', styleKey =
     }
   };
 
+
   const handleStyleChange = (element, newStyles) => {
-    console.log(`Style change triggered for ${element}:`, newStyles);
+    // console.log(`Style change triggered for ${element}:`, newStyles);
     if (isValidStyle(newStyles)) {
       setStyles((prev) => {
-        const newStylesState = { ...prev, [element]: newStyles };
-        console.log(`Updated styles state:`, newStylesState);
-        return newStylesState;
+        if (element === 'img') {
+          return {
+            ...prev,
+            img: { ...prev.img, ...newStyles, src: newStyles.src || prev.img.src }
+          };
+        }
+        return { ...prev, [element]: newStyles };
       });
     } else {
       console.warn(`Invalid styles for ${element}:`, newStyles);
     }
   };
 
+ 
+
   const handleTextChange = (element, newText) => {
-    console.log(`Text change triggered for ${element}:`, newText);
+    // console.log(`Text change triggered for ${element}:`, newText);
     if (isValidText(newText)) {
       setTexts((prev) => {
         const newTexts = { ...prev, [element]: newText };
-        console.log(`Updated texts state:`, newTexts);
+        // console.log(`Updated texts state:`, newTexts);
         return newTexts;
       });
     } else {
@@ -344,29 +293,32 @@ export default function UnitStyleOne({ unites, contentType = 'unite', styleKey =
     }
   };
 
-  const handleUnitStyleChange = (unitId, newStyles) => {
-    console.log(`Unit style change triggered for unitId ${unitId}:`, newStyles);
-    if (!unitId || unitId === 'undefined') {
-      console.warn(`Invalid unitId: ${unitId}`);
-      return;
-    }
-    if (isValidStyle(newStyles)) {
-      setPendingUnitStyles((prev) => ({
+  
+const handleUnitStyleChange = (unitId, newStyles) => {
+  if (!unitId || unitId === 'undefined') {
+    console.warn(`Invalid unitId: ${unitId}`);
+    return;
+  }
+
+  if (isValidStyle(newStyles)) {
+    console.log(`Before setPendingUnitStyles:`, pendingUnitStyles);
+    setPendingUnitStyles((prev) => {
+      const newState = {
         ...prev,
         [unitId]: newStyles,
-      }));
-    } else {
-      console.warn(`Invalid unit styles for unitId ${unitId}:`, newStyles);
-    }
-  };
+      };
+      console.log(`New pendingUnitStyles state:`, newState);
+      return newState;
+    });
+    console.log(`Styles ajoutés à pendingUnitStyles pour ${unitId}:`, newStyles);
+  } else {
+    console.warn(`Invalid unit styles for unitId ${unitId}:`, newStyles);
+  }
+};
+
+
 
   const saveAllChanges = async () => {
-    console.log('saveAllChanges called');
-    console.log('userEntreprise:', userEntreprise);
-    console.log('positions:', positions);
-    console.log('styles:', styles);
-    console.log('texts:', texts);
-    console.log('pendingUnitStyles:', pendingUnitStyles);
 
     if (!userEntreprise) {
       toast.error("ID de l'entreprise manquant");
@@ -378,9 +330,11 @@ export default function UnitStyleOne({ unites, contentType = 'unite', styleKey =
       !isValidPosition(positions.sectionName) ||
       !isValidPosition(positions.subtitle) ||
       !isValidPosition(positions.unitContent) ||
+      !isValidPosition(positions.img) ||
       !isValidStyle(styles.sectionName) ||
       !isValidStyle(styles.subtitle) ||
       !isValidStyle(styles.unitContent) ||
+      !isValidStyle(styles.img) ||
       !isValidText(texts.sectionName) ||
       !isValidText(texts.subtitle)
     ) {
@@ -390,7 +344,7 @@ export default function UnitStyleOne({ unites, contentType = 'unite', styleKey =
     }
 
     try {
-      console.log('Sending POST to http://localhost:5000/preferences/entreprise');
+      // console.log('Sending POST to http://localhost:5000/preferences/entreprise');
       const preferencesResponse = await axios.post(
         'http://localhost:5000/preferences/entreprise',
         {
@@ -409,13 +363,13 @@ export default function UnitStyleOne({ unites, contentType = 'unite', styleKey =
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      console.log('Preferences saved:', preferencesResponse.data);
+      // console.log('Preferences saved:', preferencesResponse.data);
 
       if (Object.keys(pendingUnitStyles).length > 0) {
-        console.log('Saving Unit styles');
+        // console.log('Saving Unit styles');
         for (const [unitId, unitStyles] of Object.entries(pendingUnitStyles)) {
           if (unitId && unitId !== 'undefined' && isValidStyle(unitStyles)) {
-            console.log(`Sending PATCH to http://localhost:5000/contenus/Unite/${unitId}/styles`);
+            // console.log(`Sending PATCH to http://localhost:5000/contenus/Unite/${unitId}/styles`);
             const unitResponse = await axios.patch(
               `http://localhost:5000/contenus/Unite/${unitId}/styles`,
               unitStyles,
@@ -423,7 +377,7 @@ export default function UnitStyleOne({ unites, contentType = 'unite', styleKey =
                 headers: { Authorization: `Bearer ${token}` },
               }
             );
-            console.log(`Unit styles saved for ${unitId}:`, unitResponse.data);
+            // console.log(`Unit styles saved for ${unitId}:`, unitResponse.data);
           } else {
             console.warn(`Skipping invalid unitId or styles: ${unitId}`, unitStyles);
           }
@@ -433,7 +387,10 @@ export default function UnitStyleOne({ unites, contentType = 'unite', styleKey =
       }
 
       setPendingUnitStyles({});
+      setShowSuccessMessage(true);
+      setTimeout(() => setShowSuccessMessage(false), 3000);
       toast.success('Modifications sauvegardées avec succès');
+
     } catch (error) {
       console.error('Error saving changes:', error);
       if (error.response) {
@@ -445,6 +402,7 @@ export default function UnitStyleOne({ unites, contentType = 'unite', styleKey =
     }
   };
 
+
   if (loading) {
     return <div>Chargement...</div>;
   }
@@ -453,9 +411,75 @@ export default function UnitStyleOne({ unites, contentType = 'unite', styleKey =
     return <div>Erreur: {error}</div>;
   }
 
-
   return (
-    <div className="units-wrapper">
+    <>
+    <style>
+        {`
+          @keyframes slideInRight {
+            from {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+        `}
+      </style>
+      
+      {/* Notification de succès rendue dans le body */}
+      <SuccessNotification 
+        show={showSuccessMessage} 
+        message="Modifications enregistrées avec succès" 
+      />
+      
+      <div style={{ backgroundColor: 'white', minHeight: '100vh', padding: '20px' }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginBottom: '20px',
+        padding: '15px 20px',
+        backgroundColor: '#f8f9fa',
+        borderRadius: '8px',
+        border: '1px solid #e9ecef'
+      }}>
+        <span style={{ 
+          fontSize: '18px', 
+          fontWeight: '600', 
+          color: '#495057' 
+        }}>Units section</span> 
+
+        
+        <button 
+          onClick={saveAllChanges}
+          style={{
+            
+            padding: '8px',
+            backgroundColor: '#777777',
+            color: 'white',
+            border: 'none',
+            borderRadius: '10px',
+            cursor: 'pointer',
+            marginTop: '16px',
+            fontSize: '16px',
+            fontWeight: '500',
+            transition: 'background-color 0.2s ease'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.backgroundColor = '#c6c6c6';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.backgroundColor = '#777777';
+          }}
+        >
+          Enregistrer les modifications
+        </button>
+      </div>
+
+    {/* <div className="units-wrapper"> */}
+    <div className="units">
       <EditorText
         elementType="h1"
         initialPosition={positions.sectionName}
@@ -477,33 +501,49 @@ export default function UnitStyleOne({ unites, contentType = 'unite', styleKey =
         onStyleChange={(newStyles) => handleStyleChange('subtitle', newStyles)}
         onTextChange={(newText) => handleTextChange('subtitle', newText)}
       >
-        {texts.subtitle}      
+        {texts.subtitle}
       </EditorText>
       
-      <EditorUnitContent
+      {/* <EditorUnitContent
         unites={unites}
         initialPosition={positions.unitContent}
         initialStyles={styles.unitContent}
         onSelect={setSelectedElement}
-        onPositionChange={(newPos) => handlePositionChange('unitContent', newPos)} // ✅ Ajouté
-        onStyleChange={(newStyles) => {
-          setStyles(prev => ({ ...prev, unitContent: newStyles }));
-        }}
+        onPositionChange={(newPos) => handlePositionChange('unitContent', newPos)}
+        onStyleChange={handleUnitStyleChange}
+      /> */}
 
-      />
+<EditorUnitContent
+  unites={unites}
+  initialPosition={positions.unitContent}
+  initialStyles={styles.unitContent}
+  onSelect={setSelectedElement}
+  onPositionChange={(newPosition) => handlePositionChange('unitContent', newPosition)}
+  onStyleChange={handleUnitStyleChange} // Bien connecté maintenant
+/>
 
       <div className="image-content">
         <EditorImage
           initialPosition={positions.img}
           initialStyles={styles.img}
-          src={company}
+          src={styles.img.src || company}
           alt="FAQ illustration"
           onSelect={setSelectedElement}
+          onPositionChange={(newPosition) => handlePositionChange('img', newPosition)}
+          onStyleChange={(newStyles) => handleStyleChange('img', newStyles)}
+          onImageChange={(url) => handleStyleChange('img', { ...styles.img, src: url })}
         />
       </div>
 
-            <button onClick={saveAllChanges}>Enregistrer les modifications</button>
-
+      {/* <button onClick={saveAllChanges}>Enregistrer les modifications</button> */}
     </div>
+    </div>
+    </>
   );
 }
+
+UnitStyleOne.propTypes = {
+  unites: PropTypes.array.isRequired,
+  contentType: PropTypes.string,
+  styleKey: PropTypes.string
+};

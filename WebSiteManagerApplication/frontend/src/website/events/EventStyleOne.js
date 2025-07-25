@@ -6,6 +6,52 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
  
+import ReactDOM from 'react-dom';
+
+
+const SuccessNotification = ({ show, message }) => {
+  if (!show) return null;
+  
+  return ReactDOM.createPortal(
+    <div style={{
+      position: 'fixed',
+      top: '20px',
+      right: '20px',
+      backgroundColor: '#c6c6c6',
+      color: 'white',
+      padding: '15px 25px',
+      borderRadius: '8px',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      zIndex: 10000,
+      fontSize: '16px',
+      fontWeight: '500',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '10px',
+      animation: 'slideInRight 0.3s ease-out',
+      border: '1px solid #c6c6c6',
+      pointerEvents: 'none'
+    }}>
+      <div style={{
+        width: '20px',
+        height: '20px',
+        borderRadius: '50%',
+        backgroundColor: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#c6c6c6',
+        fontSize: '14px',
+        fontWeight: 'bold'
+      }}>
+        ✓
+      </div>
+      {message}
+    </div>,
+    document.body
+  );
+};
+
 export default function EventStyleOne({ events, contentType = 'events', styleKey = 'styleOne' }) {
   const [selectedElement, setSelectedElement] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -17,24 +63,32 @@ export default function EventStyleOne({ events, contentType = 'events', styleKey
   });
   const [styles, setStyles] = useState({
     sectionName: {
-      color: '#222',
-      fontSize: '28px',
-      fontFamily: 'Arial',
-      fontWeight: '700',
-      width: '100%',
-      maxWidth: '600px',
-      textAlign: 'center',
-      marginBottom: '8px',
+      // color: '#222',
+      // fontSize: '28px',
+      // fontFamily: 'Arial',
+      // fontWeight: '700',
+      // width: '100%',
+      // maxWidth: '600px',
+      // textAlign: 'center',
+      // marginBottom: '8px',
+      color: '#000',
+      fontSize: '38px',
+      fontFamily: 'inherit',
+      fontWeight: '600',
     },
     sectionDesc: {
-      color: 'black',
-      fontSize: '28px',
-      fontFamily: 'Arial',
-      fontWeight: '700',
-      width: '50%',
-      maxWidth: '600px',
-      textAlign: 'center',
-      marginBottom: '8px',
+      // color: 'black',
+      // fontSize: '28px',
+      // fontFamily: 'Arial',
+      // fontWeight: '700',
+      // width: '50%',
+      // maxWidth: '600px',
+      // textAlign: 'center',
+      // marginBottom: '8px',
+      color: '#000',
+      fontSize: '38px',
+      fontFamily: 'inherit',
+      fontWeight: '600',
     },
     eventGrid: {
       backgroundColor: '#fff',
@@ -56,6 +110,7 @@ export default function EventStyleOne({ events, contentType = 'events', styleKey
   const [pendingEventStyles, setPendingEventStyles] = useState({});
   const [pendingEventPositions, setPendingEventPositions] = useState({});
   const [userEntreprise, setUserEntreprise] = useState(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   // Validation functions
   const isValidPosition = (pos) => pos && typeof pos === 'object' && typeof pos.top === 'number' && typeof pos.left === 'number';
@@ -165,11 +220,13 @@ export default function EventStyleOne({ events, contentType = 'events', styleKey
       setStyles((prev) => ({ ...prev, [element]: newStyles }));
     }
   };
+
   const handleTextChange = (element, newText) => {
     if (isValidText(newText)) {
       setTexts((prev) => ({ ...prev, [element]: newText }));
     }
   };
+
   const handleEventStyleChange = (eventId, newStyles) => {
     if (eventId && isValidStyle(newStyles)) {
       setPendingEventStyles((prev) => {
@@ -250,6 +307,8 @@ export default function EventStyleOne({ events, contentType = 'events', styleKey
       }
       setPendingEventStyles({});
       setPendingEventPositions({});
+      setShowSuccessMessage(true);
+      setTimeout(() => setShowSuccessMessage(false), 3000);
       toast.success('Modifications sauvegardées avec succès');
     } catch (error) {
       toast.error('Erreur lors de la sauvegarde');
@@ -260,10 +319,76 @@ export default function EventStyleOne({ events, contentType = 'events', styleKey
   if (error) return <div>Erreur: {error}</div>;
 
   return (
+    <>
+    <style>
+        {`
+          @keyframes slideInRight {
+            from {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+        `}
+      </style>
+      
+      {/* Notification de succès rendue dans le body */}
+      <SuccessNotification 
+        show={showSuccessMessage} 
+        message="Modifications enregistrées avec succès" 
+      />
+      
+      <div style={{ backgroundColor: 'white', minHeight: '100vh', padding: '20px' }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginBottom: '20px',
+        padding: '15px 20px',
+        backgroundColor: '#f8f9fa',
+        borderRadius: '8px',
+        border: '1px solid #e9ecef'
+      }}>
+        <span style={{ 
+          fontSize: '18px', 
+          fontWeight: '600', 
+          color: '#495057' 
+        }}>Services section</span> 
+
+        
+        <button 
+          onClick={saveAllChanges}
+          style={{
+            
+            padding: '8px',
+            backgroundColor: '#777777',
+            color: 'white',
+            border: 'none',
+            borderRadius: '10px',
+            cursor: 'pointer',
+            marginTop: '16px',
+            fontSize: '16px',
+            fontWeight: '500',
+            transition: 'background-color 0.2s ease'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.backgroundColor = '#c6c6c6';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.backgroundColor = '#777777';
+          }}
+        >
+          Enregistrer les modifications
+        </button>
+      </div>
+
     <section className="events">
       <div
         className="events-style-one-container"
-        style={{ position: 'relative', height: 'auto', minHeight: 0 }}
+        style={{ position: 'absolute', height: 'auto', minHeight: 0 }}
       >
         <div style={{width: '35%'}}>
         <EditorText
@@ -277,7 +402,7 @@ export default function EventStyleOne({ events, contentType = 'events', styleKey
         >
           {texts.sectionName}
         </EditorText>
-        <EditorText
+        {/* <EditorText
           elementType="p"
           initialPosition={positions.sectionDesc || { top: positions.sectionName.top + 60, left: positions.sectionName.left }}
           initialStyles={styles.sectionDesc || { color: '#666', fontSize: '18px', textAlign: 'center', marginBottom: '24px', marginTop: '8px' }}
@@ -287,7 +412,8 @@ export default function EventStyleOne({ events, contentType = 'events', styleKey
           onTextChange={(newText) => handleTextChange('sectionDesc', newText)}
         >
           {texts.sectionDesc}
-        </EditorText></div>
+        </EditorText> */}
+        </div>
         <EditorEventStyleOne
           events={events}
           initialPosition={positions.eventGrid}
@@ -302,5 +428,7 @@ export default function EventStyleOne({ events, contentType = 'events', styleKey
         <button onClick={saveAllChanges} style={{ marginTop: 16 }}>Enregistrer les modifications</button>
       </div>
     </section>
+    </div>
+      </>
   );
 }

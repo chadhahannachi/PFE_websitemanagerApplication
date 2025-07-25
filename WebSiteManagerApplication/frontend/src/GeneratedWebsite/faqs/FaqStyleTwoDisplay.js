@@ -109,7 +109,7 @@ export default function FaqStyleTwoDisplay({ contentType = 'faq', styleKey = 'st
       );
       const faqData = Array.isArray(response.data) ? response.data : [];
       const publishedFaqs = faqData
-        .filter(faq => faq.isPublished)
+        // .filter(faq => faq.isPublished)
         .map(faq => ({
           _id: faq._id,
           question: faq.question,
@@ -237,13 +237,13 @@ export default function FaqStyleTwoDisplay({ contentType = 'faq', styleKey = 'st
 
   return (
     <div
-      className="faq-style-two-container"
+      className="faq-style-two-container faqtwo-responsive"
       style={{
         position: 'relative',
-        
       }}
     >
       <h1
+        className="faqtwo-title"
         style={{
           ...styles.sectionName,
           position: 'absolute',
@@ -256,20 +256,21 @@ export default function FaqStyleTwoDisplay({ contentType = 'faq', styleKey = 'st
         {texts.sectionName}
       </h1>
       <p
+        className="faqtwo-subtitle"
         style={{
           ...styles.subtitle,
           position: 'absolute',
-          top: `${positions.subtitle.top}px`, // Revenir à la valeur brute
+          top: `${positions.subtitle.top}px`,
           left: `${positions.subtitle.left}px`,
           margin: 0,
           lineHeight: '1.5',
-          marginTop: '20px', // Ajuster la distance manuellement
+          marginTop: '20px',
         }}
       >
         {texts.subtitle}
       </p>
       <div
-        className="faq-grid style-two"
+        className="faqtwo-grid"
         style={{
           position: 'absolute',
           top: `${positions.faqGrid.top}px`,

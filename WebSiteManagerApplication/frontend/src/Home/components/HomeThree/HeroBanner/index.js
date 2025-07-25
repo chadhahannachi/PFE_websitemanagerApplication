@@ -11,7 +11,7 @@ import shape2 from "../../../images/shape/shape-18.png";
 const HeroBanner = () => {
   return (
     <>
-      <div className="banner-area banner-bg-3 bg-color-f7f2ff overflow-hidden position-relative z-1">
+      <div className="banner-area banner-bg-2 bg-color-fff7ed overflow-hidden" style={{ marginTop: '-60px' }}>
         <div className="container-fluid mw-1640">
           <div className="row align-items-center">
             <div className="col-lg-5 order-2 order-lg-1">
@@ -80,7 +80,7 @@ const HeroBanner = () => {
                 </div>
 
                 {/* BookingSearchForm */}
-                <BookingSearchForm />
+                {/* <BookingSearchForm /> */}
               </div>
             </div>
           </div>

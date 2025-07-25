@@ -6,7 +6,7 @@ export interface Notification {
   timestamp: Date;
   read: boolean;
 }
-
+ 
 class NotificationService {
   private static instance: NotificationService;
   private socket: Socket;

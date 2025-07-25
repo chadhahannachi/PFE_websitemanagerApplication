@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { AxiosResponse, AxiosError } from 'axios';
 import { CreateLicenseDto } from './dto/create-license.dto';
 import { License, LicenseStatus } from './interfaces/license.interface';
+import { UpdateLicenseDto } from './dto/update-license.dto';
 
 @Injectable()
 export class LicenseService { 
@@ -106,7 +107,7 @@ export class LicenseService {
     }
   }
 
-  async updateLicense(id: string, licenseData: Partial<CreateLicenseDto>): Promise<License> {
+  async updateLicense(id: string, licenseData: Partial<UpdateLicenseDto>): Promise<License> {
     try {
       const response = await firstValueFrom(
         this.httpService.put<License>(`${this.baseUrl}/licences/${id}`, licenseData, {

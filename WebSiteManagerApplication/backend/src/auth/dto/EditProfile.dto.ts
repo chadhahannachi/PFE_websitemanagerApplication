@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsString, MinLength, validate } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, MinLength, validate } from 'class-validator';
 import { Role } from './signup.dto';
 
 
@@ -21,6 +21,9 @@ export class EditProfileDto {
     return errors.map(error => Object.values(error.constraints)).flat();
   }
 
-  @IsString()
-  readonly image?: string; 
+  // @IsString()
+  // readonly image?: string; 
+  @IsOptional()
+  @IsString({ message: 'L\'URL de l\'image doit être une chaîne de caractères' })
+  image?: string;
 }

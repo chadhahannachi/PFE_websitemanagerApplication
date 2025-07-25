@@ -9,7 +9,7 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 import NotificationBell from "../../components/NotificationBell/NotificationBell.tsx";
-
+ 
 const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

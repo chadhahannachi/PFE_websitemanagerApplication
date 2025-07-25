@@ -78,8 +78,10 @@ const styles = [
   { name: 'Modern Slider', component: SliderStyleTwo },
 ];
 
-export default function Slider({ styleIndex }) {
+export default function Slider({ styleIndex, sliderStyles, onOpenSliderStyleForm }) {
   const SliderComponent = styles[styleIndex]?.component || SliderStyleOne;
+  // console.log('[Slider] styleIndex reçu:', styleIndex, 'Composant rendu:', SliderComponent.name);
+  // const SliderComponent = SliderStyleTwo;
 
-  return <SliderComponent />;
+  return <SliderComponent sliderStyles={sliderStyles} onOpenSliderStyleForm={onOpenSliderStyleForm} />;
 }

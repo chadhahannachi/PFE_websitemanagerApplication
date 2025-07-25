@@ -31,8 +31,54 @@ import React, { useState } from 'react';
 import './FaqSection.css';
 import EditorFaqList from './EditorFaqList';
 
+import ReactDOM from 'react-dom';
+
+const SuccessNotification = ({ show, message }) => {
+  if (!show) return null;
+  
+  return ReactDOM.createPortal(
+    <div style={{
+      position: 'fixed',
+      top: '20px',
+      right: '20px',
+      backgroundColor: '#c6c6c6',
+      color: 'white',
+      padding: '15px 25px',
+      borderRadius: '8px',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      zIndex: 10000,
+      fontSize: '16px',
+      fontWeight: '500',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '10px',
+      animation: 'slideInRight 0.3s ease-out',
+      border: '1px solid #c6c6c6',
+      pointerEvents: 'none'
+    }}>
+      <div style={{
+        width: '20px',
+        height: '20px',
+        borderRadius: '50%',
+        backgroundColor: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#c6c6c6',
+        fontSize: '14px',
+        fontWeight: 'bold'
+      }}>
+        ✓
+      </div>
+      {message}
+    </div>,
+    document.body
+  );
+};
+
 export default function FaqStyleOne({ faqs }) {
   const [selectedElement, setSelectedElement] = useState(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   const initialPosition = {
     faqList: { top: 0, left: 0 },

@@ -9,7 +9,7 @@ import { jwtDecode } from 'jwt-decode';
 
 const styles = [
   { name: 'Numbered Cards', component: SolutionStyleOne },
-  { name: 'Image Cards', component: SolutionStyleTwo },
+  // { name: 'Image Cards', component: SolutionStyleTwo },
   { name: 'Hover Effect', component: SolutionStyleThree },
   { name: 'Image Hover Side by Side', component: SolutionStyleFour },
 ];
@@ -86,7 +86,7 @@ export default function OurSolutions({ styleIndex }) {
         config
       );
       const publishedSolutions = response.data
-        .filter((solution) => solution.isPublished)
+        // .filter((solution) => solution.isPublished)
         .map((solution, index) => {
           // Styles par défaut complets
           const defaultStyles = {
@@ -157,13 +157,8 @@ export default function OurSolutions({ styleIndex }) {
   }
 
   return (
-    <section className="solutions-section">
-      {/* <div>
-        <h1>OUR SOLUTIONS</h1>
-      </div> */}
-      {/* <h2 >
-         Customizable Solutions that are Easy to Adapt.
-      </h2> */}
+    <section className="solutions-section"> 
+      
       {solutions.length > 0 ? (
         <SolutionComponent solutions={solutions} />
       ) : (

@@ -9,12 +9,12 @@ export default function ForgotPasswordPage() {
     <>
       <NavbarStyleTwo />
       
-      <PageBannerTitle 
+      {/* <PageBannerTitle 
         title="Forgot Password" 
         homeText="Home" 
         homeUrl="/" 
         image={banner}
-      />
+      /> */}
 
       <ForgotPassword />
      

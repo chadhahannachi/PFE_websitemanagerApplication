@@ -303,7 +303,7 @@ const renderControlButtons = () => {
   return (
     <div 
     onClick={() => setIsSelected(false)}
-    style={{ position: 'relative', width: 'fit-content', margin: '0 auto' }}>
+    style={{ position: 'absolute', width: 'fit-content', margin: '0 auto' }}>
       {renderControlButtons()}
       {isEditingStyles && (
         <div 

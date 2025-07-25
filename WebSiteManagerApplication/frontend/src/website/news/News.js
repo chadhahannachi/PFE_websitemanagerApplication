@@ -175,7 +175,7 @@ export default function News({ styleIndex }) {
       );
       // Filtrer uniquement les actualités publiées et mapper les champs
       const publishedNews = response.data
-        .filter(actualite => actualite.isPublished)
+        // .filter(actualite => actualite.isPublished)
         .map(actualite => ({
           name: actualite.titre,
           desc: actualite.description,

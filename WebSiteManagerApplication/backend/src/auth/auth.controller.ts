@@ -13,7 +13,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path, { extname } from 'path';
 import { EditProfileDto } from './dto/EditProfile.dto';
-
+import { NotFoundException } from '@nestjs/common';
 
 interface FileParams {
   fileName: string;
@@ -27,10 +27,27 @@ export class AuthController {
     private jwtService: JwtService, // Injecter JwtService
   ) {}
  
+  // @Post('/signup')
+  // signUp(@Body() signUpDto: SignUpDto): Promise<{ token: string }> {
+  //   return this.authService.signUp(signUpDto);
+  // }
+
   @Post('/signup')
-  signUp(@Body() signUpDto: SignUpDto): Promise<{ token: string }> {
-    return this.authService.signUp(signUpDto);
+async signUp(@Body() signUpDto: SignUpDto): Promise<{ token: string }> {
+  try {
+    return await this.authService.signUp(signUpDto);
+  } catch (error) {
+    if (error instanceof BadRequestException) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+    if (error instanceof NotFoundException) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
+    // Log l'erreur pour le debugging
+    console.error('Erreur lors de l\'inscription:', error);
+    throw new HttpException('Une erreur interne est survenue', HttpStatus.INTERNAL_SERVER_ERROR);
   }
+}
 
   @Post('/login')
   async login(@Body() loginDto: LoginDto, @Session() session: Record<string, any>): Promise<{ id: string, token: string }> {

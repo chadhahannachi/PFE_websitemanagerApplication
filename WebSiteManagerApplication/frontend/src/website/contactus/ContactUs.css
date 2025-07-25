@@ -481,3 +481,93 @@
     justify-content: flex-start;
   }
 }
+
+@media (max-width: 900px) {
+  .contact-container {
+    min-height: unset !important;
+  }
+  .contact-form {
+    position: static !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-shadow: none !important;
+    border-radius: 12px !important;
+    padding: 12px !important;
+    margin-top: 24px !important;
+    z-index: 1 !important;
+  }
+  .contact-info {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .contact-section-title,
+  .contact-section-description {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 12px !important;
+    text-align: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    overflow: visible !important;
+    z-index: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .contact-section-title {
+    font-size: 1.3rem !important;
+    margin-bottom: 8px !important;
+  }
+  .contact-section-description {
+    font-size: 1rem !important;
+    margin-bottom: 10px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .contact-container {
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+  
+  .contact-info {
+    order: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  .contact-section-title {
+    order: 1 !important;
+  }
+  
+  .contact-section-description {
+    order: 2 !important;
+  }
+  
+  .contact-form {
+    order: 3 !important;
+  }
+  
+  .contact-detail {
+    order: 4 !important;
+  }
+  
+  .contact-detail span {
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    display: inline-block !important;
+  }
+}

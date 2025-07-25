@@ -6,12 +6,59 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
 
+import ReactDOM from 'react-dom'; 
+
+
+const SuccessNotification = ({ show, message }) => {
+  if (!show) return null;
+  
+  return ReactDOM.createPortal(
+    <div style={{
+      position: 'fixed',
+      top: '20px',
+      right: '20px',
+      backgroundColor: '#c6c6c6',
+      color: 'white',
+      padding: '15px 25px',
+      borderRadius: '8px',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      zIndex: 10000,
+      fontSize: '16px',
+      fontWeight: '500',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '10px',
+      animation: 'slideInRight 0.3s ease-out',
+      border: '1px solid #c6c6c6',
+      pointerEvents: 'none'
+    }}>
+      <div style={{
+        width: '20px',
+        height: '20px',
+        borderRadius: '50%',
+        backgroundColor: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#c6c6c6',
+        fontSize: '14px',
+        fontWeight: 'bold'
+      }}>
+        ✓
+      </div>
+      {message}
+    </div>,
+    document.body
+  );
+};
+
 export default function ServiceStyleOne({ services, contentType = 'services', styleKey = 'styleOne' }) {
   const [selectedElement, setSelectedElement] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [positions, setPositions] = useState({
     sectionName: { top: 0, left: 0 },
+    sectionDesc: { top: 50, left: 0 },
     serviceGrid: { top: 50, left: 0 },
   });
   const [styles, setStyles] = useState({
@@ -25,6 +72,13 @@ export default function ServiceStyleOne({ services, contentType = 'services', st
       textAlign: 'center',
       marginBottom: '20px',
     },
+    sectionDesc: {
+     
+      color: '#000',
+      fontSize: '38px',
+      fontFamily: 'inherit',
+      fontWeight: '600',
+    },
     serviceGrid: {
       width: 1400,
       minHeight: 400,
@@ -32,10 +86,12 @@ export default function ServiceStyleOne({ services, contentType = 'services', st
   });
   const [texts, setTexts] = useState({
     sectionName: 'NOS SERVICES',
+    sectionDesc: 'Découvrez nos services innovants et adaptés à vos besoins',
   });
   const [pendingServiceStyles, setPendingServiceStyles] = useState({});
   const [pendingServicePositions, setPendingServicePositions] = useState({});
   const [userEntreprise, setUserEntreprise] = useState(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   // Validation functions
   const isValidPosition = (pos) => pos && typeof pos === 'object' && typeof pos.top === 'number' && typeof pos.left === 'number';
@@ -108,6 +164,9 @@ export default function ServiceStyleOne({ services, contentType = 'services', st
         sectionName: isValidPosition(fetchedPreferences.positions?.sectionName)
           ? fetchedPreferences.positions.sectionName
           : positions.sectionName,
+        sectionDesc: isValidPosition(fetchedPreferences.positions?.sectionDesc)
+          ? fetchedPreferences.positions.sectionDesc
+          : positions.sectionDesc,
         serviceGrid: isValidPosition(fetchedPreferences.positions?.serviceGrid)
           ? fetchedPreferences.positions.serviceGrid
           : positions.serviceGrid,
@@ -117,6 +176,9 @@ export default function ServiceStyleOne({ services, contentType = 'services', st
         sectionName: isValidStyle(fetchedPreferences.styles?.sectionName)
           ? fetchedPreferences.styles.sectionName
           : styles.sectionName,
+        sectionDesc: isValidStyle(fetchedPreferences.styles?.sectionDesc)
+          ? fetchedPreferences.styles.sectionDesc
+          : styles.sectionDesc,
         serviceGrid: isValidStyle(fetchedPreferences.styles?.serviceGrid)
           ? fetchedPreferences.styles.serviceGrid
           : styles.serviceGrid,
@@ -126,6 +188,9 @@ export default function ServiceStyleOne({ services, contentType = 'services', st
         sectionName: isValidText(fetchedPreferences.texts?.sectionName)
           ? fetchedPreferences.texts.sectionName
           : texts.sectionName,
+        sectionDesc: isValidText(fetchedPreferences.texts?.sectionDesc)
+          ? fetchedPreferences.texts.sectionDesc
+          : texts.sectionDesc,
       };
 
       setPositions(newPositions);
@@ -216,10 +281,13 @@ export default function ServiceStyleOne({ services, contentType = 'services', st
 
     if (
       !isValidPosition(positions.sectionName) ||
+      !isValidPosition(positions.sectionDesc) ||
       !isValidPosition(positions.serviceGrid) ||
       !isValidStyle(styles.sectionName) ||
+      !isValidStyle(styles.sectionDesc) ||
       !isValidStyle(styles.serviceGrid) ||
-      !isValidText(texts.sectionName)
+      !isValidText(texts.sectionName) ||
+      !isValidText(texts.sectionDesc)
     ) {
       toast.error('Données de position, style ou texte invalides');
       return;
@@ -281,6 +349,8 @@ export default function ServiceStyleOne({ services, contentType = 'services', st
 
       setPendingServiceStyles({});
       setPendingServicePositions({});
+      setShowSuccessMessage(true);
+      setTimeout(() => setShowSuccessMessage(false), 3000);
       toast.success('Modifications sauvegardées avec succès');
     } catch (error) {
       console.error('Error saving changes:', error);
@@ -297,7 +367,74 @@ export default function ServiceStyleOne({ services, contentType = 'services', st
   }
 
   return (
-    <div className="services-style-one-container">
+    <>
+    <style>
+        {`
+          @keyframes slideInRight {
+            from {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+        `}
+      </style>
+      
+      {/* Notification de succès rendue dans le body */}
+      <SuccessNotification 
+        show={showSuccessMessage} 
+        message="Modifications enregistrées avec succès" 
+      />
+      
+      <div style={{ backgroundColor: 'white', minHeight: '100vh', padding: '20px' }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginBottom: '20px',
+        padding: '15px 20px',
+        backgroundColor: '#f8f9fa',
+        borderRadius: '8px',
+        border: '1px solid #e9ecef'
+      }}>
+        <span style={{ 
+          fontSize: '18px', 
+          fontWeight: '600', 
+          color: '#495057' 
+        }}>Services section</span> 
+
+        
+        <button 
+          onClick={saveAllChanges}
+          style={{
+            
+            padding: '8px',
+            backgroundColor: '#777777',
+            color: 'white',
+            border: 'none',
+            borderRadius: '10px',
+            cursor: 'pointer',
+            marginTop: '16px',
+            fontSize: '16px',
+            fontWeight: '500',
+            transition: 'background-color 0.2s ease'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.backgroundColor = '#c6c6c6';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.backgroundColor = '#777777';
+          }}
+        >
+          Enregistrer les modifications
+        </button>
+      </div>
+    {/* <div className="services-style-one-container"> */}
+    <div className="services-section">
+
       <EditorText
         elementType="h1"
         initialPosition={positions.sectionName}
@@ -309,6 +446,17 @@ export default function ServiceStyleOne({ services, contentType = 'services', st
       >
         {texts.sectionName}
       </EditorText>
+      <EditorText
+        elementType="h1"
+        initialPosition={positions.sectionDesc}
+        initialStyles={styles.sectionDesc}
+        onSelect={setSelectedElement}
+        onPositionChange={(newPosition) => handlePositionChange('sectionDesc', newPosition)}
+        onStyleChange={(newStyles) => handleStyleChange('sectionDesc', newStyles)}
+        onTextChange={(newText) => handleTextChange('sectionDesc', newText)}
+      >
+        {texts.sectionDesc}
+      </EditorText>
       <EditorServiceStyleOne
         services={services}
         initialPosition={positions.serviceGrid}
@@ -318,7 +466,9 @@ export default function ServiceStyleOne({ services, contentType = 'services', st
         onStyleChange={handleServiceStyleChange}
         onUpdate={handleServicePositionChange}
       />
-      <button onClick={saveAllChanges}>Enregistrer les modifications</button>
+      {/* <button onClick={saveAllChanges}>Enregistrer les modifications</button> */}
     </div>
+    </div>
+    </>
   );
 }

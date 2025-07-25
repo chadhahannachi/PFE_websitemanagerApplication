@@ -1,103 +1,3 @@
-// import React, { useState } from 'react';
-// import './Units.css';
-// import EditorText from '../aboutus/EditorText';
-// import EditorUnitGrid from './EditorUnitCard';
-
-// export default function UnitStyleTwo({ unites }) {
-//   const [selectedElement, setSelectedElement] = useState(null);
-
-//   const initialPositions = {
-//     sectionName: { top: 0, left: 0 },
-//     subtitle: { top: 60, left: 0 },
-//     unitGrid: { top: 140, left: 0 },
-//   };
-
-//   const initialStyles = {
-//     sectionName: { 
-//       color: '#f59e0b', 
-//       fontSize: '20px', 
-//       fontFamily: 'inherit',
-//       fontWeight: '600',
-//     },
-//     subtitle: { 
-//       color: '#000', 
-//       fontSize: '38px', 
-//       fontFamily: 'inherit',
-//       fontWeight: '600',
-//     },
-//     unitGrid: {
-//       width: 1400,
-//       header: {
-//         title: {
-//           color: '#f59e0b',
-//           fontSize: '20px',
-//           fontWeight: '600',
-//         },
-//         subtitle: {
-//           color: '#000',
-//           fontSize: '38px',
-//           fontWeight: '600',
-//         }
-//       },
-//       card: {
-//         collapsed: {
-//           backgroundColor: 'white',
-//           width: '200px',
-//           height: '430px',
-//         },
-//         expanded: {
-//           backgroundColor: '#014268',
-//           width: '800px',
-//         },
-//         title: {
-//           color: 'white',
-//           fontSize: '38px',
-//           fontWeight: '600',
-//         },
-//         description: {
-//           color: '#e0e0e0',
-//           fontSize: '18px',
-//         },
-//         button: {
-//           backgroundColor: '#f59e0b',
-//           color: '#184969',
-//           fontSize: '14px',
-//         }
-//       }
-//     }
-//   };
-
-//   return (
-//     <div className="units-wrapper">
-//       <EditorText
-//         elementType="sectionName"
-//         initialPosition={initialPositions.sectionName}
-//         initialStyles={initialStyles.sectionName}
-//         onSelect={setSelectedElement}
-//       >
-//         Our Unite
-//       </EditorText>
-      
-//       <EditorText
-//         elementType="subtitle"
-//         initialPosition={initialPositions.subtitle}
-//         initialStyles={initialStyles.subtitle}
-//         onSelect={setSelectedElement}
-//       >
-//         A reliable partner to meet all your development and digital services needs.
-//       </EditorText>
-      
-//       <EditorUnitGrid
-//         unites={unites}
-//         initialPosition={initialPositions.unitGrid}
-//         initialStyles={initialStyles.unitGrid}
-//         onSelect={setSelectedElement}
-//       />
-//     </div>
-//   );
-// }
-
-
 // UnitStyleTwo.js
 import React, { useState, useEffect } from 'react';
 import './Units.css';
@@ -106,6 +6,51 @@ import EditorUnitGrid from './EditorUnitCard';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
+import ReactDOM from 'react-dom';
+
+
+const SuccessNotification = ({ show, message }) => {
+  if (!show) return null;
+  
+  return ReactDOM.createPortal(
+    <div style={{
+      position: 'fixed',
+      top: '20px',
+      right: '20px',
+      backgroundColor: '#c6c6c6',
+      color: 'white',
+      padding: '15px 25px',
+      borderRadius: '8px',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      zIndex: 10000,
+      fontSize: '16px',
+      fontWeight: '500',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '10px',
+      animation: 'slideInRight 0.3s ease-out',
+      border: '1px solid #c6c6c6',
+      pointerEvents: 'none'
+    }}>
+      <div style={{
+        width: '20px',
+        height: '20px',
+        borderRadius: '50%',
+        backgroundColor: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#c6c6c6',
+        fontSize: '14px',
+        fontWeight: 'bold'
+      }}>
+        ✓
+      </div>
+      {message}
+    </div>,
+    document.body
+  );
+};
 
 export default function UnitStyleTwo({ unites, contentType = 'unite', styleKey = 'styleTwo' }) {
   const [selectedElement, setSelectedElement] = useState(null);
@@ -139,6 +84,7 @@ export default function UnitStyleTwo({ unites, contentType = 'unite', styleKey =
   });
   const [pendingUnitStyles, setPendingUnitStyles] = useState({});
   const [userEntreprise, setUserEntreprise] = useState(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   // Validation functions
   const isValidPosition = (pos) => pos && typeof pos === 'object' && typeof pos.top === 'number' && typeof pos.left === 'number';
@@ -397,6 +343,8 @@ export default function UnitStyleTwo({ unites, contentType = 'unite', styleKey =
       }
 
       setPendingUnitStyles({});
+      setShowSuccessMessage(true);
+      setTimeout(() => setShowSuccessMessage(false), 3000);
       toast.success('Modifications sauvegardées avec succès');
     } catch (error) {
       console.error('Error saving changes:', error);
@@ -414,7 +362,74 @@ export default function UnitStyleTwo({ unites, contentType = 'unite', styleKey =
   }
 
   return (
-    <div className="units-wrapper">
+    <>
+<style>
+        {`
+          @keyframes slideInRight {
+            from {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+        `}
+      </style>
+      
+      {/* Notification de succès rendue dans le body */}
+      <SuccessNotification 
+        show={showSuccessMessage} 
+        message="Modifications enregistrées avec succès" 
+      />
+      
+      <div style={{ backgroundColor: 'white', minHeight: '100vh', padding: '20px' }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginBottom: '20px',
+        padding: '15px 20px',
+        backgroundColor: '#f8f9fa',
+        borderRadius: '8px',
+        border: '1px solid #e9ecef'
+      }}>
+        <span style={{ 
+          fontSize: '18px', 
+          fontWeight: '600', 
+          color: '#495057' 
+        }}>Units section</span> 
+
+        
+        <button 
+          onClick={saveAllChanges}
+          style={{
+            
+            padding: '8px',
+            backgroundColor: '#777777',
+            color: 'white',
+            border: 'none',
+            borderRadius: '10px',
+            cursor: 'pointer',
+            marginTop: '16px',
+            fontSize: '16px',
+            fontWeight: '500',
+            transition: 'background-color 0.2s ease'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.backgroundColor = '#c6c6c6';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.backgroundColor = '#777777';
+          }}
+        >
+          Enregistrer les modifications
+        </button>
+      </div>
+    
+    {/* <div className="units-wrapper"> */}
+    <div className="units">
       <EditorText
         elementType="h1"
         initialPosition={positions.sectionName}
@@ -445,7 +460,9 @@ export default function UnitStyleTwo({ unites, contentType = 'unite', styleKey =
         onPositionChange={(newPosition) => handlePositionChange('unitGrid', newPosition)}
         onStyleChange={handleUnitStyleChange}
       />
-      <button onClick={saveAllChanges}>Enregistrer les modifications</button>
+      {/* <button onClick={saveAllChanges}>Enregistrer les modifications</button> */}
     </div>
+    </div>
+    </>
   );
 }

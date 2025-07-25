@@ -53,7 +53,7 @@
   .units {
     background: white;
     padding: 1px 30px;
-    height: 700px;
+    min-height: 700px;
   }
   
   /* .units-wrapper {
@@ -321,7 +321,7 @@
 
 .unit-image-container {
   border-radius: 10px;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .unit-image {
@@ -352,5 +352,79 @@
     width: 100%;
     height: 150px;
     margin-top: 20px;
+  }
+}
+
+@media (max-width: 900px) {
+  .unitone-responsive {
+    min-height: unset !important;
+    padding: 10px !important;
+  }
+  .unitone-stack {
+    position: static !important;
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    margin: 0 !important;
+    pointer-events: none;
+    text-align: center !important;
+  }
+  .unitone-image {
+    position: static !important;
+    display: block;
+    margin: 20px auto 0 auto !important;
+    left: unset !important;
+    top: unset !important;
+    width: 80vw !important;
+    max-width: 350px !important;
+    height: auto !important;
+  }
+  .unitone-wrapper {
+    min-height: unset !important;
+    height: auto !important;
+  }
+}
+
+/* Responsive pour UnitStyleTwoDisplay */
+@media (max-width: 900px) {
+  .unittwo-responsive {
+    min-height: unset !important;
+    padding: 20px 10px !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .unittwo-stack {
+    position: static !important;
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    margin: 0 0 20px 0 !important;
+    pointer-events: none;
+    text-align: center !important;
+    display: block !important;
+  }
+  .unittwo-grid {
+    position: static !important;
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    margin: 20px 0 0 0 !important;
+    padding: 0 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 15px !important;
+  }
+  .unittwo-grid .unit-card {
+    width: 100% !important;
+    max-width: 350px !important;
+    height: auto !important;
+    min-height: 200px !important;
+  }
+  .unittwo-grid .unit-card.expanded {
+    width: 100% !important;
+    max-width: 350px !important;
+    height: auto !important;
+    min-height: 300px !important;
   }
 }

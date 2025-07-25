@@ -23,12 +23,17 @@ const LoginForm = () => {
         body: JSON.stringify(loginData),
       });
 
-      const data = await response.json();
+      const data = await response.json(); 
       if (response.ok) {
         console.log("Connexion réussie:", data);
         alert("Connexion réussie !");
         localStorage.setItem("token", data.token);
-        navigate('/');
+
+      window.location.href = `http://localhost:3000?token=${data.token}&from=3001`;
+
+      // window.location.href = `http://localhost:3000/WebsiteManagement?token=${data.token}&from=3001`;
+
+        // navigate('/');
       } else {
         console.error("Erreur lors de la connexion:", data.message);
         alert(`Erreur: ${data.message}`);

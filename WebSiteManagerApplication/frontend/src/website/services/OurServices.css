@@ -4,11 +4,13 @@
   z-index: 1;
 }
 
-.services-section {
-  padding: 10px 30px;
+.services-section { 
+  /* padding: 10px 30px; */
+  padding: 30px 30px;
   background-color: #f6f6f6;
   text-align: left;
-  height: 700px;
+  /* height: 700px; */
+  min-height: 700px;
   /* transition: filter 0.3s ease; Smooth transition for blur effect */
 }
 
@@ -31,11 +33,13 @@
 
 .cards-container,
 .services-container {
-  display: flex;
+  /* display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 25px;
-  position: relative;
+  position: relative; */
+  max-width: 1600px;
+  margin-bottom: 30px;
 }
 
 /* Apply blur to the background when a card is hovered */
@@ -133,15 +137,31 @@
 
 /* --------- Style Two (Modern Cards) --------- */
 .services-container.style-two {
-  display: flex;
+  max-width: 1600px;
+  margin-bottom: 30px;
+
+}
+
+/* .cards-container,
+.services-container {
+  /* display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 15px;
-  margin: 0 auto;
-  max-width: 100%;
-  padding: 0 15px;
+  gap: 25px;
+  position: relative; 
+  max-width: 1600px;
   margin-bottom: 30px;
-}
+} */
+
+
+/* .style-three.events-container {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+  border-radius: 20px;
+  overflow: hidden;
+} */
 
 .style-two .service-card {
   background: white;
@@ -306,6 +326,28 @@
   }
 }
 
+@media (max-width: 1400px) {
+  .services-container.style-two {
+    margin-left: -100px !important;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 1400px) {
+  .sectionDesc {
+    margin-left: -100px !important;
+
+  }
+}
+
+@media (max-width: 1400px) {
+  .sectionDescStyleOne {
+    margin-left: -100px !important;
+    /* margin-bottom: 100px !important; */
+  }
+}
+
+
 /* --------- Nouveau style de bouton --------- */
 .read-more-btn {
   user-select: none;
@@ -370,156 +412,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* .services-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-  padding: 15px;
-}
-
-.service-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  text-align: left;
-}
-
-.image-container {
-  position: relative;
-  margin-bottom: 20px;
-}
-
-.service-image {
-  position: absolute;
-  object-fit: contain;
-  z-index: 2;
-}
-
-.style-editor-panel {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-  max-width: 350px;
-  max-height: 80vh;
-  overflow-y: auto;
-  font-size: 0.9rem;
-}
-
-.style-editor-panel h3 {
-  font-size: 1.2rem;
-  margin-bottom: 15px;
-}
-
-.style-editor-panel h4 {
-  font-size: 1rem;
-  margin: 15px 0 10px;
-}
-
-.style-editor-panel h5 {
-  font-size: 0.95rem;
-  margin: 10px 0 8px;
-}
-
-.style-editor-panel label {
-  display: block;
-  margin-bottom: 5px;
-  font-size: 0.9rem;
-}
-
-.style-editor-panel input,
-.style-editor-panel textarea,
-.style-editor-panel select {
-  width: 100%;
-  padding: 4px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
-
-.style-editor-panel textarea {
-  min-height: 60px;
-  resize: none;
-}
-
-.style-editor-panel input[type="color"] {
-  height: 30px;
-  padding: 0;
-  width: 50px;
-}
-
-.style-editor-panel input[type="range"] {
-  width: 100%;
-}
-
-.style-editor-panel input[type="number"] {
-  width: 100px;
-}
-
-.style-editor-panel button {
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.style-editor-panel button:hover {
-  background-color: #f5f5f5;
-}
-
-.element-controls {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  background: #fff;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  z-index: 1000;
-}
-
-.element-controls button {
-  cursor: pointer;
-  font-size: 16px;
-  color: #000;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 4px;
-}
-
-.element-controls button:hover {
-  background: #f5f5f5;
-}
-
-.service-card h3,
-.service-card p {
-  margin: 10px 0;
-}
-
-.service-card button {
-  margin-top: auto;
-  align-self: flex-start;
-} */
 
 .services-container {
   display: flex;
@@ -648,4 +540,78 @@
 
 .element-controls button:hover {
   background: #f5f5f5;
+}
+
+/* Responsive pour ServiceStyleOneDisplay */
+@media (max-width: 900px) {
+  .serviceone-responsive {
+    min-height: unset !important;
+    padding: 20px 10px !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .serviceone-stack {
+    position: static !important;
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    margin: 0 0 15px 0 !important;
+    text-align: center !important;
+    display: block !important;
+  }
+  .serviceone-grid {
+    position: static !important;
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    margin: 20px 0 0 0 !important;
+    padding: 0 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 15px !important;
+  }
+  .serviceone-grid .card {
+    width: 100% !important;
+    max-width: 350px !important;
+    height: auto !important;
+    min-height: 200px !important;
+  }
+}
+
+/* Responsive pour ServiceStyleTwoDisplay */
+@media (max-width: 900px) {
+  .servicetwo-responsive {
+    min-height: unset !important;
+    padding: 20px 10px !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .servicetwo-stack {
+    position: static !important;
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    margin: 0 0 15px 0 !important;
+    text-align: center !important;
+    display: block !important;
+  }
+  .servicetwo-grid {
+    position: static !important;
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    margin: 20px 0 0 0 !important;
+    padding: 0 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 15px !important;
+  }
+  .servicetwo-grid .service-card {
+    width: 100% !important;
+    max-width: 350px !important;
+    height: auto !important;
+    min-height: 200px !important;
+  }
 }

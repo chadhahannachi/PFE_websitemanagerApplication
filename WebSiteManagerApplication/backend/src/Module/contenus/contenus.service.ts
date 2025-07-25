@@ -16,7 +16,7 @@ import { CreateContenuDto } from './dto/create-contenu.dto';
 import { UpdateContenuDto } from './dto/update-contenu.dto';
 import { GeminiService } from './services/gemini.service';
 import { GenerateContenuDto } from './dto/generate-contenu.dto';
-
+import { UpdateContenuAiDto } from './dto/update-contenu-ai.dto';
 @Injectable()
 export class ContenuService {
   private readonly logger = new Logger(ContenuService.name);
@@ -42,43 +42,43 @@ export class ContenuService {
     let contenu;
     switch (type) {
       case 'ContenuSpecifique':
-        contenu = new this.contenuSpecifiqueModel(createContenuDto);
+        contenu = new this.contenuSpecifiqueModel({...createContenuDto, isArchived: false});
         break;
       case 'Partenaire':
-        contenu = new this.partenaireModel(createContenuDto);
+        contenu = new this.partenaireModel({...createContenuDto, isArchived: false});
         break;
       case 'Temoignage':
-        contenu = new this.temoignageModel(createContenuDto);
+        contenu = new this.temoignageModel({...createContenuDto, isArchived: false});
         break;
       case 'FAQ':
-        contenu = new this.faqModel(createContenuDto);
+        contenu = new this.faqModel({...createContenuDto, isArchived: false});
         break;
       case 'Evenement':
-        contenu = new this.evenementModel(createContenuDto);
+        contenu = new this.evenementModel({...createContenuDto, isArchived: false});
         break;
       case 'APropos':
-        contenu = new this.aProposModel(createContenuDto);
+        contenu = new this.aProposModel({...createContenuDto, isArchived: false});
         break;
       // case 'Article':
       //   contenu = new this.articleModel(createContenuDto);
       //   break;
       case 'Actualite':
-        contenu = new this.actualiteModel(createContenuDto);
+        contenu = new this.actualiteModel({...createContenuDto, isArchived: false});
         break;
       case 'Service':
-        contenu = new this.serviceModel(createContenuDto);
+        contenu = new this.serviceModel({...createContenuDto, isArchived: false});
         break;
       case 'Solution':
-        contenu = new this.solutionModel(createContenuDto);
+        contenu = new this.solutionModel({...createContenuDto, isArchived: false});
         break;
       case 'Unite':
-        contenu = new this.uniteModel(createContenuDto);
+        contenu = new this.uniteModel({...createContenuDto, isArchived: false});
         break;
       case 'ContactUs':
-          contenu = new this.contactUsModel(createContenuDto);
+          contenu = new this.contactUsModel({...createContenuDto, isArchived: false});
           break;
       default:
-        contenu = new this.contenuModel(createContenuDto);
+        contenu = new this.contenuModel({...createContenuDto, isArchived: false});
     }
     return contenu.save();
   }
@@ -249,77 +249,77 @@ export class ContenuService {
     async findContenuByEntreprise(type: string, entrepriseId: string): Promise<any[]> {
       try {
         // Pas de conversion en ObjectId car le champ entreprise est stocké comme une chaîne
-        console.log(`Fetching ${type} for entrepriseId: ${entrepriseId}`);
+        // console.log(`Fetching ${type} for entrepriseId: ${entrepriseId}`);
   
         let result;
         switch (type) {
           case 'ContenuSpecifique':
             result = await this.contenuSpecifiqueModel
-              .find({ entreprise: entrepriseId, isPublished: true })
+              .find({ entreprise: entrepriseId, isArchived: false })
               .exec();
             break;
           case 'Partenaire':
             result = await this.partenaireModel
-              .find({ entreprise: entrepriseId, isPublished: true })
+              .find({ entreprise: entrepriseId, isArchived: false })
               .exec();
             break;
           case 'Temoignage':
             result = await this.temoignageModel
-              .find({ entreprise: entrepriseId, isPublished: true })
+              .find({ entreprise: entrepriseId, isArchived: false })
               .exec();
             break;
           case 'FAQ':
             result = await this.faqModel
-              .find({ entreprise: entrepriseId, isPublished: true })
+              .find({ entreprise: entrepriseId, isArchived: false })
               .exec();
             break;
           case 'Evenement':
             result = await this.evenementModel
-              .find({ entreprise: entrepriseId, isPublished: true })
+              .find({ entreprise: entrepriseId, isArchived: false })
               .exec();
             break;
           case 'APropos':
             result = await this.aProposModel
-              .find({ entreprise: entrepriseId, isPublished: true })
+              .find({ entreprise: entrepriseId, isArchived: false })
               .exec();
             break;
           // case 'Article':
           //   result = await this.articleModel
-          //     .find({ entreprise: entrepriseId, isPublished: true })
+          //     .find({ entreprise: entrepriseId, isArchived: false })
           //     .exec();
           //   break;
           case 'Actualite':
             result = await this.actualiteModel
-              .find({ entreprise: entrepriseId, isPublished: true })
+              .find({ entreprise: entrepriseId, isArchived: false })
               .exec();
             break;
           case 'Service':
             result = await this.serviceModel
-              .find({ entreprise: entrepriseId, isPublished: true })
+              .find({ entreprise: entrepriseId, isArchived: false })
               .exec();
             break;
           case 'Solution':
             result = await this.solutionModel
-              .find({ entreprise: entrepriseId, isPublished: true })
+              .find({ entreprise: entrepriseId, isArchived: false })
               .exec();
             break;
           case 'Unite':
             result = await this.uniteModel
-              .find({ entreprise: entrepriseId, isPublished: true })
+              .find({ entreprise: entrepriseId, isArchived: false })
               .exec();
             break;
           case 'ContactUs':
             result = await this.contactUsModel
-              .find({ entreprise: entrepriseId, isPublished: true })
+              .find({ entreprise: entrepriseId, isArchived: false })
               .exec();
             break;
           default:
             result = await this.contenuModel
-              .find({ entreprise: entrepriseId, isPublished: true })
+              .find({ entreprise: entrepriseId, isArchived: false })
               .exec();
         }
   
-        console.log(`Found ${result.length} ${type}(s) for entrepriseId: ${entrepriseId}`);
+        // console.log(`Found ${result.length} ${type}(s) for entrepriseId: ${entrepriseId}`);
         return result;             
       } catch (error) {
         console.error(`Error in findContenuByEntreprise for type ${type}:`, error);
@@ -424,7 +424,7 @@ async updateServiceStyles(id: string, styles: Record<string, any>) {
         html_component: geminiResponse.html_component, // New field
         css_style: geminiResponse.css_style, // New field
         datePublication: new Date(),
-        isPublished: false,
+        isArchived: false,
         entreprise: entrepriseId,
       });
 
@@ -441,14 +441,206 @@ async updateServiceStyles(id: string, styles: Record<string, any>) {
   }
 
   async getContenusByEntreprise(entrepriseId: string) {
-    console.log('Recherche contenus pour entrepriseId:', JSON.stringify(entrepriseId));
+    // console.log('Recherche contenus pour entrepriseId:', JSON.stringify(entrepriseId));
     const isValidObjectId = Types.ObjectId.isValid(entrepriseId);
     const query = {
       entreprise: isValidObjectId ? new Types.ObjectId(entrepriseId) : entrepriseId,
-      isPublished: true // Assuming you want only published content
+      isArchived: false // Assuming you want only published content
     };
     const result = await this.contenuSpecifiqueModel.find(query).exec();
-    console.log('Résultat MongoDB:', result);
+    // console.log('Résultat MongoDB:', result);
+    return result;
+  }
+
+
+  // contenus.service.ts
+async updateContenuSpecifiqueStyles(id: string, styles: Record<string, any>): Promise<ContenuSpecifique> {
+  try {
+    const updatedContenu = await this.contenuSpecifiqueModel.findByIdAndUpdate(
+      id,
+      { $set: { styles } },
+      { new: true }
+    ).exec();
+    if (!updatedContenu) {
+      throw new NotFoundException(`ContenuSpecifique with ID ${id} not found`);
+    }
+    return updatedContenu;
+  } catch (error) {
+    throw new BadRequestException('Error updating ContenuSpecifique styles');
+  }
+}
+
+
+async updateContenuWithAI(
+  id: string,
+  updateDto: UpdateContenuAiDto
+): Promise<ContenuSpecifique> {
+  // 1. Récupérer le contenu existant
+  const currentContent = await this.contenuSpecifiqueModel.findById(id).exec();
+  if (!currentContent) {
+    throw new NotFoundException(`ContenuSpecifique with ID ${id} not found`);
+  }
+
+  // 2. Générer le nouveau contenu avec l'IA
+  const updatedContent = await this.geminiService.updateContent(
+    currentContent.html_component,
+    currentContent.css_style,
+    updateDto
+  );
+
+  // 3. Mettre à jour en base
+  const updatedContenu = await this.contenuSpecifiqueModel.findByIdAndUpdate(
+    id,
+    {
+      $set: {
+        html_component: updatedContent.html_component,
+        css_style: updatedContent.css_style,
+        ...(updateDto.title && { titre: updateDto.title }),
+        ...(updateDto.description && { description: updateDto.description }),
+      }
+    },
+    { new: true }
+  ).exec();
+
+  if (!updatedContenu) {
+    throw new NotFoundException(`ContenuSpecifique with ID ${id} not found`);
+  }
+
+  return updatedContenu;
+}
+
+  // Archive un contenu (isArchived: true)
+  async archiveContenu(id: string, type: string): Promise<any> {
+    let updatedContenu;
+    switch (type) {
+      case 'ContenuSpecifique':
+        updatedContenu = await this.contenuSpecifiqueModel.findByIdAndUpdate(id, { isArchived: true }, { new: true }).exec();
+        break;
+      case 'Partenaire':
+        updatedContenu = await this.partenaireModel.findByIdAndUpdate(id, { isArchived: true }, { new: true }).exec();
+        break;
+      case 'Temoignage':
+        updatedContenu = await this.temoignageModel.findByIdAndUpdate(id, { isArchived: true }, { new: true }).exec();
+        break;
+      case 'FAQ':
+        updatedContenu = await this.faqModel.findByIdAndUpdate(id, { isArchived: true }, { new: true }).exec();
+        break;
+      case 'Evenement':
+        updatedContenu = await this.evenementModel.findByIdAndUpdate(id, { isArchived: true }, { new: true }).exec();
+        break;
+      case 'APropos':
+        updatedContenu = await this.aProposModel.findByIdAndUpdate(id, { isArchived: true }, { new: true }).exec();
+        break;
+      case 'Actualite':
+        updatedContenu = await this.actualiteModel.findByIdAndUpdate(id, { isArchived: true }, { new: true }).exec();
+        break;
+      case 'Service':
+        updatedContenu = await this.serviceModel.findByIdAndUpdate(id, { isArchived: true }, { new: true }).exec();
+        break;
+      case 'Solution':
+        updatedContenu = await this.solutionModel.findByIdAndUpdate(id, { isArchived: true }, { new: true }).exec();
+        break;
+      case 'Unite':
+        updatedContenu = await this.uniteModel.findByIdAndUpdate(id, { isArchived: true }, { new: true }).exec();
+        break;
+      case 'ContactUs':
+        updatedContenu = await this.contactUsModel.findByIdAndUpdate(id, { isArchived: true }, { new: true }).exec();
+        break;
+      default:
+        updatedContenu = await this.contenuModel.findByIdAndUpdate(id, { isArchived: true }, { new: true }).exec();
+    }
+    if (!updatedContenu) {
+      throw new NotFoundException(`Contenu with ID ${id} not found`);
+    }
+    return updatedContenu;
+  }
+
+  // Restore un contenu (isArchived: false)
+  async restoreContenu(id: string, type: string): Promise<any> {
+    let updatedContenu;
+    switch (type) {
+      case 'ContenuSpecifique':
+        updatedContenu = await this.contenuSpecifiqueModel.findByIdAndUpdate(id, { isArchived: false }, { new: true }).exec();
+        break;
+      case 'Partenaire':
+        updatedContenu = await this.partenaireModel.findByIdAndUpdate(id, { isArchived: false }, { new: true }).exec();
+        break;
+      case 'Temoignage':
+        updatedContenu = await this.temoignageModel.findByIdAndUpdate(id, { isArchived: false }, { new: true }).exec();
+        break;
+      case 'FAQ':
+        updatedContenu = await this.faqModel.findByIdAndUpdate(id, { isArchived: false }, { new: true }).exec();
+        break;
+      case 'Evenement':
+        updatedContenu = await this.evenementModel.findByIdAndUpdate(id, { isArchived: false }, { new: true }).exec();
+        break;
+      case 'APropos':
+        updatedContenu = await this.aProposModel.findByIdAndUpdate(id, { isArchived: false }, { new: true }).exec();
+        break;
+      case 'Actualite':
+        updatedContenu = await this.actualiteModel.findByIdAndUpdate(id, { isArchived: false }, { new: true }).exec();
+        break;
+      case 'Service':
+        updatedContenu = await this.serviceModel.findByIdAndUpdate(id, { isArchived: false }, { new: true }).exec();
+        break;
+      case 'Solution':
+        updatedContenu = await this.solutionModel.findByIdAndUpdate(id, { isArchived: false }, { new: true }).exec();
+        break;
+      case 'Unite':
+        updatedContenu = await this.uniteModel.findByIdAndUpdate(id, { isArchived: false }, { new: true }).exec();
+        break;
+      case 'ContactUs':
+        updatedContenu = await this.contactUsModel.findByIdAndUpdate(id, { isArchived: false }, { new: true }).exec();
+        break;
+      default:
+        updatedContenu = await this.contenuModel.findByIdAndUpdate(id, { isArchived: false }, { new: true }).exec();
+    }
+    if (!updatedContenu) {
+      throw new NotFoundException(`Contenu with ID ${id} not found`);
+    }
+    return updatedContenu;
+  }
+
+  // Récupère tous les contenus archivés pour une entreprise et un type
+  async findArchivedByEntreprise(type: string, entrepriseId: string): Promise<any[]> {
+    let result;
+    switch (type) {
+      case 'ContenuSpecifique':
+        result = await this.contenuSpecifiqueModel.find({ entreprise: entrepriseId, isArchived: true }).exec();
+        break;
+      case 'Partenaire':
+        result = await this.partenaireModel.find({ entreprise: entrepriseId, isArchived: true }).exec();
+        break;
+      case 'Temoignage':
+        result = await this.temoignageModel.find({ entreprise: entrepriseId, isArchived: true }).exec();
+        break;
+      case 'FAQ':
+        result = await this.faqModel.find({ entreprise: entrepriseId, isArchived: true }).exec();
+        break;
+      case 'Evenement':
+        result = await this.evenementModel.find({ entreprise: entrepriseId, isArchived: true }).exec();
+        break;
+      case 'APropos':
+        result = await this.aProposModel.find({ entreprise: entrepriseId, isArchived: true }).exec();
+        break;
+      case 'Actualite':
+        result = await this.actualiteModel.find({ entreprise: entrepriseId, isArchived: true }).exec();
+        break;
+      case 'Service':
+        result = await this.serviceModel.find({ entreprise: entrepriseId, isArchived: true }).exec();
+        break;
+      case 'Solution':
+        result = await this.solutionModel.find({ entreprise: entrepriseId, isArchived: true }).exec();
+        break;
+      case 'Unite':
+        result = await this.uniteModel.find({ entreprise: entrepriseId, isArchived: true }).exec();
+        break;
+      case 'ContactUs':
+        result = await this.contactUsModel.find({ entreprise: entrepriseId, isArchived: true }).exec();
+        break;
+      default:
+        result = await this.contenuModel.find({ entreprise: entrepriseId, isArchived: true }).exec();
+    }
     return result;
   }
 

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const SubscriptionPackage = () => {
   return (
     <>
-      <div className="subscription-area pt-175 pb-150">
+      <div className="subscription-area pt-175 pb-150" style={{ marginTop: '-200px' }}>
         <div className="container">
           <div className="section-title">
             <span className="top-title">Subscription</span>
@@ -49,14 +49,14 @@ const SubscriptionPackage = () => {
                   <div className="flex-grow-1 ms-4">
                     <h3>Basic Plan</h3>
                     <h1>
-                      $50 <sub className="bottom-0">/ Per Month</sub>
+                      50 DT <sub className="bottom-0">/ Per Month</sub>
                     </h1>
                   </div>
                 </div>
 
                 <ul className="fe-list ps-0 pe-0 list-unstyled">
                   <li className="d-flex align-items-center justify-content-between">
-                    <span>Automated Reporting</span>
+                    <span>Create Team</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -74,7 +74,7 @@ const SubscriptionPackage = () => {
                   </li>
                   
                   <li className="d-flex align-items-center justify-content-between">
-                    <span>Faster Processing</span>
+                    <span>Manage Content</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -92,7 +92,7 @@ const SubscriptionPackage = () => {
                   </li>
 
                   <li className="d-flex align-items-center justify-content-between">
-                    <span>Customizations</span>
+                    <span>Personalize Website</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -110,12 +110,16 @@ const SubscriptionPackage = () => {
                   </li>
                 </ul>
 
-                <Link to="#" className="default-btn">
+
+                {/* <li><a href="#home">Home</a></li> */}
+
+
+                <a href="#getlicence" className="default-btn">
                   Submit
-                </Link>
+                </a>
 
                 <p className="mt-30">
-                  Tofy is one of the most popular booking site
+                  This is your economic plan
                 </p>
               </div>
             </div>
@@ -154,14 +158,14 @@ const SubscriptionPackage = () => {
                   <div className="flex-grow-1 ms-4">
                     <h3>Professional Plan</h3>
                     <h1>
-                      $100 <sub className="bottom-0">/ Per Month</sub>
+                      100 DT <sub className="bottom-0">/ Per Month</sub>
                     </h1>
                   </div>
                 </div>
 
                 <ul className="fe-list ps-0 pe-0 list-unstyled">
                   <li className="d-flex align-items-center justify-content-between">
-                    <span>Everything in Starter</span>
+                    <span>Manage Content</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -179,7 +183,7 @@ const SubscriptionPackage = () => {
                   </li>
 
                   <li className="d-flex align-items-center justify-content-between">
-                    <span>100 Builds</span>
+                    <span>Personalize Website</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -197,7 +201,7 @@ const SubscriptionPackage = () => {
                   </li>
 
                   <li className="d-flex align-items-center justify-content-between">
-                    <span>Progress Reports</span>
+                    <span>Autogenerate With AI</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -215,12 +219,12 @@ const SubscriptionPackage = () => {
                   </li>
                 </ul>
 
-                <Link to="#" className="default-btn">
+                <a href="#getlicence" className="default-btn">
                   Submit
-                </Link>
+                </a>
 
                 <p className="mt-30">
-                  Tofy is one of the most popular booking site
+                  This is the most popular plan
                 </p>
               </div>
             </div>
@@ -261,14 +265,14 @@ const SubscriptionPackage = () => {
                   <div className="flex-grow-1 ms-4">
                     <h3>Premium Plan</h3>
                     <h1>
-                      $150 <sub className="bottom-0">/ Per Month</sub>
+                      150 DT <sub className="bottom-0">/ Per Month</sub>
                     </h1>
                   </div>
                 </div>
 
                 <ul className="fe-list ps-0 pe-0 list-unstyled">
                   <li className="d-flex align-items-center justify-content-between">
-                    <span>Everything in Basic</span>
+                    <span>Personalize Website</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -286,7 +290,7 @@ const SubscriptionPackage = () => {
                   </li>
 
                   <li className="d-flex align-items-center justify-content-between">
-                    <span>Unlimited Builds</span>
+                    <span>Autogenerate With AI</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -304,7 +308,7 @@ const SubscriptionPackage = () => {
                   </li>
                   
                   <li className="d-flex align-items-center justify-content-between">
-                    <span>Advanced Analytics</span>
+                    <span>AI Assistant to your website</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -322,12 +326,13 @@ const SubscriptionPackage = () => {
                   </li>
                 </ul>
 
-                <Link to="#" className="default-btn">
-                  Submit
-                </Link>
+
+<a href="#getlicence" className="default-btn">
+  Submit
+</a>
 
                 <p className="mt-30">
-                  Tofy is one of the most popular booking site
+                  The advanced plan for best results
                 </p>
               </div>
             </div>

@@ -9,7 +9,7 @@ import { PaymentService } from './payment.service';
 import { NotificationModule } from '../notification/notification.module';
 
 @Module({
-  imports: [HttpModule, NotificationModule],
+  imports: [HttpModule, NotificationModule], 
   controllers: [LicenseController, LicenseRequestController, PaymentController],
   providers: [LicenseService, LicenseRequestService, PaymentService],
   exports: [LicenseService, LicenseRequestService, PaymentService],

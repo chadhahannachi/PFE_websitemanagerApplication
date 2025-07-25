@@ -6,30 +6,32 @@
   min-height: 600px;
 }
 
-.solutions-section h1 {
-  /* color: #f59e0b;
+
+
+/* .solutions-section h1 {
+   color: #f59e0b;
   text-align: left;
   font-size: 20px;
-  font-weight: 600; */
+  font-weight: 600; 
 
-  color: #f59e0b;
+   color: #f59e0b;
   font-size: 20px;
   font-weight: 600;
   margin-bottom: 10px;
-  display: block;
-}
+  display: block; 
+} */
 
-.solutions-section h2 {
+/* .solutions-section h2 {
   /* color: #000;
   font-size: 30px;
   font-weight: 600;
   line-height: 1.5;
   max-width: 800px;
-  margin-left: 40px; */
+  margin-left: 40px; 
   font-size: 36px;
   margin-bottom: 20px;
   padding: 2px 20px;
-}
+} */
 
 /* .solutions-subtitle .dash {
   color: #ff9800;
@@ -46,17 +48,16 @@
   margin: auto;
   margin-bottom: 30px;
 
+
 }
 
 .solution-card {
-  background: white;
-  border-radius: 10px;
   padding: 20px;
   width: 300px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   text-align: left;
-  position: relative;
+  /* position: relative; */
 }
 
 .solution-card h3 {
@@ -128,10 +129,12 @@
 /* --------- Style One (Numbered Cards) --------- */
 .style-one .solution-card {
   background: white;
-  border-radius: 10px;
-  padding: 30px 25px;
+  /* border-radius: 10px; */
+  /* padding: 30px 25px; */
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  margin-bottom: 70px;
+
 }
 
 .style-one .solution-card:hover {
@@ -328,6 +331,23 @@
   }
 }
 
+@media (max-width: 900px) {
+  .solution-card {
+    max-width: 90vw;
+    min-width: 160px;
+  }
+}
+@media (max-width: 600px) {
+  .solution-card {
+    max-width: 98vw;
+    min-width: 120px;
+    padding: 8px;
+  }
+  .solutions-container.style-four {
+    gap: 10px;
+    padding: 0 2px;
+  }
+}
 
 /* Animation Class for Scale Up Vertical Top */
 .scale-up-ver-top {
@@ -362,5 +382,79 @@
             transform: scaleY(1);
     -webkit-transform-origin: 100% 0%;
             transform-origin: 100% 0%;
+  }
+}
+
+/* Responsive pour SolutionStyleThreeDisplay */
+@media (max-width: 900px) {
+  .solutionthree-responsive {
+    min-height: unset !important;
+    padding: 20px 10px !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .solutionthree-stack {
+    position: static !important;
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    margin: 0 0 15px 0 !important;
+    text-align: center !important;
+    display: block !important;
+  }
+  .solutionthree-grid {
+    position: static !important;
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    margin: 20px 0 0 0 !important;
+    padding: 0 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 15px !important;
+  }
+  .solutionthree-grid .solution-card {
+    width: 100% !important;
+    max-width: 350px !important;
+    height: auto !important;
+    min-height: 200px !important;
+  }
+}
+
+/* Responsive pour SolutionStyleFourDisplay */
+@media (max-width: 900px) {
+  .solutionfour-responsive {
+    min-height: unset !important;
+    padding: 20px 10px !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .solutionfour-stack {
+    position: static !important;
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    margin: 0 0 15px 0 !important;
+    text-align: center !important;
+    display: block !important;
+  }
+  .solutionfour-grid {
+    position: static !important;
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    margin: 20px 0 0 0 !important;
+    padding: 0 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 15px !important;
+  }
+  .solutionfour-grid .solution-card {
+    width: 100% !important;
+    max-width: 350px !important;
+    height: auto !important;
+    min-height: 200px !important;
   }
 }

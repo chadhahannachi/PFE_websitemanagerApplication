@@ -7,7 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 const API_URL = 'http://localhost:5000/couleurs';
 
 export default function EditorFaqList({
-  faqs: initialFaqs,
+  faqs,
   initialPosition,
   initialStyles,
   onSelect,
@@ -39,30 +39,13 @@ export default function EditorFaqList({
   const [isEditing, setIsEditing] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
   const [resizing, setResizing] = useState(null);
-  const [faqs, setFaqs] = useState(initialFaqs);
   const [activeIndex, setActiveIndex] = useState(null);
-  // const [editIndex, setEditIndex] = useState(null);
-  // const [editField, setEditField] = useState(null);
   const offset = useRef({ x: 0, y: 0 });
   const containerRef = useRef(null);
-
   const [colors, setColors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userEntreprise, setUserEntreprise] = useState(null);
-
-
-  useEffect(() => {
-    // Initialize FAQ styles
-    const updatedFaqs = initialFaqs.map((faq) => ({
-      ...faq,
-      styles: faq.styles || {
-        button: styles.button,
-        answer: styles.answer,
-      },
-    }));
-    setFaqs(updatedFaqs);
-  }, [initialFaqs, styles.button, styles.answer]);
 
   useEffect(() => {
     if (isDragging || resizing) {
@@ -88,6 +71,28 @@ export default function EditorFaqList({
     setIsDragging(true);
   };
 
+
+  const handleGlobalMouseUp = () => {
+    setIsDragging(false);
+    setResizing(null);
+  };
+
+
+
+  const handleResizeMouseDown = (handle, e) => {
+    e.stopPropagation();
+    setResizing(handle);
+    const currentWidth = parseFloat(styles.width) || containerRef.current?.offsetWidth || 600;
+    const currentHeight = parseFloat(styles.height) || containerRef.current?.offsetHeight || 400;
+    offset.current = {
+      x: e.clientX,
+      y: e.clientY,
+      width: currentWidth,
+      height: currentHeight,
+    };
+    console.log('Resize started:', { handle, currentWidth, currentHeight });
+  };
+  
   const handleGlobalMouseMove = (e) => {
     if (isDragging) {
       const newPosition = {
@@ -99,12 +104,14 @@ export default function EditorFaqList({
         onPositionChange(newPosition);
       }
     } else if (resizing) {
+      console.log('Resizing:', resizing, 'Mouse:', { x: e.clientX, y: e.clientY }, 'Offset:', offset.current);
+  
       const deltaX = e.clientX - offset.current.x;
       const deltaY = e.clientY - offset.current.y;
-
-      let newWidth = styles.width || containerRef.current.offsetWidth;
-      let newHeight = styles.height || containerRef.current.offsetHeight;
-
+  
+      let newWidth = parseFloat(styles.width) || containerRef.current?.offsetWidth || 600;
+      let newHeight = parseFloat(styles.height) || containerRef.current?.offsetHeight || 400;
+  
       if (resizing === 'bottom-right') {
         newWidth = offset.current.width + deltaX;
         newHeight = offset.current.height + deltaY;
@@ -118,32 +125,54 @@ export default function EditorFaqList({
         newWidth = offset.current.width - deltaX;
         newHeight = offset.current.height - deltaY;
       }
-
+  
       newWidth = Math.max(newWidth, 200);
       newHeight = Math.max(newHeight, 100);
-
-      setStyles((prev) => {
-        const newStyles = { ...prev, width: newWidth, height: newHeight };
-        return newStyles;
-      });
+  
+      const newStyles = { ...styles, width: `${newWidth}px`, height: `${newHeight}px` };
+      console.log('New styles:', newStyles);
+      setStyles(newStyles);
+  
+      if (onStyleChange) {
+        onStyleChange(null, newStyles);
+      }
     }
   };
-
-  const handleGlobalMouseUp = () => {
-    setIsDragging(false);
-    setResizing(null);
+  
+  const renderResizeHandles = () => {
+    if (!isSelected) return null;
+    const handleSize = 8;
+    const currentWidth = parseFloat(styles.width) || containerRef.current?.offsetWidth || 600;
+    const currentHeight = parseFloat(styles.height) || containerRef.current?.offsetHeight || 400;
+    const handles = [
+      { name: 'top-left', cursor: 'nwse-resize', top: -handleSize / 2, left: -handleSize / 2 },
+      { name: 'top-right', cursor: 'nesw-resize', top: -handleSize / 2, left: currentWidth - handleSize / 2 },
+      { name: 'bottom-left', cursor: 'nesw-resize', top: currentHeight - handleSize / 2, left: -handleSize / 2 },
+      { name: 'bottom-right', cursor: 'nwse-resize', top: currentHeight - handleSize / 2, left: currentWidth - handleSize / 2 },
+    ];
+    console.log('Rendering resize handles:', { currentWidth, currentHeight, handles });
+    return handles.map((handle) => (
+      <div
+        key={handle.name}
+        style={{
+          position: 'absolute',
+          top: position.top + handle.top,
+          left: position.left + handle.left,
+          width: handleSize,
+          height: handleSize,
+          backgroundColor: 'blue',
+          cursor: handle.cursor,
+          zIndex: 20,
+        }}
+        onMouseDown={(e) => {
+          console.log('Resize handle clicked:', handle.name);
+          handleResizeMouseDown(handle.name, e);
+        }}
+      />
+    ));
   };
 
-  const handleResizeMouseDown = (handle, e) => {
-    e.stopPropagation();
-    setResizing(handle);
-    offset.current = {
-      x: e.clientX,
-      y: e.clientY,
-      width: styles.width || containerRef.current.offsetWidth,
-      height: styles.height || containerRef.current.offsetHeight,
-    };
-  };
+
 
   const handleElementClick = (e) => {
     e.stopPropagation();
@@ -155,55 +184,27 @@ export default function EditorFaqList({
     setActiveIndex(activeIndex === index ? null : index);
   };
 
-  // const handleEditFaq = (index, field, e) => {
-  //   e.stopPropagation();
-  //   setEditIndex(index);
-  //   setEditField(field);
-  // };
-
-  // const handleFaqChange = (e) => {
-  //   const newFaqs = [...faqs];
-  //   newFaqs[editIndex] = {
-  //     ...newFaqs[editIndex],
-  //     [editField]: e.target.value,
-  //   };
-  //   setFaqs(newFaqs);
-  // };
-
-  // const handleBlur = () => {
-  //   setEditIndex(null);
-  //   setEditField(null);
-  // };
-
-  
-
-
-
   const handleStyleChange = (property, value, type) => {
-  setStyles((prev) => {
-    const newStyles = {
-      ...prev,
-      [type]: {
-        ...prev[type],
-        [property]: value,
-      },
-    };
-    const updatedFaqs = faqs.map((faq) => ({
-      ...faq,
-      styles: {
-        button: newStyles.button,
-        answer: newStyles.answer,
-      },
-    }));
-    setFaqs(updatedFaqs);
-    updatedFaqs.forEach((faq) => {
-      if (faq._id && onStyleChange) {
-        onStyleChange(faq._id, faq.styles);
-      }
+    setStyles((prev) => {
+      const newStyles = {
+        ...prev,
+        [type]: {
+          ...prev[type],
+          [property]: value,
+        },
+      };
+      // Notify parent with styles for each FAQ
+      faqs.forEach((faq) => {
+        if (faq._id && onStyleChange) {
+          onStyleChange(faq._id, {
+            button: newStyles.button,
+            answer: newStyles.answer,
+          });
+        }
+      });
+      return newStyles;
     });
-    return newStyles;
-  });
-};
+  };
 
   const renderControlButtons = () => {
     if (!isSelected) return null;
@@ -238,37 +239,6 @@ export default function EditorFaqList({
     );
   };
 
-  const renderResizeHandles = () => {
-    if (!isSelected) return null;
-
-    const handleSize = 8;
-    const currentWidth = styles.width || containerRef.current?.offsetWidth || 600;
-    const currentHeight = styles.height || containerRef.current?.offsetHeight || 400;
-
-    const handles = [
-      { name: 'top-left', cursor: 'nwse-resize', top: -handleSize / 2, left: -handleSize / 2 },
-      { name: 'top-right', cursor: 'nesw-resize', top: -handleSize / 2, left: currentWidth - handleSize / 2 },
-      { name: 'bottom-left', cursor: 'nesw-resize', top: currentHeight - handleSize / 2, left: -handleSize / 2 },
-      { name: 'bottom-right', cursor: 'nwse-resize', top: currentHeight - handleSize / 2, left: currentWidth - handleSize / 2 },
-    ];
-
-    return handles.map((handle) => (
-      <div
-        key={handle.name}
-        style={{
-          position: 'absolute',
-          top: position.top + handle.top,
-          left: position.left + handle.left,
-          width: handleSize,
-          height: handleSize,
-          backgroundColor: 'blue',
-          cursor: handle.cursor,
-          zIndex: 20,
-        }}
-        onMouseDown={(e) => handleResizeMouseDown(handle.name, e)}
-      />
-    ));
-  };
 
 
   // Fetch user enterprise
@@ -324,7 +294,6 @@ export default function EditorFaqList({
         });
     }
   }, [userEntreprise]);
-
 
   return (
     <div
@@ -515,6 +484,7 @@ export default function EditorFaqList({
                 value={parseInt(styles.button.borderRadius || 0)}
                 onChange={(e) => handleStyleChange('borderRadius', `${e.target.value}px`, 'button')}
               />
+
             </div>
 
             <h4>Answer Section</h4>
@@ -635,7 +605,7 @@ export default function EditorFaqList({
           {faqs.map((faq, index) => (
             <div key={faq._id || index} className={`faq-item ${activeIndex === index ? 'active' : ''}`}>
               <button
-                className="faq-question-btn"
+                className="faq-question-b²tn"
                 onClick={() => toggleFaq(index)}
                 style={{
                   color: faq.styles?.button?.color || styles.button.color,
@@ -643,6 +613,17 @@ export default function EditorFaqList({
                   fontSize: faq.styles?.button?.fontSize || styles.button.fontSize,
                   fontFamily: faq.styles?.button?.fontFamily || styles.button.fontFamily,
                   borderRadius: faq.styles?.button?.borderRadius || styles.button.borderRadius,
+                  border: 'none',
+                  outline: 'none',
+                  width: '100%',
+                  padding: '15px 20px',
+                  fontWeight: '600',
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  transition: 'background-color 0.3s ease',
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.backgroundColor =
@@ -653,21 +634,7 @@ export default function EditorFaqList({
                     faq.styles?.button?.backgroundColor || styles.button.backgroundColor;
                 }}
               >
-                {/* {editIndex === index && editField === 'question' ? (
-                  <input
-                    type="text"
-                    value={faq.question}
-                    onChange={handleFaqChange}
-                    onBlur={handleBlur}
-                    onClick={(e) => e.stopPropagation()}
-                    autoFocus
-                  />
-                ) : (
-                  <span onClick={(e) => handleEditFaq(index, 'question', e)}>{faq.question}</span>
-                )} */}
-                  <span 
-                  // onClick={(e) => handleEditFaq(index, 'question', e)}
-                    >{faq.question}</span>
+                <span>{faq.question}</span>
                 <span className="faq-toggle">{activeIndex === index ? '-' : '+'}</span>
               </button>
               <div
@@ -679,29 +646,7 @@ export default function EditorFaqList({
                   fontFamily: faq.styles?.answer?.fontFamily || styles.answer.fontFamily,
                 }}
               >
-                {/* {editIndex === index && editField === 'answer' ? (
-                  <textarea
-                    value={faq.answer}
-                    onChange={handleFaqChange}
-                    onBlur={handleBlur}
-                    onClick={(e) => e.stopPropagation()}
-                    autoFocus
-                    style={{
-                      width: '100%',
-                      minHeight: '100px',
-                      backgroundColor: 'transparent',
-                      color: 'inherit',
-                      border: 'none',
-                      outline: 'none',
-                      resize: 'vertical',
-                    }}
-                  />
-                ) : (
-                  <p onClick={(e) => handleEditFaq(index, 'answer', e)}>{faq.answer}</p>
-                )} */}
-                  <p 
-                  // onClick={(e) => handleEditFaq(index, 'answer', e)}
-                  >{faq.answer}</p>
+                <p>{faq.answer}</p>
               </div>
             </div>
           ))}

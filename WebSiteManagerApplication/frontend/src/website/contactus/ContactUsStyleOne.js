@@ -1,11 +1,57 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './ContactUs.css';
 import EditorText from '../aboutus/EditorText';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode'; 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { SketchPicker } from 'react-color';
+
+import ReactDOM from 'react-dom';
+
+const SuccessNotification = ({ show, message }) => { 
+  if (!show) return null;
+  
+  return ReactDOM.createPortal(
+    <div style={{
+      position: 'fixed',
+      top: '20px',
+      right: '20px',
+      backgroundColor: '#c6c6c6',
+      color: 'white',
+      padding: '15px 25px',
+      borderRadius: '8px',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      zIndex: 10000,
+      fontSize: '16px',
+      fontWeight: '500',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '10px',
+      animation: 'slideInRight 0.3s ease-out',
+      border: '1px solid #c6c6c6',
+      pointerEvents: 'none'
+    }}>
+      <div style={{
+        width: '20px',
+        height: '20px',
+        borderRadius: '50%',
+        backgroundColor: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#c6c6c6',
+        fontSize: '14px',
+        fontWeight: 'bold'
+      }}>
+        ✓
+      </div>
+      {message}
+    </div>,
+    document.body
+  );
+};
+
 
 // --- SimpleModal local ---
 function SimpleModal({ isOpen, onClose, children }) {
@@ -90,12 +136,30 @@ export default function ContactUsStyleOne({ contentType = 'contactus', styleKey 
   const [contactUsData, setContactUsData] = useState(null);
   const [userEntreprise, setUserEntreprise] = useState(null);
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const colorPickerRef = useRef(null);
   const [backgroundColor, setBackgroundColor] = useState('#ffffff');
   const [formulaire, setFormulaire] = useState(null);
   const [showFormModal, setShowFormModal] = useState(false);
   const [formTitle, setFormTitle] = useState("");
   const [fields, setFields] = useState([]);
   const [responses, setResponses] = useState({});
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showFormEditor, setShowFormEditor] = useState(false);
+  const [formSide, setFormSide] = useState('right'); // 'left' ou 'right'
+  const [formInputStyle, setFormInputStyle] = useState({
+    borderRadius: '8px',
+    backgroundColor: '#ffffff',
+    backgroundAlpha: 1,
+  });
+  const [formButtonStyle, setFormButtonStyle] = useState({
+    backgroundColor: '#2196F3',
+    hoverColor: '#1976D2',
+    textColor: '#fff',
+    borderRadius: '8px',
+    padding: '12px 20px',
+    fontSize: '1.1rem',
+    width: '100%',
+  });
 
   
   const defaultStyles = {
@@ -194,6 +258,9 @@ export default function ContactUsStyleOne({ contentType = 'contactus', styleKey 
           }));
           setBackgroundColor(prefs.backgroundColor || '#ffffff');
           if (onBackgroundColorChange) onBackgroundColorChange(prefs.backgroundColor || '#ffffff');
+          if (prefs.formSide) setFormSide(prefs.formSide);
+          if (prefs.formInputStyle) setFormInputStyle(prefs.formInputStyle);
+          if (prefs.formButtonStyle) setFormButtonStyle(prefs.formButtonStyle);
         }
 
         // Récupérer le formulaire dynamique
@@ -217,6 +284,18 @@ export default function ContactUsStyleOne({ contentType = 'contactus', styleKey 
   useEffect(() => {
     if (onBackgroundColorChange) onBackgroundColorChange(backgroundColor);
   }, [backgroundColor, onBackgroundColorChange]);
+
+  // Fermer la palette couleur au clic dehors
+  useEffect(() => {
+    if (!showColorPicker) return;
+    function handleClickOutside(e) {
+      if (colorPickerRef.current && !colorPickerRef.current.contains(e.target)) {
+        setShowColorPicker(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showColorPicker]);
 
   const handlePositionChange = (element, newPosition) => {
     setPositions(prev => ({ ...prev, [element]: newPosition }));
@@ -267,16 +346,23 @@ export default function ContactUsStyleOne({ contentType = 'contactus', styleKey 
                 sectionName: styles.sectionName,
                 labelOffice: styles.labelOffice,
                 labelPhone: styles.labelPhone,
-                labelEmail: styles.labelEmail
+                labelEmail: styles.labelEmail,
+                formButton: styles.formButton, // Keep existing styles
               },
               texts: texts,
-              backgroundColor
+              backgroundColor,
+              formPosition: positions.formPosition, // Assuming formPosition is part of positions
+              formSide,
+              formInputStyle,
+              formButtonStyle,
             },
           },
         },
       }, config);
       
-      toast.success('Modifications sauvegardées !');
+      setShowSuccessMessage(true);
+      setTimeout(() => setShowSuccessMessage(false), 3000);
+      toast.success('Modifications sauvegardées avec succès');
     } catch (err) {
       toast.error('Erreur lors de la sauvegarde.');
       console.error(err);
@@ -304,7 +390,11 @@ export default function ContactUsStyleOne({ contentType = 'contactus', styleKey 
         champs: fields,
         entreprise: userEntreprise
       }, config);
+      // toast.success('Formulaire créé avec succès !');
+      setShowSuccessMessage(true);
+      setTimeout(() => setShowSuccessMessage(false), 3000);
       toast.success('Formulaire créé avec succès !');
+
       setShowFormModal(false);
       setFormTitle("");
       setFields([]);
@@ -320,21 +410,23 @@ export default function ContactUsStyleOne({ contentType = 'contactus', styleKey 
     }
   };
 
-  const handleResponseChange = (champId, value) => {
-    setResponses({ ...responses, [champId]: value });
+  const handleResponseChange = (champNom, value) => {
+    setResponses({ ...responses, [champNom]: value });
   };
 
   const submitResponses = async () => {
     try {
-      const responseArray = (formulaire.champs || []).map((champ) => {
-        const valeur = responses[champ._id];
-        return {
-          formulaire: formulaire._id,
-          champ: champ._id,
-          valeur: valeur ? valeur.trim() !== '' ? valeur : 'VALEUR_VIDE' : 'VALEUR_VIDE',
-        };
+      const responseObject = {};
+      Object.keys(formulaire.champs || {}).forEach(nom => {
+        const valeur = responses[nom];
+        responseObject[nom] = valeur ? valeur.trim() !== '' ? valeur : 'VALEUR_VIDE' : 'VALEUR_VIDE';
       });
-      await axios.post('http://localhost:5000/formulaires/repondre', responseArray);
+      await axios.post('http://localhost:5000/formulaires/reponse', {
+        values: responseObject,
+          formulaire: formulaire._id,
+      });
+      setShowSuccessMessage(true);
+      setTimeout(() => setShowSuccessMessage(false), 3000);
       toast.success('Réponses envoyées avec succès !');
       setResponses({});
     } catch (error) {
@@ -346,68 +438,216 @@ export default function ContactUsStyleOne({ contentType = 'contactus', styleKey 
   if (error) return <div style={{ color: 'red' }}>{error}</div>;
 
   return (
-    <div className="contact-container" style={{ position: 'relative' }}>
-      <button 
-        onClick={saveAllChanges} 
-        style={{ 
-            position: 'absolute', 
-            top: '-50px', 
-            right: '-50px', 
-            zIndex: 1000, 
-            padding: '10px 20px', 
-            cursor: 'pointer',
-            backgroundColor: '#a0a0a0e5',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '1em',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            transition: 'background-color 0.3s ease'
-        }}
-        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#a0a0a0e5'}
-        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#a0a0a0e5'}
-      >
-        <CheckCircleIcon />
-        Enregistrer
-      </button>
-
-      <div style={{ position: 'absolute', top: '-50px', right: '100px', zIndex: 1000 }}>
-        <button
-          onClick={() => setShowColorPicker(!showColorPicker)}
-          style={{
-            padding: '10px 20px',
-            cursor: 'pointer',
-            backgroundColor: backgroundColor,
-            border: '1px solid #ccc',
-            borderRadius: '8px'
-          }}
-        >
-          Couleur de fond
-        </button>
-        {showColorPicker && (
-          <div style={{ position: 'absolute', zIndex: 2 }}>
-            <div
+    <>
+      <style>
+        {`
+          @keyframes slideInRight {
+            from {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+        `}
+      </style>
+      
+      <SuccessNotification 
+        show={showSuccessMessage} 
+        message="Modifications enregistrées avec succès" 
+      />
+      
+      <div style={{ backgroundColor: 'white', minHeight: '100vh', padding: '20px' }}>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          marginBottom: '20px',
+          padding: '15px 20px',
+          backgroundColor: '#f8f9fa',
+          borderRadius: '8px',
+          border: '1px solid #e9ecef',
+          position: 'relative' // Ajouté pour permettre le positionnement absolu du panneau
+        }}>
+          <span style={{ 
+            fontSize: '18px', 
+            fontWeight: '600', 
+            color: '#495057' 
+          }}>Contact us section</span> 
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center', position: 'relative' }}>
+            <button
+              onClick={() => setShowColorPicker(!showColorPicker)}
               style={{
-                position: 'fixed',
-                top: '0px',
-                right: '0px',
-                bottom: '0px',
-                left: '0px',
+                padding: '8px',
+                cursor: 'pointer',
+                backgroundColor: backgroundColor,
+                border: 'none',
+                borderRadius: '8px',
+                fontSize: '16px',
+                fontWeight: '500',
+                marginTop: '16px',
+                transition: 'background-color 0.2s ease',
               }}
-              onClick={() => setShowColorPicker(false)}
-            />
-            <SketchPicker
-              color={backgroundColor}
-              onChange={(color) => setBackgroundColor(color.hex)}
-            />
+            >
+              Couleur de fond
+            </button>
+            {showColorPicker && (
+              <div ref={colorPickerRef} style={{ position: 'absolute', zIndex: 2 }}>
+                <div
+                  style={{
+                    position: 'fixed',
+                    top: '0px',
+                    right: '0px',
+                    bottom: '0px',
+                    left: '0px',
+                  }}
+                  onClick={() => setShowColorPicker(false)}
+                />
+                <SketchPicker
+                  color={backgroundColor}
+                  onChange={(color) => setBackgroundColor(color.hex)}
+                />
+              </div>
+            )}
+            
+            <button
+              onClick={() => setShowFormEditor((prev) => !prev)}
+              style={{
+                padding: '8px',
+                backgroundColor: 'black',
+                color: 'white',
+                border: 'none',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                marginTop: '16px',
+                fontSize: '16px',
+                fontWeight: '500',
+                transition: 'background-color 0.2s ease',
+              }}
+            >
+              Editer le formulaire
+            </button>
+            {showFormEditor && (
+              <div style={{
+                position: 'absolute',
+                top: '60px', // juste sous les boutons
+                left: 0,
+                background: '#fff',
+                border: '1px solid #ccc',
+                borderRadius: '12px',
+                padding: '24px',
+                zIndex: 10001,
+                boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+                minWidth: '260px',
+              }}>
+                <h4 style={{ marginBottom: '16px' }}>Édition du formulaire</h4>
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{ color: 'black' }}>Position du formulaire : </label>
+                  <button
+                    style={{
+                      marginRight: 8,
+                      background: formSide === 'left' ? '#1976D2' : '#eee',
+                      color: formSide === 'left' ? '#fff' : '#333',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '6px 16px',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => setFormSide('left')}
+                  >
+                    Gauche
+                  </button>
+                  <button
+                    style={{
+                      background: formSide === 'right' ? '#1976D2' : '#eee',
+                      color: formSide === 'right' ? '#fff' : '#333',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '6px 16px',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => setFormSide('right')}
+                  >
+                    Droite
+                  </button>
+                </div>
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{ color: 'black' }}>Border radius des inputs : </label>
+                  <input type="range" min="0" max="32" value={parseInt(formInputStyle.borderRadius)} onChange={e => setFormInputStyle(prev => ({ ...prev, borderRadius: e.target.value + 'px' }))} />
+                  <span style={{ marginLeft: 8 }}>{formInputStyle.borderRadius}</span>
+                </div>
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{ color: 'black' }}>Couleur de fond des inputs : </label>
+                  <input type="color" value={formInputStyle.backgroundColor} onChange={e => setFormInputStyle(prev => ({ ...prev, backgroundColor: e.target.value }))} />
+                </div>
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{ color: 'black' }}>Opacité de fond : </label>
+                  <input type="range" min="0" max="1" step="0.01" value={formInputStyle.backgroundAlpha} onChange={e => setFormInputStyle(prev => ({ ...prev, backgroundAlpha: parseFloat(e.target.value) }))} />
+                  <span style={{ marginLeft: 8 }}>{formInputStyle.backgroundAlpha}</span>
+                </div>
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{ color: 'black' }}>Bouton Envoyer :</label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8 }}>
+                    <label style={{ color: 'black' }}>Couleur de fond :</label>
+                    <input type="color" value={formButtonStyle.backgroundColor} onChange={e => setFormButtonStyle(prev => ({ ...prev, backgroundColor: e.target.value }))} />
+                    <label style={{ color: 'black' }}>Couleur hover :</label>
+                    <input type="color" value={formButtonStyle.hoverColor} onChange={e => setFormButtonStyle(prev => ({ ...prev, hoverColor: e.target.value }))} />
+                    <label style={{ color: 'black' }}>Couleur du texte :</label>
+                    <input type="color" value={formButtonStyle.textColor} onChange={e => setFormButtonStyle(prev => ({ ...prev, textColor: e.target.value }))} />
+                    <label style={{ color: 'black' }}>Border radius :</label>
+                    <input type="range" min="0" max="32" value={parseInt(formButtonStyle.borderRadius)} onChange={e => setFormButtonStyle(prev => ({ ...prev, borderRadius: e.target.value + 'px' }))} />
+                    <span>{formButtonStyle.borderRadius}</span>
+                    <label style={{ color: 'black' }}>Taille (padding) :</label>
+                    <input type="text" value={formButtonStyle.padding} onChange={e => setFormButtonStyle(prev => ({ ...prev, padding: e.target.value }))} placeholder="ex: 12px 20px" />
+                    <label style={{ color: 'black' }}>Taille du texte :</label>
+                    <input type="text" value={formButtonStyle.fontSize} onChange={e => setFormButtonStyle(prev => ({ ...prev, fontSize: e.target.value }))} placeholder="ex: 1.1rem" />
+                    <label style={{ color: 'black' }}>Largeur :</label>
+                    <input type="text" value={formButtonStyle.width} onChange={e => setFormButtonStyle(prev => ({ ...prev, width: e.target.value }))} placeholder="ex: 100% ou 200px" />
+                  </div>
+                </div>
+                <button onClick={() => setShowFormEditor(false)} style={{ marginTop: '12px', padding: '6px 16px', borderRadius: '8px', border: 'none', background: '#aaa', color: '#fff', cursor: 'pointer' }}>Fermer</button>
+              </div>
+            )}
+            <button 
+              onClick={saveAllChanges}
+              style={{
+                padding: '8px',
+                backgroundColor: '#777777',
+                color: 'white',
+                border: 'none',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                marginTop: '16px',
+                fontSize: '16px',
+                fontWeight: '500',
+                transition: 'background-color 0.2s ease'
+              }}
+              onMouseOver={(e) => {
+                e.target.style.backgroundColor = '#c6c6c6';
+              }}
+              onMouseOut={(e) => {
+                e.target.style.backgroundColor = '#777777';
+              }}
+            >
+              Enregistrer les modifications
+            </button>
           </div>
-        )}
-      </div>
+        </div>
+<div className="contact-us" style={{ backgroundColor }} >
 
-      <div className="contact-info" style={{ backgroundColor }}>
+
+    <div className="contact-container" style={{ position: 'relative', display: 'flex', flexDirection: formSide === 'left' || formSide === 'right' ? 'row' : 'column', gap: 32, alignItems: 'flex-start' }}>
+      <div
+        className="contact-info"
+        style={{
+          backgroundColor,
+          flex: 1,
+          order: formSide === 'left' ? 2 : 1,
+          minWidth: 0,
+        }}
+      >
         <div style={{ position: 'relative', minHeight: '1.5em' }}>
           <EditorText
             elementType="h2"
@@ -520,40 +760,84 @@ export default function ContactUsStyleOne({ contentType = 'contactus', styleKey 
 
       {/* Formulaire dynamique ou bouton + */}
       {formulaire ? (
-        <div className="contact-form">
+        <div
+          className="contact-form"
+          style={{
+            flex: 1,
+            order: formSide === 'left' ? 1 : 2,
+            minWidth: 0,
+          }}
+        >
           <form onSubmit={e => { e.preventDefault(); submitResponses(); }}>
             <div className="name-fields">
-              {(formulaire.champs || []).slice(0, 2).map((champ, idx) => (
+              {Object.entries(formulaire.champs || {}).slice(0, 2).map(([nom, type], idx) => (
                 <input
-                  key={champ._id}
-                  type={champ.type}
-                  placeholder={champ.nom}
-                  value={responses[champ._id] || ''}
-                  onChange={e => handleResponseChange(champ._id, e.target.value)}
+                  key={nom}
+                  type={type}
+                  placeholder={nom}
+                  value={responses[nom] || ''}
+                  onChange={e => handleResponseChange(nom, e.target.value)}
                   required
+                  style={{
+                    borderRadius: formInputStyle.borderRadius,
+                    backgroundColor: formInputStyle.backgroundColor + Math.round(formInputStyle.backgroundAlpha * 255).toString(16).padStart(2, '0'),
+                    border: '1px solid #ccc',
+                    padding: '10px',
+                    marginBottom: '10px',
+                    width: '100%',
+                    fontSize: '1em',
+                    transition: 'background 0.2s',
+                  }}
                 />
               ))}
             </div>
-            {(formulaire.champs || []).slice(2).map((champ) => (
+            {Object.entries(formulaire.champs || {}).slice(2).map(([nom, type]) => (
               <input
-                key={champ._id}
-                type={champ.type}
-                placeholder={champ.nom}
-                value={responses[champ._id] || ''}
-                onChange={e => handleResponseChange(champ._id, e.target.value)}
+                key={nom}
+                type={type}
+                placeholder={nom}
+                value={responses[nom] || ''}
+                onChange={e => handleResponseChange(nom, e.target.value)}
                 required
+                style={{
+                  borderRadius: formInputStyle.borderRadius,
+                  backgroundColor: formInputStyle.backgroundColor + Math.round(formInputStyle.backgroundAlpha * 255).toString(16).padStart(2, '0'),
+                  border: '1px solid #ccc',
+                  padding: '10px',
+                  marginBottom: '10px',
+                  width: '100%',
+                  fontSize: '1em',
+                  transition: 'background 0.2s',
+                }}
               />
             ))}
             <div className="button-container">
-              <button type="submit">Envoyer</button>
+              <button
+                type="submit"
+                style={{
+                  backgroundColor: formButtonStyle.backgroundColor,
+                  color: formButtonStyle.textColor,
+                  border: 'none',
+                  borderRadius: formButtonStyle.borderRadius,
+                  padding: formButtonStyle.padding,
+                  fontSize: formButtonStyle.fontSize,
+                  width: formButtonStyle.width,
+                  transition: 'background-color 0.3s ease',
+                  cursor: 'pointer',
+                }}
+                onMouseOver={e => e.currentTarget.style.backgroundColor = formButtonStyle.hoverColor}
+                onMouseOut={e => e.currentTarget.style.backgroundColor = formButtonStyle.backgroundColor}
+              >
+                Envoyer
+              </button>
             </div>
           </form>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '40px 0' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '40px 0', position: 'relative' }}>
           <span style={{ marginBottom: '16px', fontSize: '1.2em', color: '#a0a0a0e5' }}>cliquer pour ajouter un formulaire</span>
           <button
-            onClick={() => setShowFormModal(true)}
+            onClick={() => setShowFormModal((prev) => !prev)}
             style={{
               width: 80,
               height: 80,
@@ -573,118 +857,148 @@ export default function ContactUsStyleOne({ contentType = 'contactus', styleKey 
           >
             +
           </button>
-          <SimpleModal isOpen={showFormModal} onClose={() => setShowFormModal(false)}>
-            <h2 style={{
-              textAlign: 'center',
-              color: '#333',
-              marginBottom: '24px',
-              fontSize: '1.8rem',
-              fontWeight: '600'
-            }}>Créer un formulaire</h2>
-            <input
-              type="text"
-              placeholder="Titre du formulaire"
-              value={formTitle}
-              onChange={e => setFormTitle(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '12px',
-                marginBottom: '20px',
-                border: '1px solid #ddd',
-                borderRadius: '8px',
-                fontSize: '1rem',
-                transition: 'border-color 0.3s ease',
-                outline: 'none'
-              }}
-            />
-            <button 
-              onClick={addField} 
-              style={{
-                width: '100%',
-                padding: '12px',
-                marginBottom: '20px',
-                backgroundColor: '#4CAF50',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontSize: '1rem',
-                fontWeight: '500',
-                transition: 'background-color 0.3s ease',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px'
-              }}
-              onMouseOver={e => e.currentTarget.style.backgroundColor = '#45a049'}
-              onMouseOut={e => e.currentTarget.style.backgroundColor = '#4CAF50'}
-            >
-              <span style={{ fontSize: '1.2rem' }}>+</span> Ajouter un champ
-            </button>
-            {fields.map((field, index) => (
-              <div key={index} style={{ 
-                display: 'flex', 
-                gap: '12px', 
-                marginBottom: '16px',
-                alignItems: 'center'
-              }}>
-                <input
-                  type="text"
-                  placeholder="Nom du champ"
-                  value={field.nom}
-                  onChange={e => handleFieldChange(index, 'nom', e.target.value)}
-                  style={{
-                    flex: 2,
-                    padding: '10px',
-                    border: '1px solid #ddd',
-                    borderRadius: '6px',
-                    fontSize: '0.9rem',
-                    outline: 'none'
-                  }}
-                />
-                <select
-                  value={field.type}
-                  onChange={e => handleFieldChange(index, 'type', e.target.value)}
-                  style={{
-                    flex: 1,
-                    padding: '10px',
-                    border: '1px solid #ddd',
-                    borderRadius: '6px',
-                    fontSize: '0.9rem',
-                    backgroundColor: 'white',
-                    cursor: 'pointer',
-                    outline: 'none'
-                  }}
-                >
-                  <option value="text">Texte</option>
-                  <option value="number">Nombre</option>
-                </select>
-              </div>
-            ))}
-            <button 
-              onClick={createForm} 
-              style={{
-                width: '100%',
-                padding: '14px',
-                backgroundColor: '#2196F3',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontSize: '1.1rem',
-                fontWeight: '500',
-                marginTop: '20px',
-                transition: 'background-color 0.3s ease',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-              }}
-              onMouseOver={e => e.currentTarget.style.backgroundColor = '#1976D2'}
-              onMouseOut={e => e.currentTarget.style.backgroundColor = '#2196F3'}
-            >
-              Créer le formulaire
-            </button>
-          </SimpleModal>
+          {showFormModal && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              right: '100%', // à gauche du bouton
+              background: '#fff',
+              border: '1px solid #ccc',
+              borderRadius: '12px',
+              padding: '24px',
+              zIndex: 10001,
+              boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+              minWidth: '320px',
+            }}>
+              <h2 style={{
+                textAlign: 'center',
+                color: '#333',
+                marginBottom: '24px',
+                fontSize: '1.8rem',
+                fontWeight: '600'
+              }}>Créer un formulaire</h2>
+              <input
+                type="text"
+                placeholder="Titre du formulaire"
+                value={formTitle}
+                onChange={e => setFormTitle(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  marginBottom: '20px',
+                  border: '1px solid #ddd',
+                  borderRadius: '8px',
+                  fontSize: '1rem',
+                  transition: 'border-color 0.3s ease',
+                  outline: 'none'
+                }}
+              />
+              <button 
+                onClick={addField} 
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  marginBottom: '20px',
+                  backgroundColor: '#4CAF50',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  fontWeight: '500',
+                  transition: 'background-color 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
+                }}
+                onMouseOver={e => e.currentTarget.style.backgroundColor = '#45a049'}
+                onMouseOut={e => e.currentTarget.style.backgroundColor = '#4CAF50'}
+              >
+                <span style={{ fontSize: '1.2rem' }}>+</span> Ajouter un champ
+              </button>
+              {fields.map((field, index) => (
+                <div key={index} style={{ 
+                  display: 'flex', 
+                  gap: '12px', 
+                  marginBottom: '16px',
+                  alignItems: 'center'
+                }}>
+                  <input
+                    type="text"
+                    placeholder="Nom du champ"
+                    value={field.nom}
+                    onChange={e => handleFieldChange(index, 'nom', e.target.value)}
+                    style={{
+                      flex: 2,
+                      padding: '10px',
+                      border: '1px solid #ddd',
+                      borderRadius: '6px',
+                      fontSize: '0.9rem',
+                      outline: 'none'
+                    }}
+                  />
+                  <select
+                    value={field.type}
+                    onChange={e => handleFieldChange(index, 'type', e.target.value)}
+                    style={{
+                      flex: 1,
+                      padding: '10px',
+                      border: '1px solid #ddd',
+                      borderRadius: '6px',
+                      fontSize: '0.9rem',
+                      backgroundColor: 'white',
+                      cursor: 'pointer',
+                      outline: 'none'
+                    }}
+                  >
+                    <option value="text">Texte</option>
+                    <option value="number">Nombre</option>
+                  </select>
+                </div>
+              ))}
+              <button 
+                onClick={createForm} 
+                style={{
+                  width: '100%',
+                  padding: '14px',
+                  backgroundColor: '#2196F3',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '1.1rem',
+                  fontWeight: '500',
+                  marginTop: '20px',
+                  transition: 'background-color 0.3s ease',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                }}
+                onMouseOver={e => e.currentTarget.style.backgroundColor = '#1976D2'}
+                onMouseOut={e => e.currentTarget.style.backgroundColor = '#2196F3'}
+              >
+                Créer le formulaire
+              </button>
+              <button
+                onClick={() => setShowFormModal(false)}
+                style={{
+                  marginTop: '12px',
+                  padding: '6px 16px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  background: '#aaa',
+                  color: '#fff',
+                  cursor: 'pointer'
+                }}
+              >
+                Fermer
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
+    </div>
+    </div>
+    </>
   );
 }

@@ -2,25 +2,38 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Box,
   Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  TextField,
-  Stack,
+  Button,
 } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
+import ArchiveIcon from '@mui/icons-material/Archive';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import { jwtDecode } from 'jwt-decode';
 import { Contenu } from './types/contenu';
 
 interface GeneratedContentProps {
   content: Contenu;
+  onOpenAIUpdate?: (content: Contenu) => void;
+  onArchived?: (id: string) => void;
 }
 
-const GeneratedContent: React.FC<GeneratedContentProps> = ({ content }) => {
+const GeneratedContent: React.FC<GeneratedContentProps> = ({ content, onOpenAIUpdate, onArchived }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [localContent, setLocalContent] = useState(content);
+  const [showArchiveDialog, setShowArchiveDialog] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [archiving, setArchiving] = useState(false);
 
   useEffect(() => {
-    if (iframeRef.current && content.html_component && content.css_style) {
+    setLocalContent(content);
+  }, [content]);
+
+  useEffect(() => {
+    if (iframeRef.current && localContent.html_component && localContent.css_style) {
       const iframeDoc = iframeRef.current.contentDocument;
       if (iframeDoc) {
         iframeDoc.open();
@@ -30,19 +43,39 @@ const GeneratedContent: React.FC<GeneratedContentProps> = ({ content }) => {
           <head>
             <style>
             body { margin: 0; }
-            ${content.css_style}</style>
+            ${localContent.css_style}
+            </style>
           </head>
           <body>
-            ${content.html_component}
+            ${localContent.html_component}
           </body>
           </html>
         `);
         iframeDoc.close();
       }
     }
-  }, [content]);
+  }, [localContent]);
 
-  if (!content || (!content.html_component && !content.css_style)) {
+  const handleArchive = async () => {
+    setArchiving(true);
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('Token manquant');
+      await fetch(`http://localhost:5000/contenus/ContenuSpecifique/${localContent._id}/archive`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      setSnackbar({ open: true, message: 'Composant archivé avec succès !', severity: 'success' });
+      setShowArchiveDialog(false);
+      if (localContent._id) onArchived?.(localContent._id);
+    } catch (e) {
+      setSnackbar({ open: true, message: "Erreur lors de l'archivage.", severity: 'error' });
+    } finally {
+      setArchiving(false);
+    }
+  };
+
+  if (!localContent || (!localContent.html_component && !localContent.css_style)) {
     return (
       <Box sx={{ p: 4, textAlign: 'center', color: 'text.secondary' }}>
         <Typography variant="h6">Aucun contenu généré pour le moment.</Typography>
@@ -52,31 +85,63 @@ const GeneratedContent: React.FC<GeneratedContentProps> = ({ content }) => {
   }
 
   return (
-    <Box >
-      {/* <Typography variant="h5" component="h2" gutterBottom>
-        Aperçu du Composant Généré
-      </Typography>
+    <>
+      <style>
+        {`
+          @keyframes slideInRight {
+            from {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+        `}
+      </style>
+      
+      
+      
+      <div style={{ backgroundColor: 'white', minHeight: '100vh', padding: '20px' }}>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          marginBottom: '20px',
+          padding: '15px 20px',
+          backgroundColor: '#f8f9fa',
+          borderRadius: '8px',
+          border: '1px solid #e9ecef'
+        }}>
+          <span style={{ 
+            fontSize: '18px', 
+            fontWeight: '600', 
+            color: '#495057' 
+          }}>AI generated content</span> 
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <Button
+              variant="outlined"
+              color="warning"
+              startIcon={<ArchiveIcon />}
+              onClick={() => setShowArchiveDialog(true)}
+              disabled={archiving}
+            >
+              Archiver
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<ColorLensIcon />}
+              onClick={() => onOpenAIUpdate?.(localContent)}
+            >
+              Modifier avec l'IA
+            </Button>
+          </div>
+        </div>
 
-      <Accordion defaultExpanded sx={{ mb: 3 }}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-          <ColorLensIcon sx={{ mr: 1 }} />
-          <Typography>Personnaliser les couleurs (via IA)</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography variant="body2" color="text.secondary">
-            La personnalisation des couleurs est maintenant gérée par les préférences de style que vous décrivez à l'IA.
-            Pour modifier les couleurs, retournez à l'onglet 'Générer le contenu' et ajustez vos préférences stylistiques.
-          </Typography>
-        </AccordionDetails>
-      </Accordion> */}
-
+    <Box>
       <Box sx={{ border: '1px solid #e0e0e0' , backgroundColor: '#fff'}}>
-        {/* <iframe
-          ref={iframeRef}
-          title="Generated Content Preview"
-          style={{ width: '100%', height: '600px', border: 'none' }}
-        /> */}
-
         <iframe
           ref={iframeRef}
           title="Generated Content Preview"
@@ -96,7 +161,34 @@ const GeneratedContent: React.FC<GeneratedContentProps> = ({ content }) => {
           }}
         />
       </Box>
+      {/* <Box sx={{ mt: 2, textAlign: 'center' }}>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<ColorLensIcon />}
+          onClick={() => onOpenAIUpdate?.(localContent)}
+        >
+          Modifier avec l'IA
+        </Button>
+      </Box> */}
     </Box>
+    </div>
+    <Dialog open={showArchiveDialog} onClose={() => setShowArchiveDialog(false)}>
+      <DialogTitle>Archiver ce composant IA ?</DialogTitle>
+      <DialogContent>
+        Voulez-vous vraiment archiver ce composant IA ? Cette action est irréversible.
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setShowArchiveDialog(false)} color="inherit">Annuler</Button>
+        <Button onClick={handleArchive} color="warning" disabled={archiving}>Archiver</Button>
+      </DialogActions>
+    </Dialog>
+    <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={() => setSnackbar(s => ({ ...s, open: false }))} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+      <MuiAlert elevation={6} variant="filled" onClose={() => setSnackbar(s => ({ ...s, open: false }))} severity={snackbar.severity as 'success' | 'info' | 'warning' | 'error'} sx={{ width: '100%' }}>
+        {snackbar.message}
+      </MuiAlert>
+    </Snackbar>
+    </>
   );
 };
 

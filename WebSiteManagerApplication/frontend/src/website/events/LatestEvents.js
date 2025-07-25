@@ -18,7 +18,7 @@ export default function LatestEvents({ styleIndex }) {
   const [error, setError] = useState(null);
   const [userEntreprise, setUserEntreprise] = useState(null);
   const EventComponent = styles[styleIndex]?.component || EventStyleOne;
-  console.log('StyleIndex reçu dans LatestEvents:', styleIndex);
+  // console.log('StyleIndex reçu dans LatestEvents:', styleIndex);
 
   // Récupération du token et décodage pour obtenir l'ID de l'utilisateur
   const token = localStorage.getItem("token");
@@ -90,7 +90,7 @@ export default function LatestEvents({ styleIndex }) {
       );
       // Filtrer uniquement les événements publiés et mapper les champs
       const publishedEvents = response.data
-        .filter(event => event.isPublished)
+        .filter(event => event)
         .map(event => {
           // Styles par défaut complets
           const defaultStyles = {
@@ -172,7 +172,8 @@ export default function LatestEvents({ styleIndex }) {
   }
 
   return (
-    <section className="events">
+    // <section className="events">
+    <section>
       {/* <div className="events-header">
         {styleIndex !== 0 && <h1>OUR LATEST EVENTS</h1>}
       </div>

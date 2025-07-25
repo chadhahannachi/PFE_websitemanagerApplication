@@ -52,7 +52,7 @@ const TestimonialsDisplay = ({ entrepriseId }) => {
         config
       );
       const publishedTestimonials = response.data
-        .filter(temoignage => temoignage.isPublished)
+        // .filter(temoignage => temoignage.isPublished)
         .map(temoignage => ({
           name: temoignage.auteur,
           role: 'Client',

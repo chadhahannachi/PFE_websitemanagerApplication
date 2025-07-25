@@ -3,6 +3,7 @@ import { ContenuService } from './contenus.service';
 import { CreateContenuDto } from './dto/create-contenu.dto';
 import { UpdateContenuDto } from './dto/update-contenu.dto';
 import { GenerateContenuDto } from './dto/generate-contenu.dto';
+import { UpdateContenuAiDto } from './dto/update-contenu-ai.dto';
 
 @Controller('contenus')
 export class ContenuController {
@@ -108,5 +109,38 @@ export class ContenuController {
       this.logger.error('Error fetching contenus:', error);
       throw error;
     }
+  }
+
+  // contenus.controller.ts
+    @Patch('ContenuSpecifique/:id/styles')
+    updateContenuSpecifiqueStyles(@Param('id') id: string, @Body() styles: Record<string, any>) {
+      return this.contenuService.updateContenuSpecifiqueStyles(id, styles);
+    }
+
+
+    @Patch('ContenuSpecifique/:id/update-ai')
+async updateContenuWithAI(
+  @Param('id') id: string,
+  @Body() updateDto: UpdateContenuAiDto
+) {
+  return this.contenuService.updateContenuWithAI(id, updateDto);
+}
+
+  @Patch(':type/:id/archive')
+  async archiveContenu(@Param('type') type: string, @Param('id') id: string) {
+    return this.contenuService.archiveContenu(id, type);
+  }
+
+  @Patch(':type/:id/restore')
+  async restoreContenu(@Param('type') type: string, @Param('id') id: string) {
+    return this.contenuService.restoreContenu(id, type);
+  }
+
+  @Get(':type/entreprise/:entrepriseId/archived')
+  async getArchivedContenusByEntreprise(
+    @Param('type') type: string,
+    @Param('entrepriseId') entrepriseId: string,
+  ): Promise<any[]> {
+    return this.contenuService.findArchivedByEntreprise(type, entrepriseId);
   }
 }

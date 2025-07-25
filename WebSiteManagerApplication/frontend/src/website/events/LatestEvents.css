@@ -7,13 +7,13 @@
 
 }
 
-.events h1 {
+/* .events h1 {
   color: #f59e0b;
   font-size: 20px;
   font-weight: 600;
   margin-bottom: 1px;
-  display: block; /* Assure que les enfants s'affichent en bloc */
-}
+  display: block; 
+} */
 
 .events h2 {
   font-size: 36px;
@@ -244,4 +244,81 @@
   margin-top: auto;
   padding-top: 10px;
   border-top: 1px solid #e0e0e0;
+}
+
+/* Responsive pour EventStyleThreeDisplay */
+@media (max-width: 900px) {
+  .eventthree-responsive {
+    min-height: unset !important;
+    padding: 20px 10px !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .eventthree-stack {
+    position: static !important;
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    margin: 0 0 15px 0 !important;
+    text-align: center !important;
+    display: block !important;
+  }
+  .eventthree-grid {
+    position: static !important;
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    margin: 20px 0 0 0 !important;
+    padding: 0 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 15px !important;
+    border-radius: 0 !important;
+  }
+  .eventthree-grid .event-item {
+    width: 100% !important;
+    max-width: 350px !important;
+    height: auto !important;
+    min-height: 200px !important;
+    border-radius: 20px !important;
+    border: 1px solid #e0e0e0 !important;
+  }
+}
+
+/* Responsive pour EventStyleTwoDisplay */
+@media (max-width: 900px) {
+  .eventtwo-responsive {
+    min-height: unset !important;
+    padding: 20px 10px !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .eventtwo-stack {
+    position: static !important;
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    margin: 0 0 15px 0 !important;
+    text-align: center !important;
+    display: block !important;
+  }
+  .eventtwo-grid {
+    position: static !important;
+    width: 100% !important;
+    left: unset !important;
+    top: unset !important;
+    margin: 20px 0 0 0 !important;
+    padding: 0 10px !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 15px !important;
+  }
+  .eventtwo-grid .event-item {
+    width: 100% !important;
+    max-width: 350px !important;
+    height: auto !important;
+    min-height: 200px !important;
+    margin: 0 auto !important;
+  }
 }

@@ -86,7 +86,7 @@ export default function OurServices({ styleIndex }) {
       );
       
       const publishedServices = response.data
-        .filter((service) => service.isPublished)
+        .filter((service) => service)
         .map((service) => {
           // Styles par défaut complets
           const defaultStyles = {
@@ -196,9 +196,9 @@ export default function OurServices({ styleIndex }) {
   }
 
   return (
-    <section className="services-section">
-      {/* <h1 className="section-title">Our Services</h1> */}
-      {/* <h1 className="section-title">NOS SERVICES</h1> */}
+    // <section className="services-section">
+    <section>
+
       {services.length > 0 ? (
         <ServiceComponent services={services} />
       ) : (

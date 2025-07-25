@@ -8,7 +8,7 @@ import { PredefinedComponent, predefinedComponents } from '../interfaces/predefi
 export class GeminiService {
   private readonly logger = new Logger(GeminiService.name);
   private readonly genAI: GoogleGenerativeAI;
-  private readonly model: string = 'gemini-2.0-flash';
+  private readonly model: string = 'gemini-2.5-flash';
 
   constructor(private configService: ConfigService) {
     const apiKey = this.configService.get<string>('GEMINI_API_KEY');
@@ -127,6 +127,154 @@ export class GeminiService {
       return content;
     } catch (error) {
       this.logger.error('Error parsing Gemini response:', error);
+      throw error;
+    }
+  }
+
+  private buildUpdatePrompt(
+    currentHtml: string,
+    currentCss: string,
+    updateDto: {
+      title?: string;
+      description?: string;
+      cardBackgroundColor?: string;
+      sectionTitleColor?: string;
+      sectionDescriptionColor?: string;
+      cardTitleColor?: string;
+      cardDescriptionColor?: string;
+      sectionTitleFont?: string;
+      sectionDescriptionFont?: string;
+      cardTitleFont?: string;
+      cardDescriptionFont?: string;
+      sectionTitleAlign?: string;
+      sectionDescriptionAlign?: string;
+      cardTitleAlign?: string;
+      cardDescriptionAlign?: string;
+      additionalModifications?: string;
+    }
+  ): string {
+    let prompt = `
+      You are an expert web developer. Your task is to update an existing website section's HTML and CSS based on user modifications and preferences.\n\n
+      Current HTML Component:
+      \`\`\`html
+      ${currentHtml}
+      \`\`\`
+
+      Current CSS Style:
+      \`\`\`css
+      ${currentCss}
+      \`\`\`
+
+      --- USER PREFERENCES ---
+      ${updateDto.title ? `Section Title: ${updateDto.title}` : ''}
+      ${updateDto.description ? `Section Description: ${updateDto.description}` : ''}
+      ${updateDto.cardBackgroundColor ? `Card Background Color: ${updateDto.cardBackgroundColor}` : ''}
+      ${updateDto.sectionTitleColor ? `Section Title Color: ${updateDto.sectionTitleColor}` : ''}
+      ${updateDto.sectionDescriptionColor ? `Section Description Color: ${updateDto.sectionDescriptionColor}` : ''}
+      ${updateDto.cardTitleColor ? `Card Title Color: ${updateDto.cardTitleColor}` : ''}
+      ${updateDto.cardDescriptionColor ? `Card Description Color: ${updateDto.cardDescriptionColor}` : ''}
+      ${updateDto.sectionTitleFont ? `Section Title Font: ${updateDto.sectionTitleFont}` : ''}
+      ${updateDto.sectionDescriptionFont ? `Section Description Font: ${updateDto.sectionDescriptionFont}` : ''}
+      ${updateDto.cardTitleFont ? `Card Title Font: ${updateDto.cardTitleFont}` : ''}
+      ${updateDto.cardDescriptionFont ? `Card Description Font: ${updateDto.cardDescriptionFont}` : ''}
+      ${updateDto.sectionTitleAlign ? `Section Title Alignment: ${updateDto.sectionTitleAlign}` : ''}
+      ${updateDto.sectionDescriptionAlign ? `Section Description Alignment: ${updateDto.sectionDescriptionAlign}` : ''}
+      ${updateDto.cardTitleAlign ? `Card Title Alignment: ${updateDto.cardTitleAlign}` : ''}
+      ${updateDto.cardDescriptionAlign ? `Card Description Alignment: ${updateDto.cardDescriptionAlign}` : ''}
+      ${updateDto.additionalModifications ? `Additional Modifications: ${updateDto.additionalModifications}` : ''}
+      --- END USER PREFERENCES ---
+
+      Instructions:
+      1. Update the HTML component to reflect any new title or description provided.
+      2. Modify the CSS styles according to the style preferences and additional modifications requested.
+      3. Apply the color, font, and alignment preferences to the corresponding elements (section title, section description, card titles, card descriptions, card background).
+      4. Maintain the structural integrity and functionality of the original component.
+      5. Ensure the generated HTML is semantic and accessible.
+      6. Ensure the generated CSS is clean, well-organized, and only includes styles relevant to the generated HTML.
+      7. Do NOT include <style> or <script> tags in the HTML. Apply styles through classes or inline styles as appropriate, but prefer classes. Provide all CSS in the css_style field.
+      8. If no specific modifications are provided, maintain the current design while improving it slightly.
+      9. Provide the output in a single JSON object with two fields: "html_component" (string) and "css_style" (string).
+
+      JSON Format:
+      {
+        "html_component": "<!-- Updated HTML here -->",
+        "css_style": "/* Updated CSS here */"
+      }
+    `;
+
+    return prompt;
+  }
+
+  async updateContent(
+    currentHtml: string,
+    currentCss: string,
+    updateDto: {
+      title?: string;
+      description?: string;
+      cardBackgroundColor?: string;
+      sectionTitleColor?: string;
+      sectionDescriptionColor?: string;
+      cardTitleColor?: string;
+      cardDescriptionColor?: string;
+      sectionTitleFont?: string;
+      sectionDescriptionFont?: string;
+      cardTitleFont?: string;
+      cardDescriptionFont?: string;
+      sectionTitleAlign?: string;
+      sectionDescriptionAlign?: string;
+      cardTitleAlign?: string;
+      cardDescriptionAlign?: string;
+      additionalModifications?: string;
+    }
+  ): Promise<any> {
+    try {
+      this.logger.log('Updating content with AI...');
+      const prompt = this.buildUpdatePrompt(currentHtml, currentCss, updateDto);
+      this.logger.debug('Generated update prompt:', prompt);
+
+      const model = this.genAI.getGenerativeModel({ model: this.model });
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 2048,
+        },
+      });
+
+      const response = await result.response;
+      this.logger.debug('Raw response from Gemini:', response.text());
+
+      const content = this.parseGeminiResponse(response.text());
+      this.logger.debug('Parsed updated content:', content);
+
+      return content;
+    } catch (error) {
+      this.logger.error('Error updating content:', error);
+      throw error;
+    }
+  }
+
+  // Génération de texte simple pour le chatbot
+  async generateTextResponse(prompt: string): Promise<string> {
+    try {
+      this.logger.log('Generating chatbot text response...');
+      const model = this.genAI.getGenerativeModel({ model: this.model });
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 2048,
+        },
+      });
+      const response = await result.response;
+      this.logger.debug('Chatbot raw response:', response.text());
+      return response.text();
+    } catch (error) {
+      this.logger.error('Error generating chatbot text response:', error);
       throw error;
     }
   }

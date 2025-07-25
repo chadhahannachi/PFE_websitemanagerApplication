@@ -4,12 +4,125 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
 
+// Styles CSS pour la responsivité
+const responsiveStyles = `
+  .solutions-style-one-container {
+    position: relative;
+    min-height: 600px;
+    padding: 20px;
+    max-width: 100%;
+    overflow: visible;
+    height: auto;
+  }
+
+  .solutions-style-one-container h1 {
+    position: absolute;
+    margin-bottom: 10px;
+  }
+
+  .solutions-style-one-container h2 {
+    position: absolute;
+    margin-bottom: 30px;
+  }
+
+  .solutions-container {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 10px 20px;
+  }
+
+  .solution-card {
+    flex: 0 0 300px;
+    max-width: 300px;
+    transition: background-color 0.3s ease;
+  }
+
+  @media (max-width: 768px) {
+    .solutions-style-one-container {
+      padding: 15px !important;
+      min-height: auto !important;
+      height: auto !important;
+    }
+
+    .solutions-style-one-container h1 {
+      font-size: 18px !important;
+      margin-bottom: 8px !important;
+      position: relative !important;
+      text-align: center !important;
+    }
+
+    .solutions-style-one-container h2 {
+      font-size: 14px !important;
+      margin-bottom: 20px !important;
+      position: relative !important;
+      text-align: center !important;
+    }
+
+    .solutions-container {
+      gap: 10px 15px !important;
+      padding: 10px !important;
+      position: relative !important;
+      width: 100% !important;
+    }
+
+    .solution-card {
+      flex: 0 0 280px !important;
+      max-width: 280px !important;
+      padding: 20px 15px !important;
+      min-height: 180px !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .solutions-style-one-container {
+      padding: 10px !important;
+      min-height: auto !important;
+      height: auto !important;
+    }
+
+    .solutions-style-one-container h1 {
+      font-size: 16px !important;
+      margin-bottom: 6px !important;
+      position: relative !important;
+      text-align: center !important;
+    }
+
+    .solutions-style-one-container h2 {
+      font-size: 12px !important;
+      margin-bottom: 15px !important;
+      position: relative !important;
+      text-align: center !important;
+    }
+
+    .solutions-container {
+      gap: 8px 12px !important;
+      padding: 8px !important;
+      position: relative !important;
+      width: 100% !important;
+    }
+
+    .solution-card {
+      flex: 0 0 250px !important;
+      max-width: 250px !important;
+      padding: 15px 12px !important;
+      min-height: 160px !important;
+    }
+  }
+`;
+
 export default function SolutionStyleOneDisplay({ solutions = [], contentType = 'solutions', styleKey = 'styleOne', entrepriseId }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
   const [positions, setPositions] = useState({
     sectionName: { top: 0, left: 0 },
-    solutionGrid: { top: 50, left: 0 },
+    sectionDesc: { top: 50, left: 0 },
+    solutionGrid: { top: 100, left: 0 },
   });
   const [styles, setStyles] = useState({
     sectionName: {
@@ -20,15 +133,25 @@ export default function SolutionStyleOneDisplay({ solutions = [], contentType = 
       width: '100%',
       maxWidth: '600px',
     },
+    sectionDesc: {
+      color: '#666666',
+      fontSize: '16px',
+      fontFamily: 'Arial',
+      fontWeight: 'normal',
+      width: '100%',
+      maxWidth: '800px',
+    },
     solutionGrid: {
       width: 1200,
       minHeight: 440,
+      gap: '15px 20px',
     },
   });
   const [texts, setTexts] = useState({
     sectionName: 'NOS SOLUTIONS',
+    sectionDesc: 'Découvrez nos solutions innovantes et adaptées à vos besoins',
   });
-  const [cardStyles, setCardStyles] = useState({
+  const cardStyles = {
     card: {
       backgroundColor: '#ffffff',
       hoverBackgroundColor: '#f8f9fa',
@@ -56,7 +179,7 @@ export default function SolutionStyleOneDisplay({ solutions = [], contentType = 
       fontStyle: 'normal',
       textDecoration: 'none',
     },
-  });
+  };
   const [solutionData, setSolutionData] = useState([]);
   const [userEntreprise, setUserEntreprise] = useState(null);
 
@@ -65,51 +188,7 @@ export default function SolutionStyleOneDisplay({ solutions = [], contentType = 
   const isValidStyle = (style) => style && typeof style === 'object' && Object.keys(style).length > 0;
   const isValidText = (text) => typeof text === 'string' && text.trim().length > 0;
 
-  // Fetch user enterprise
-//   const token = localStorage.getItem('token');
-//   let userId = null;
-//   if (token) {
-//     try {
-//       const decodedToken = jwtDecode(token);
-//       userId = decodedToken?.sub;
-//     } catch (error) {
-//       console.error('Error decoding token:', error);
-//       setError('Erreur lors du décodage du token.');
-//       setLoading(false);
-//     }
-//   } else {
-//     console.error('Token is missing from localStorage.');
-//     setError('Token manquant. Veuillez vous connecter.');
-//     setLoading(false);
-//   }
 
-//   const fetchUserEntreprise = async () => {
-//     if (!token || !userId) {
-//       console.error('Token or User ID is missing');
-//       setError('Token ou ID utilisateur manquant.');
-//       setLoading(false);
-//       return;
-//     }
-
-//     try {
-//       const config = {
-//         headers: { Authorization: `Bearer ${token}` },
-//       };
-//       const userResponse = await axios.get(`http://localhost:5000/auth/user/${userId}`, config);
-//       const user = userResponse.data;
-//       if (!user.entreprise) {
-//         console.error("User's company (entreprise) is missing");
-//         setError("Entreprise de l'utilisateur non trouvée.");
-//         setLoading(false);
-//         return;
-//       }
-//       setUserEntreprise(user.entreprise);
-//     } catch (error) {
-//       console.error('Error fetching user data:', error);
-//       setError('Erreur lors de la récupération des données utilisateur.');
-//       setLoading(false);
-//     }
-//   };
 
   // Fetch preferences
   const fetchPreferences = async () => {
@@ -121,9 +200,7 @@ export default function SolutionStyleOneDisplay({ solutions = [], contentType = 
     try {
       const response = await axios.get(
         `http://localhost:5000/preferences/entreprise/${entrepriseId}/preferences`,
-        // {
-        //   headers: { Authorization: `Bearer ${token}` },
-        // }
+        
       );
       const fetchedPreferences = response.data.preferences?.[contentType]?.[styleKey] || {};
 
@@ -131,15 +208,21 @@ export default function SolutionStyleOneDisplay({ solutions = [], contentType = 
         sectionName: isValidPosition(fetchedPreferences.positions?.sectionName)
           ? fetchedPreferences.positions.sectionName
           : positions.sectionName,
+        sectionDesc: isValidPosition(fetchedPreferences.positions?.sectionDesc)
+          ? fetchedPreferences.positions.sectionDesc
+          : positions.sectionDesc,
         solutionGrid: isValidPosition(fetchedPreferences.positions?.solutionGrid)
           ? fetchedPreferences.positions.solutionGrid
-          : { top: 100, left: 0 }, // Adjusted default to avoid overlap
+          : positions.solutionGrid,
       };
 
       const newStyles = {
         sectionName: isValidStyle(fetchedPreferences.styles?.sectionName)
           ? fetchedPreferences.styles.sectionName
           : styles.sectionName,
+        sectionDesc: isValidStyle(fetchedPreferences.styles?.sectionDesc)
+          ? fetchedPreferences.styles.sectionDesc
+          : styles.sectionDesc,
         solutionGrid: isValidStyle(fetchedPreferences.styles?.solutionGrid)
           ? fetchedPreferences.styles.solutionGrid
           : styles.solutionGrid,
@@ -149,15 +232,14 @@ export default function SolutionStyleOneDisplay({ solutions = [], contentType = 
         sectionName: isValidText(fetchedPreferences.texts?.sectionName)
           ? fetchedPreferences.texts.sectionName
           : texts.sectionName,
+        sectionDesc: isValidText(fetchedPreferences.texts?.sectionDesc)
+          ? fetchedPreferences.texts.sectionDesc
+          : texts.sectionDesc,
       };
 
       setPositions(newPositions);
       setStyles(newStyles);
       setTexts(newTexts);
-
-      // Fetch card styles if available
-      const fetchedCardStyles = fetchedPreferences.cardStyles || cardStyles;
-      setCardStyles(fetchedCardStyles);
     } catch (error) {
       console.error('Error fetching preferences:', error);
       toast.error('Erreur lors du chargement des préférences');
@@ -168,6 +250,7 @@ export default function SolutionStyleOneDisplay({ solutions = [], contentType = 
 
   // Initialize solution data
   useEffect(() => {
+    
     setSolutionData(solutions.map((solution, index) => ({
       ...solution,
       id: solution.id || (index + 1).toString().padStart(2, '0'), // Ensure id is set
@@ -176,7 +259,8 @@ export default function SolutionStyleOneDisplay({ solutions = [], contentType = 
         title: { top: 80, left: 20 },
         description: { top: 110, left: 20 },
       },
-      styles: cardStyles,
+      // Utiliser les styles sauvegardés de la solution ou les styles par défaut
+      styles: solution.styles || cardStyles,
     })));
   }, [solutions, cardStyles]);
 
@@ -192,6 +276,28 @@ export default function SolutionStyleOneDisplay({ solutions = [], contentType = 
     }
   }, [entrepriseId]);
 
+  // Debug: Log positions and styles
+  useEffect(() => {
+    console.log('SolutionStyleOneDisplay - Positions:', positions);
+    console.log('SolutionStyleOneDisplay - Styles:', styles);
+    console.log('SolutionStyleOneDisplay - Texts:', texts);
+    console.log('SolutionStyleOneDisplay - solutionGrid position:', positions.solutionGrid);
+    console.log('SolutionStyleOneDisplay - solutionGrid styles:', styles.solutionGrid);
+  }, [positions, styles, texts]);
+
+  // Detect screen size
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setIsMobile(width <= 480);
+      setIsTablet(width > 480 && width <= 768);
+    };
+
+    handleResize(); // Initial check
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   if (loading) {
     return <div>Chargement...</div>;
   }
@@ -205,44 +311,74 @@ export default function SolutionStyleOneDisplay({ solutions = [], contentType = 
   }
 
   return (
-    <div className="solutions-style-one-container" style={{ position: 'relative' }}>
-      <h1
-        style={{
-          position: 'relative',
-          marginBottom: '20px',
-          ...styles.sectionName,
-        }}
-      >
-        {texts.sectionName}
-      </h1>
-      <div
-        className="solutions-container style-one"
-        style={{
-          position: 'relative',
-          width: styles.solutionGrid.width,
-          minHeight: styles.solutionGrid.minHeight,
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '30px',
-          padding: '10px 20px',
-        }}
-      >
+    <>
+      <style>{responsiveStyles}</style>
+      <div className="solutions-style-one-container">
+        <h1
+          style={{
+            ...styles.sectionName,
+            ...(isMobile || isTablet ? {
+              textAlign: 'center',
+              marginBottom: '10px',
+            } : positions.sectionName),
+          }}
+        >
+          {texts.sectionName}
+        </h1>
+        
+        <h2
+          style={{
+            ...styles.sectionDesc,
+            ...(isMobile || isTablet ? {
+              textAlign: 'center',
+              marginBottom: '30px',
+            } : positions.sectionDesc),
+          }}
+        >
+          {texts.sectionDesc}
+        </h2>
+        
+        <div
+          className="solutions-container style-one"
+          style={{
+            maxWidth: isMobile ? '100%' : styles.solutionGrid.width,
+            minHeight: styles.solutionGrid.minHeight,
+            gap: styles.solutionGrid.gap || '15px 20px',
+            ...(isMobile || isTablet ? {} : {
+              top: positions.solutionGrid.top,
+              left: positions.solutionGrid.left,
+            }),
+          }}
+        >
         {solutionData.map((solution, index) => (
           <div
             key={solution._id || index}
             className="solution-card"
+            // style={{
+            //   // ...cardStyles.card,
+            //   ...solution.styles?.card,
+            //   padding: '30px 25px',
+            //   position: 'relative',
+            //   overflow: 'hidden',
+            //   transition: 'background-color 0.3s ease',
+            // }}
             style={{
-              ...cardStyles.card,
+              backgroundColor: solution.styles?.card?.backgroundColor || cardStyles.card.backgroundColor,
+              hoverBackgroundColor: solution.styles?.card?.hoverBackgroundColor || cardStyles.card.hoverBackgroundColor,
+              borderRadius: solution.styles?.card?.borderRadius || cardStyles.card.borderRadius,
               padding: '30px 25px',
               position: 'relative',
               overflow: 'hidden',
               transition: 'background-color 0.3s ease',
+              width: `${solution.styles?.card?.width || cardStyles.card.width || 300}px`,
+              minHeight: `${solution.styles?.card?.minHeight || cardStyles.card.minHeight || 200}px`,
+              height: 'fit-content',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = cardStyles.card.hoverBackgroundColor;
+              e.currentTarget.style.backgroundColor = solution.styles?.card?.hoverBackgroundColor || cardStyles.card.hoverBackgroundColor;
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = cardStyles.card.backgroundColor;
+              e.currentTarget.style.backgroundColor = solution.styles?.card?.backgroundColor || cardStyles.card.backgroundColor;
             }}
           >
             <div
@@ -251,7 +387,8 @@ export default function SolutionStyleOneDisplay({ solutions = [], contentType = 
                 position: 'absolute',
                 top: solution.positions.number.top,
                 left: solution.positions.number.left,
-                ...cardStyles.number,
+                color: solution.styles?.number?.color || cardStyles.number.color,
+                fontSize: solution.styles?.number?.fontSize || cardStyles.number.fontSize,
               }}
             >
               {solution.id}
@@ -261,10 +398,19 @@ export default function SolutionStyleOneDisplay({ solutions = [], contentType = 
                 position: 'absolute',
                 top: solution.positions.title.top,
                 left: solution.positions.title.left,
-                width: parseInt(styles.solutionGrid.width) / 3 - 50, // Approximate card width
+                width: `${(solution.styles?.card?.width || cardStyles.card.width || 300) - 50}px`,
               }}
             >
-              <h3 style={{ ...cardStyles.title, margin: 0 }}>
+              <h3 style={{ 
+                color: solution.styles?.title?.color || cardStyles.title.color,
+                fontSize: solution.styles?.title?.fontSize || cardStyles.title.fontSize,
+                fontFamily: solution.styles?.title?.fontFamily || cardStyles.title.fontFamily,
+                textAlign: solution.styles?.title?.textAlign || cardStyles.title.textAlign,
+                fontWeight: solution.styles?.title?.fontWeight || cardStyles.title.fontWeight,
+                fontStyle: solution.styles?.title?.fontStyle || cardStyles.title.fontStyle,
+                textDecoration: solution.styles?.title?.textDecoration || cardStyles.title.textDecoration,
+                margin: 0 
+              }}>
                 {solution.title}
               </h3>
             </div>
@@ -273,16 +419,26 @@ export default function SolutionStyleOneDisplay({ solutions = [], contentType = 
                 position: 'absolute',
                 top: solution.positions.description.top,
                 left: solution.positions.description.left,
-                width: parseInt(styles.solutionGrid.width) / 3 - 50, // Approximate card width
+                width: `${(solution.styles?.card?.width || cardStyles.card.width || 300) - 50}px`,
               }}
             >
-              <p style={{ ...cardStyles.description, margin: 0 }}>
+              <p style={{ 
+                color: solution.styles?.description?.color || cardStyles.description.color,
+                fontSize: solution.styles?.description?.fontSize || cardStyles.description.fontSize,
+                fontFamily: solution.styles?.description?.fontFamily || cardStyles.description.fontFamily,
+                textAlign: solution.styles?.description?.textAlign || cardStyles.description.textAlign,
+                fontWeight: solution.styles?.description?.fontWeight || cardStyles.description.fontWeight,
+                fontStyle: solution.styles?.description?.fontStyle || cardStyles.description.fontStyle,
+                textDecoration: solution.styles?.description?.textDecoration || cardStyles.description.textDecoration,
+                margin: 0 
+              }}>
                 {solution.description}
               </p>
             </div>
           </div>
         ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

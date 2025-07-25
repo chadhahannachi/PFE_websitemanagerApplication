@@ -91,6 +91,86 @@ export class ContenuSpecifique extends Contenu {
   @Prop({ required: true })
   css_style: string;
 
+  @Prop({
+    type: {
+      container: {
+        backgroundColor: { type: String },
+        color: { type: String },
+        padding: { type: String },
+        maxWidth: { type: String },
+        margin: { type: String },
+        borderRadius: { type: String },
+        boxShadow: { type: String },
+      },
+      items: {
+        backgroundColor: { type: String },
+        color: { type: String },
+        padding: { type: String },
+        borderRadius: { type: String },
+        boxShadow: { type: String },
+        transition: { type: String },
+        hover: {
+          transform: { type: String },
+          boxShadow: { type: String },
+        },
+      },
+      title: {
+        color: { type: String },
+        fontSize: { type: String },
+        fontWeight: { type: String },
+        marginBottom: { type: String },
+        fontFamily: { type: String }, // Added font family
+        textAlign: { type: String, enum: ['left', 'center', 'right'] }, // Added alignment
+      },
+      description: {
+        color: { type: String },
+        fontSize: { type: String },
+        lineHeight: { type: String },
+        fontFamily: { type: String }, // Added font family
+        textAlign: { type: String, enum: ['left', 'center', 'right'] }, // Added alignment
+      },
+    },
+    default: {},
+  })
+  styles: {
+    container?: {
+      backgroundColor?: string;
+      color?: string;
+      padding?: string;
+      maxWidth?: string;
+      margin?: string;
+      borderRadius?: string;
+      boxShadow?: string;
+    };
+    items?: {
+      backgroundColor?: string;
+      color?: string;
+      padding?: string;
+      borderRadius?: string;
+      boxShadow?: string;
+      transition?: string;
+      hover?: {
+        transform?: string;
+        boxShadow?: string;
+      };
+    };
+    title?: {
+      color?: string;
+      fontSize?: string;
+      fontWeight?: string;
+      marginBottom?: string;
+      fontFamily?: string;
+      textAlign?: 'left' | 'center' | 'right';
+    };
+    description?: {
+      color?: string;
+      fontSize?: string;
+      lineHeight?: string;
+      fontFamily?: string;
+      textAlign?: 'left' | 'center' | 'right';
+    };
+  };
+
 }
 export const ContenuSpecifiqueSchema = SchemaFactory.createForClass(ContenuSpecifique);
 

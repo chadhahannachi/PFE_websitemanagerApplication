@@ -1,12 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './OurSolutions.css';
 import EditorText from '../aboutus/EditorText';
 import EditorSolutionGrid from './EditorSolutionGrid';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
- 
+import ReactDOM from 'react-dom';
+
+// Composant de notification de succès
+const SuccessNotification = ({ show, message }) => {
+  if (!show) return null;
+  
+  return ReactDOM.createPortal(
+    <div style={{
+      position: 'fixed',
+      top: '20px',
+      right: '20px',
+      backgroundColor: '#c6c6c6',
+      color: 'white',
+      padding: '15px 25px',
+      borderRadius: '8px',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      zIndex: 10000,
+      fontSize: '16px',
+      fontWeight: '500',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '10px',
+      animation: 'slideInRight 0.3s ease-out',
+      border: '1px solid #c6c6c6',
+      pointerEvents: 'none'
+    }}>
+      <div style={{
+        width: '20px',
+        height: '20px',
+        borderRadius: '50%',
+        backgroundColor: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#c6c6c6',
+        fontSize: '14px',
+        fontWeight: 'bold'
+      }}>
+        ✓
+      </div>
+      {message}
+    </div>,
+    document.body
+  );
+};
+
 export default function SolutionStyleOne({ solutions, contentType = 'solutions', styleKey = 'styleOne' }) {
+  const editorSolutionGridRef = useRef(null);
+  
   useEffect(() => {
     console.log('SolutionStyleOne received solutions:', solutions);
     console.log('Solutions with id:', solutions.filter(s => s.id).map(s => ({ id: s.id, title: s.title })));
@@ -17,6 +64,7 @@ export default function SolutionStyleOne({ solutions, contentType = 'solutions',
   const [error, setError] = useState(null);
   const [positions, setPositions] = useState({
     sectionName: { top: 0, left: 0 },
+    sectionDesc: { top: 50, left: 0 },
     solutionGrid: { top: 50, left: 0 },
   });
   const [styles, setStyles] = useState({
@@ -24,7 +72,7 @@ export default function SolutionStyleOne({ solutions, contentType = 'solutions',
       color: '#f59e0b',
       fontSize: '20px',
       fontFamily: 'Arial',
-      fontWeight: '600',
+      fontWeight: '600', 
       width: '100%',
       maxWidth: '600px',
     },
@@ -35,10 +83,12 @@ export default function SolutionStyleOne({ solutions, contentType = 'solutions',
   });
   const [texts, setTexts] = useState({
     sectionName: 'NOS SOLUTIONS',
+    sectionDesc: 'Découvrez nos solutions innovantes et adaptées à vos besoins',
   });
   const [pendingSolutionStyles, setPendingSolutionStyles] = useState({});
   const [pendingSolutionPositions, setPendingSolutionPositions] = useState({});
   const [userEntreprise, setUserEntreprise] = useState(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   // Validation functions
   const isValidPosition = (pos) => pos && typeof pos === 'object' && typeof pos.top === 'number' && typeof pos.left === 'number';
@@ -111,6 +161,9 @@ export default function SolutionStyleOne({ solutions, contentType = 'solutions',
         sectionName: isValidPosition(fetchedPreferences.positions?.sectionName)
           ? fetchedPreferences.positions.sectionName
           : positions.sectionName,
+        sectionDesc: isValidPosition(fetchedPreferences.positions?.sectionDesc)
+          ? fetchedPreferences.positions.sectionDesc
+          : positions.sectionDesc,
         solutionGrid: isValidPosition(fetchedPreferences.positions?.solutionGrid)
           ? fetchedPreferences.positions.solutionGrid
           : positions.solutionGrid,
@@ -120,6 +173,9 @@ export default function SolutionStyleOne({ solutions, contentType = 'solutions',
         sectionName: isValidStyle(fetchedPreferences.styles?.sectionName)
           ? fetchedPreferences.styles.sectionName
           : styles.sectionName,
+        sectionDesc: isValidStyle(fetchedPreferences.styles?.sectionDesc)
+          ? fetchedPreferences.styles.sectionDesc
+          : styles.sectionDesc,
         solutionGrid: isValidStyle(fetchedPreferences.styles?.solutionGrid)
           ? fetchedPreferences.styles.solutionGrid
           : styles.solutionGrid,
@@ -129,8 +185,11 @@ export default function SolutionStyleOne({ solutions, contentType = 'solutions',
         sectionName: isValidText(fetchedPreferences.texts?.sectionName)
           ? fetchedPreferences.texts.sectionName
           : texts.sectionName,
+          sectionDesc: isValidText(fetchedPreferences.texts?.sectionDesc)
+          ? fetchedPreferences.texts.sectionDesc
+          : texts.sectionDesc,
       };
-
+      
       setPositions(newPositions);
       setStyles(newStyles);
       setTexts(newTexts);
@@ -153,6 +212,14 @@ export default function SolutionStyleOne({ solutions, contentType = 'solutions',
       fetchPreferences();
     }
   }, [userEntreprise]);
+
+  // Passer les styles chargés à EditorSolutionGrid
+  useEffect(() => {
+    if (editorSolutionGridRef.current && styles.solutionGrid) {
+      // Les styles seront automatiquement appliqués via les props initialStyles
+      console.log('Styles solutionGrid loaded:', styles.solutionGrid);
+    }
+  }, [styles.solutionGrid]);
 
   const handlePositionChange = (element, newPosition) => {
     if (isValidPosition(newPosition)) {
@@ -182,12 +249,7 @@ export default function SolutionStyleOne({ solutions, contentType = 'solutions',
   };
 
   const handleSolutionStyleChange = (solutionId, newStyles) => {
-    console.log(`=== handleSolutionStyleChange called ===`);
-    console.log(`solutionId:`, solutionId);
-    console.log(`newStyles:`, newStyles);
-    console.log(`typeof solutionId:`, typeof solutionId);
-    console.log(`solutionId === 'undefined':`, solutionId === 'undefined');
-    console.log(`isValidStyle(newStyles):`, isValidStyle(newStyles));
+   
     
     // alert(`Style modifié pour la solution ${solutionId}! Cliquez sur "Enregistrer les modifications" pour sauvegarder.`);
     
@@ -213,9 +275,7 @@ export default function SolutionStyleOne({ solutions, contentType = 'solutions',
   };
 
   const handleSolutionPositionChange = (solutionId, newPositions) => {
-    console.log(`=== handleSolutionPositionChange called ===`);
-    console.log(`solutionId:`, solutionId);
-    console.log(`newPositions:`, newPositions);
+    
     
     if (!solutionId || solutionId === 'undefined') {
       console.warn(`Invalid solutionId: ${solutionId}`);
@@ -234,12 +294,7 @@ export default function SolutionStyleOne({ solutions, contentType = 'solutions',
   };
 
   const saveAllChanges = async () => {
-    console.log('saveAllChanges called');
-    console.log('userEntreprise:', userEntreprise);
-    console.log('positions:', positions);
-    console.log('styles:', styles);
-    console.log('texts:', texts);
-    console.log('pendingSolutionStyles:', pendingSolutionStyles);
+    
 
     if (!userEntreprise) {
       toast.error("ID de l'entreprise manquant");
@@ -249,10 +304,15 @@ export default function SolutionStyleOne({ solutions, contentType = 'solutions',
 
     if (
       !isValidPosition(positions.sectionName) ||
+      !isValidPosition(positions.sectionDesc) ||
       !isValidPosition(positions.solutionGrid) ||
+
       !isValidStyle(styles.sectionName) ||
+      !isValidStyle(styles.sectionDesc) ||
       !isValidStyle(styles.solutionGrid) ||
-      !isValidText(texts.sectionName)
+
+      !isValidText(texts.sectionName)||
+      !isValidText(texts.sectionDesc)
     ) {
       console.error('Invalid positions, styles, or texts:', { positions, styles, texts });
       toast.error('Données de position, style ou texte invalides');
@@ -281,9 +341,67 @@ export default function SolutionStyleOne({ solutions, contentType = 'solutions',
       );
       console.log('Preferences saved:', preferencesResponse.data);
 
-      if (Object.keys(pendingSolutionStyles).length > 0) {
+      // Utiliser les styles stockés dans pendingSolutionStyles ET ceux d'EditorSolutionGrid
+      const allPendingStyles = { ...pendingSolutionStyles };
+      
+      // Récupérer les styles d'EditorSolutionGrid via la ref
+      if (editorSolutionGridRef.current && editorSolutionGridRef.current.pendingStyles) {
+        const gridStyles = editorSolutionGridRef.current.pendingStyles.current || {};
+        Object.assign(allPendingStyles, gridStyles);
+        console.log('Styles from EditorSolutionGrid:', gridStyles);
+      }
+      
+      // Récupérer les styles de la grille (gap, width, height des cartes)
+      if (editorSolutionGridRef.current && editorSolutionGridRef.current.getGridStyles) {
+        const gridStylesData = editorSolutionGridRef.current.getGridStyles();
+        console.log('Grid styles data:', gridStylesData);
+        
+        // Mettre à jour les styles de solutionGrid avec les styles de la grille
+        const updatedSolutionGridStyles = {
+          ...styles.solutionGrid,
+          ...gridStylesData.gridStyles,
+          card: gridStylesData.cardStyles.card,
+          number: gridStylesData.cardStyles.number,
+          title: gridStylesData.cardStyles.title,
+          description: gridStylesData.cardStyles.description,
+        };
+        
+        setStyles(prev => ({
+          ...prev,
+          solutionGrid: updatedSolutionGridStyles
+        }));
+        
+        // Mettre à jour l'objet styles pour la sauvegarde
+        const updatedStyles = {
+          ...styles,
+          solutionGrid: updatedSolutionGridStyles
+        };
+        
+        // Sauvegarder les styles mis à jour
+        const updatedPreferencesResponse = await axios.post(
+          'http://localhost:5000/preferences/entreprise',
+          {
+            entreprise: userEntreprise,
+            preferences: {
+              [contentType]: {
+                [styleKey]: {
+                  positions,
+                  styles: updatedStyles,
+                  texts,
+                },
+              },
+            },
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        console.log('Updated preferences saved:', updatedPreferencesResponse.data);
+      }
+      
+      if (Object.keys(allPendingStyles).length > 0) {
         console.log('Saving solution styles');
-        for (const [solutionId, solutionStyles] of Object.entries(pendingSolutionStyles)) {
+        for (const [solutionId, solutionStyles] of Object.entries(allPendingStyles)) {
           if (solutionId && solutionId !== 'undefined' && isValidStyle(solutionStyles)) {
             try {
               const solutionResponse = await axios.patch(
@@ -333,6 +451,8 @@ export default function SolutionStyleOne({ solutions, contentType = 'solutions',
 
       setPendingSolutionStyles({});
       setPendingSolutionPositions({});
+      setShowSuccessMessage(true);
+      setTimeout(() => setShowSuccessMessage(false), 3000);
       toast.success('Modifications sauvegardées avec succès');
     } catch (error) {
       console.error('Error saving changes:', error);
@@ -354,6 +474,72 @@ export default function SolutionStyleOne({ solutions, contentType = 'solutions',
   }
 
   return (
+    <> 
+    <style>
+        {`
+          @keyframes slideInRight {
+            from {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+        `}
+      </style>
+      
+      {/* Notification de succès rendue dans le body */}
+      <SuccessNotification 
+        show={showSuccessMessage} 
+        message="Modifications enregistrées avec succès" 
+      />
+      
+      <div style={{ backgroundColor: 'white', minHeight: '100vh', padding: '20px' }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginBottom: '20px',
+        padding: '15px 20px',
+        backgroundColor: '#f8f9fa',
+        borderRadius: '8px',
+        border: '1px solid #e9ecef'
+      }}>
+        <span style={{ 
+          fontSize: '18px', 
+          fontWeight: '600', 
+          color: '#495057' 
+        }}>Solutions section</span> 
+
+        
+        <button 
+          onClick={saveAllChanges}
+          style={{
+            
+            padding: '8px',
+            backgroundColor: '#777777',
+            color: 'white',
+            border: 'none',
+            borderRadius: '10px',
+            cursor: 'pointer',
+            marginTop: '16px',
+            fontSize: '16px',
+            fontWeight: '500',
+            transition: 'background-color 0.2s ease'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.backgroundColor = '#c6c6c6';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.backgroundColor = '#777777';
+          }}
+        >
+          Enregistrer les modifications
+        </button>
+      </div>
+
     <div className="solutions-style-one-container">
       <EditorText
         elementType="h1"
@@ -366,6 +552,17 @@ export default function SolutionStyleOne({ solutions, contentType = 'solutions',
       >
         {texts.sectionName}
       </EditorText>
+      <EditorText
+        elementType="h1"
+        initialPosition={positions.sectionDesc}
+        initialStyles={styles.sectionDesc}
+        onSelect={setSelectedElement}
+        onPositionChange={(newPosition) => handlePositionChange('sectionDesc', newPosition)}
+        onStyleChange={(newStyles) => handleStyleChange('sectionDesc', newStyles)}
+        onTextChange={(newText) => handleTextChange('sectionDesc', newText)}
+      >
+        {texts.sectionDesc}
+      </EditorText>
       <EditorSolutionGrid
         solutions={solutions}
         initialPosition={positions.solutionGrid}
@@ -374,8 +571,11 @@ export default function SolutionStyleOne({ solutions, contentType = 'solutions',
         onPositionChange={(newPosition) => handlePositionChange('solutionGrid', newPosition)}
         onStyleChange={handleSolutionStyleChange}
         onUpdate={handleSolutionPositionChange}
+        ref={editorSolutionGridRef}
       />
-      <button onClick={saveAllChanges}>Enregistrer les modifications</button>
+      {/* <button onClick={saveAllChanges}>Enregistrer les modifications</button> */}
     </div>
+    </div>
+    </>
   );
 }

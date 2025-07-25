@@ -6,7 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 
 const API_URL = 'http://localhost:5000/couleurs';
 
-export default function EditorFaqGrid({ faqs, initialPosition = { top: 0, left: 0 }, initialStyles = { width: 600, minHeight: 400 }, onSelect, onPositionChange, onStyleChange }) {
+export default function EditorFaqGrid({ faqs, initialPosition = { top: 0, left: 0 }, initialStyles = { width: 600, minHeight: 400 }, onSelect, onPositionChange, onStyleChange, onUpdate }) {
   const [position, setPosition] = useState({
     top: initialPosition.top || 0,
     left: typeof initialPosition.left === 'number' ? initialPosition.left : 0,
@@ -130,6 +130,12 @@ useEffect(() => {
           minHeight: newMinHeight,
         };
         pendingStyles.current = newStyles;
+        
+        // Notifier le parent des changements de style de la grille
+        if (onUpdate) {
+          onUpdate(newStyles);
+        }
+        
         return newStyles;
       });
     }
@@ -686,6 +692,9 @@ const handleStyleChange = (property, value, subProperty, faqIndex) => {
                   const newWidth = parseInt(e.target.value);
                   setStyles((prev) => ({ ...prev, width: newWidth }));
                   pendingStyles.current = { ...styles, width: newWidth };
+                  if (onUpdate) {
+                    onUpdate({ width: newWidth });
+                  }
                 }}
               />
             </div>
@@ -699,6 +708,9 @@ const handleStyleChange = (property, value, subProperty, faqIndex) => {
                   const newMinHeight = parseInt(e.target.value);
                   setStyles((prev) => ({ ...prev, minHeight: newMinHeight }));
                   pendingStyles.current = { ...styles, minHeight: newMinHeight };
+                  if (onUpdate) {
+                    onUpdate({ minHeight: newMinHeight });
+                  }
                 }}
               />
             </div>

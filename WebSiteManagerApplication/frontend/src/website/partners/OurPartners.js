@@ -215,7 +215,8 @@ const OurPartners = ({ styleIndex }) => {
       );
 
       // Filtrer uniquement les partenaires publiés (isPublished: true)
-      const publishedPartenaires = partenairesResponse.data.filter(partenaire => partenaire.isPublished);
+      // const publishedPartenaires = partenairesResponse.data.filter(partenaire => partenaire.isPublished);
+      const publishedPartenaires = partenairesResponse.data;
       setPartenaires(publishedPartenaires);
     } catch (error) {
       console.error("Error fetching partenaires:", error);
@@ -284,13 +285,15 @@ const OurPartners = ({ styleIndex }) => {
   }
 
   return (
-    <section className="partners-section">
-      {styleIndex === 0 && (
-        <>
-          <h2 className="partners-title">Our Partners</h2>
-          <p className="partners-subtitle">Pleasure to work with</p>
-        </>
-      )}
+    // <section className="partners-section">
+    //   {styleIndex === 0 && (
+    //     <>
+    //       <h2 className="partners-title">Our Partners</h2>
+    //       <p className="partners-subtitle">Pleasure to work with</p>
+    //     </>
+    //   )}
+    
+    <section>
       <PartnerComponent partenaires={partenaires} />
     </section>
   );

@@ -7,7 +7,6 @@ export default function UnitStyleTwoDisplay({ contentType = 'unite', styleKey = 
   const [units, setUnits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-//   const [userEntreprise, setUserEntreprise] = useState(null);
   const [positions, setPositions] = useState({
     sectionName: { top: 0, left: 0 },
     subtitle: { top: 60, left: 0 },
@@ -41,73 +40,20 @@ export default function UnitStyleTwoDisplay({ contentType = 'unite', styleKey = 
   const isValidStyle = (style) => style && typeof style === 'object' && Object.keys(style).length > 0;
   const isValidText = (text) => typeof text === 'string' && text.trim().length > 0;
 
-  // Récupération du token et décodage pour obtenir l'ID de l'utilisateur
-  const token = localStorage.getItem('token');
-  let userId = null;
-  if (token) {
-    try {
-      const decodedToken = jwtDecode(token);
-      userId = decodedToken?.sub;
-    } catch (error) {
-      console.error('Error decoding token:', error);
-      setError('Erreur lors du décodage du token.');
-      setLoading(false);
-    }
-  } else {
-    console.error('Token is missing from localStorage.');
-    setError('Token manquant. Veuillez vous connecter.');
-    setLoading(false);
-  }
-
-  // Récupérer l'entreprise de l'utilisateur connecté
-//   const fetchUserEntreprise = async () => {
-//     if (!token || !userId) {
-//       console.error('Token or User ID is missing');
-//       setError('Token ou ID utilisateur manquant.');
-//       setLoading(false);
-//       return;
-//     }
-
-//     try {
-//       const config = {
-//         headers: { Authorization: `Bearer ${token}` },
-//       };
-//       const userResponse = await axios.get(`http://localhost:5000/auth/user/${userId}`, config);
-//       const user = userResponse.data;
-//       if (!user.entreprise) {
-//         console.error("User's company (entreprise) is missing");
-//         setError("Entreprise de l'utilisateur non trouvée.");
-//         setLoading(false);
-//         return;
-//       }
-//       setUserEntreprise(user.entreprise);
-//     } catch (error) {
-//       console.error('Error fetching user data:', error);
-//       setError('Erreur lors de la récupération des données utilisateur.');
-//       setLoading(false);
-//     }
-//   };
-
   // Récupérer les unités associées à l'entreprise
   const fetchUnits = async () => {
-    if (!token || !userId || !entrepriseId) {
-      console.error('Token, User ID, or User Entreprise is missing');
-      setError('Données manquantes pour récupérer les unités.');
+    if (!entrepriseId) {
+      setError('ID entreprise manquant.');
       setLoading(false);
       return;
     }
-
     try {
-      const config = {
-        headers: { Authorization: `Bearer ${token}` },
-      };
       const response = await axios.get(
-        `http://localhost:5000/contenus/Unite/entreprise/${entrepriseId}`,
-        config
+        `http://localhost:5000/contenus/Unite/entreprise/${entrepriseId}`
       );
       const unitData = Array.isArray(response.data) ? response.data : [];
       const publishedUnits = unitData
-        .filter(unit => unit.isPublished)
+        // .filter(unit => unit.isPublished)
         .map(unit => ({
           _id: unit._id,
           titre: unit.titre,
@@ -141,7 +87,6 @@ export default function UnitStyleTwoDisplay({ contentType = 'unite', styleKey = 
             },
           },
         }));
-      console.log('Fetched Units with styles:', publishedUnits);
       setUnits(publishedUnits);
     } catch (error) {
       console.error('Error fetching Units by entreprise:', error);
@@ -153,18 +98,14 @@ export default function UnitStyleTwoDisplay({ contentType = 'unite', styleKey = 
   // Récupérer les préférences de l'entreprise
   const fetchPreferences = async () => {
     if (!entrepriseId) {
-      console.log('userEntreprise not yet available');
+      setError('ID entreprise manquant.');
+      setLoading(false);
       return;
     }
-
     try {
       const response = await axios.get(
-        `http://localhost:5000/preferences/entreprise/${entrepriseId}/preferences`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        `http://localhost:5000/preferences/entreprise/${entrepriseId}/preferences`
       );
-      console.log('Fetched preferences:', response.data);
       const fetchedPreferences = response.data.preferences?.[contentType]?.[styleKey] || {};
 
       const newPositions = {
@@ -200,9 +141,6 @@ export default function UnitStyleTwoDisplay({ contentType = 'unite', styleKey = 
           : texts.subtitle,
       };
 
-      console.log('Applying positions in Display Mode:', newPositions);
-      console.log('Applying styles in Display Mode:', newStyles);
-      console.log('Applying texts in Display Mode:', newTexts);
       setPositions(newPositions);
       setStyles(newStyles);
       setTexts(newTexts);
@@ -213,12 +151,6 @@ export default function UnitStyleTwoDisplay({ contentType = 'unite', styleKey = 
       setLoading(false);
     }
   };
-
-//   useEffect(() => {
-//     if (token && userId) {
-//       fetchUserEntreprise();
-//     }
-//   }, []);
 
   useEffect(() => {
     if (entrepriseId) {
@@ -242,7 +174,7 @@ export default function UnitStyleTwoDisplay({ contentType = 'unite', styleKey = 
 
   return (
     <div
-      className="units-wrapper"
+      className="units-wrapper unittwo-responsive"
       style={{
         position: 'relative',
         maxWidth: '1400px',
@@ -251,49 +183,53 @@ export default function UnitStyleTwoDisplay({ contentType = 'unite', styleKey = 
         minHeight: '600px',
         overflow: 'visible',
         boxSizing: 'border-box',
+        marginBottom: '100px',
+
       }}
     >
       <h1
+        className="unittwo-stack"
         style={{
           ...styles.sectionName,
           position: 'absolute',
           top: `${positions.sectionName.top}px`,
           left: `${positions.sectionName.left}px`,
           margin: 0,
-          lineHeight: '1.2',
+          pointerEvents: 'none',
         }}
       >
         {texts.sectionName}
       </h1>
       <p
+        className="unittwo-stack"
         style={{
           ...styles.subtitle,
           position: 'absolute',
           top: `${positions.subtitle.top}px`,
           left: `${positions.subtitle.left}px`,
           margin: 0,
-          lineHeight: '1.5',
-          marginTop: '20px',
+          pointerEvents: 'none',
         }}
       >
         {texts.subtitle}
       </p>
+
       <div
-        className="units-container style-two"
-        style={{
-          position: 'absolute',
+          className="units-container style-two unittwo-grid"
+          style={{
+            position: 'absolute',
           top: `${positions.unitGrid.top}px`,
           left: `${positions.unitGrid.left}px`,
           width: `${styles.unitGrid.width}px`,
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          gap: '20px',
-          margin: '0 auto',
-          maxWidth: '1400px',
-          padding: '0 15px',
-        }}
-      >
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: '20px',
+            margin: '0 auto',
+            maxWidth: '1400px',
+            padding: '0 15px',
+          }}
+        >
         {Array.isArray(units) && units.length > 0 ? (
           units.map((unit, index) => (
             <div
@@ -341,25 +277,6 @@ export default function UnitStyleTwoDisplay({ contentType = 'unite', styleKey = 
                   >
                     {unit.description}
                   </p>
-                  <button
-                    className="read-more-btn"
-                    style={{
-                      backgroundColor: unit.styles.button.backgroundColor,
-                      color: unit.styles.button.color,
-                      fontSize: unit.styles.button.fontSize,
-                      border: 'none',
-                      borderRadius: '10px',
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      fontWeight: '700',
-                      padding: '12px 20px',
-                      textTransform: 'uppercase',
-                      marginTop: '10px',
-                    }}
-                  >
-                    {expandedIndex === index ? 'LIRE MOINS' : 'LIRE PLUS'}
-                  </button>
                 </div>
               )}
               <div

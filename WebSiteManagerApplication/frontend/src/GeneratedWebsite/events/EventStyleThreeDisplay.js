@@ -65,52 +65,6 @@ export default function EventStyleThreeDisplay({ events = [], contentType = 'eve
   const isValidStyle = (style) => style && typeof style === 'object' && Object.keys(style).length > 0;
   const isValidText = (text) => typeof text === 'string' && text.trim().length > 0;
 
-  // Fetch user enterprise
-//   const token = localStorage.getItem('token');
-//   let userId = null;
-//   if (token) {
-//     try {
-//       const decodedToken = jwtDecode(token);
-//       userId = decodedToken?.sub;
-//     } catch (error) {
-//       console.error('Error decoding token:', error);
-//       setError('Erreur lors du décodage du token.');
-//       setLoading(false);
-//     }
-//   } else {
-//     console.error('Token is missing from localStorage.');
-//     setError('Token manquant. Veuillez vous connecter.');
-//     setLoading(false);
-//   }
-
-//   const fetchUserEntreprise = async () => {
-//     if (!token || !userId) {
-//       console.error('Token or User ID is missing');
-//       setError('Token ou ID utilisateur manquant.');
-//       setLoading(false);
-//       return;
-//     }
-
-//     try {
-//       const config = {
-//         headers: { Authorization: `Bearer ${token}` },
-//       };
-//       const userResponse = await axios.get(`http://localhost:5000/auth/user/${userId}`, config);
-//       const user = userResponse.data;
-//       if (!user.entreprise) {
-//         console.error("User's company (entreprise) is missing");
-//         setError("Entreprise de l'utilisateur non trouvée.");
-//         setLoading(false);
-//         return;
-//       }
-//       setUserEntreprise(user.entreprise);
-//     } catch (error) {
-//       console.error('Error fetching user data:', error);
-//       setError('Erreur lors de la récupération des données utilisateur.');
-//       setLoading(false);
-//     }
-//   };
-
   // Fetch preferences
   const fetchPreferences = async () => {
     if (!entrepriseId) {
@@ -167,15 +121,11 @@ export default function EventStyleThreeDisplay({ events = [], contentType = 'eve
   useEffect(() => {
     setEventData(events.map((event) => ({
       ...event,
-      styles: cardStyles,
+      styles: event.styles,
     })));
   }, [events]);
 
-//   useEffect(() => {
-//     if (token && userId) {
-//       fetchUserEntreprise();
-//     }
-//   }, []);
+
 
   useEffect(() => {
     if (entrepriseId) {
@@ -196,20 +146,28 @@ export default function EventStyleThreeDisplay({ events = [], contentType = 'eve
   }
 
   return (
-    <div className="events-style-three-container" style={{ position: 'relative' }}>
+    <div className="events-style-three-container eventthree-responsive" style={{
+      position: 'relative',
+      height: 'auto',
+      minHeight: 0,
+    }}>
       <h1
+        className="eventthree-stack"
         style={{
-          position: 'relative',
-          marginBottom: '20px',
+          position: 'absolute',
           ...styles.sectionName,
+          ...positions.sectionName,
         }}
       >
         {texts.sectionName}
       </h1>
       <div
-        className="events-container style-three"
+        className="events-container style-three eventthree-grid"
         style={{
-          width: '100%',
+          position: 'absolute',
+          top: positions.eventGrid.top,
+          left: positions.eventGrid.left,
+          width: styles.eventGrid.width,
           display: 'flex',
           flexWrap: 'wrap',
           gap: 0,
@@ -227,7 +185,7 @@ export default function EventStyleThreeDisplay({ events = [], contentType = 'eve
               flexDirection: 'column',
               borderRight: index < eventData.length - 1 ? '1px solid #e0e0e0' : 'none',
               border: '1px solid #e0e0e0',
-              borderRadius:
+                    borderRadius:
                 index === 0
                   ? '20px 0 0 20px'
                   : index === eventData.length - 1
@@ -253,10 +211,10 @@ export default function EventStyleThreeDisplay({ events = [], contentType = 'eve
               }}
             >
               <div>
-                <h3 style={{ ...cardStyles.title, marginBottom: '10px' }}>
+                <h3 style={{ ...event.styles?.title, marginBottom: '10px'  }}>
                   {event.title}
                 </h3>
-                <p style={{ ...cardStyles.description, marginBottom: '15px' }}>
+                <p style={{ ...event.styles?.description , marginBottom: '15px'}}>
                   {event.desc}
                 </p>
               </div>
@@ -270,8 +228,8 @@ export default function EventStyleThreeDisplay({ events = [], contentType = 'eve
                   borderTop: '1px solid #e0e0e0',
                 }}
               >
-                <CalendarMonthIcon className="calendar-icon" style={{ marginRight: '5px', color: cardStyles.date.color }} />
-                <span style={{ ...cardStyles.date }}>
+                <CalendarMonthIcon className="calendar-icon" style={{ marginRight: '5px', color: (event.styles?.date?.color || '#999') }} />
+                <span style={event.styles?.date || {}}>
                   {event.date}
                 </span>
               </div>

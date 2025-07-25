@@ -7,11 +7,12 @@ import FaqStyleThree from '../../website/faqs/FaqStyleThree';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import FaqStyleTwoDisplay from './FaqStyleTwoDisplay';
+import FaqStyleThreeDisplay from './FaqStyleThreeDisplay';
 
 const styles = [
-  { name: 'Accordion (Classic)', component: FaqStyleOne },
+  // { name: 'Accordion (Classic)', component: FaqStyleOne },
   { name: 'Card Minimalist', component: FaqStyleTwoDisplay },
-  { name: 'style 3', component: FaqStyleThree }
+  { name: 'style 3', component: FaqStyleThreeDisplay }
 ];
 
 export default function FaqSectionDisplay({ styleIndex, entrepriseId }) {
@@ -19,7 +20,7 @@ export default function FaqSectionDisplay({ styleIndex, entrepriseId }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userEntreprise, setUserEntreprise] = useState(null);
-  const FaqComponent = styles[styleIndex]?.component || FaqStyleOne;
+  const FaqComponent = styles[styleIndex]?.component;
   console.log('StyleIndex reçu dans FaqSection:', styleIndex);
 
   // Récupération du token et décodage pour obtenir l'ID de l'utilisateur
@@ -91,7 +92,7 @@ export default function FaqSectionDisplay({ styleIndex, entrepriseId }) {
       );
       // Filtrer uniquement les FAQs publiées et mapper les champs
       const publishedFaqs = response.data
-  .filter(faq => faq.isPublished)
+  // .filter(faq => faq.isPublished)
   .map(faq => {
     // Styles par défaut complets
     const defaultStyles = {
@@ -156,7 +157,7 @@ export default function FaqSectionDisplay({ styleIndex, entrepriseId }) {
   return (
     <section className="faq-section">
       {faqs.length > 0 ? (
-        <FaqComponent faqs={faqs} contentType="faq" styleKey={`style${styleIndex + 1}`} entrepriseId={entrepriseId} />
+        <FaqComponent faqs={faqs} contentType="faq" styleKey={`style${styleIndex + 2}`} entrepriseId={entrepriseId} />
       ) : (
         <p>Aucune FAQ publiée pour le moment.</p>
       )}

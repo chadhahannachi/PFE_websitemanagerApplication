@@ -33,6 +33,21 @@ export class SlideController {
     return this.slideService.remove(id);
   }
 
+  @Patch(':id/archive')
+  archive(@Param('id') id: string) {
+    return this.slideService.archiveSlide(id);
+  }
+
+  @Patch(':id/restore')
+  restore(@Param('id') id: string) {
+    return this.slideService.restoreSlide(id);
+  }
+
+  @Get('/entreprise/:entrepriseId/archived')
+  getArchivedSlidesByEntreprise(@Param('entrepriseId') entrepriseId: string) {
+    return this.slideService.findArchivedSlidesByEntreprise(entrepriseId);
+  }
+
     @Get('/entreprise/:entrepriseId/slides')
     async getSlidesByEntreprise(@Param('entrepriseId') entrepriseId: string): Promise<Slide[]> {
         return this.slideService.findSlideByEntreprise(entrepriseId);

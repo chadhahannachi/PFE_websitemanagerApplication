@@ -25,6 +25,6 @@ import { Actualite, ActualiteSchema, APropos, AProposSchema, ContactUs, ContactU
   ]),],
   controllers: [ContenuController],
   providers: [ContenuService, GeminiService],
-  exports: [ContenuService],
+  exports: [ContenuService,GeminiService],
 })
 export class ContenuModule {}

@@ -2,7 +2,11 @@ import React from 'react';
 import './OurPartners.css';
 
 export default function PartnerStyleTwo({ partenaires }) {
+  
   return (
+    
+    <div className="partners-section">
+
     <div className="slider-container style-two">
       <div className="slider-track">
         {/* Duplique les partenaires pour l'effet de défilement continu */}
@@ -18,6 +22,7 @@ export default function PartnerStyleTwo({ partenaires }) {
           </div>
         ))}
       </div>
+    </div>
     </div>
   );
 }

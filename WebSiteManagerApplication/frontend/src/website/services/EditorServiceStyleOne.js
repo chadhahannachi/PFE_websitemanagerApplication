@@ -943,10 +943,10 @@ export default function EditorServiceStyleOne({ services = [], initialPosition =
           };
 
           // Debug: afficher les valeurs de largeur
-          console.log(`Card ${index} - isHovered: ${isHovered}`);
-          console.log(`Normal width: ${service.styles.card.width || cardStyles.card.width}`);
-          console.log(`Hover width: ${service.styles.card.hoverWidth || cardStyles.card.hoverWidth}`);
-          console.log(`Applied width: ${cardStyle.width}`);
+          // console.log(`Card ${index} - isHovered: ${isHovered}`);
+          // console.log(`Normal width: ${service.styles.card.width || cardStyles.card.width}`);
+          // console.log(`Hover width: ${service.styles.card.hoverWidth || cardStyles.card.hoverWidth}`);
+          // console.log(`Applied width: ${cardStyle.width}`);
 
           const titleStyle = {
             ...cardStyles.title,
