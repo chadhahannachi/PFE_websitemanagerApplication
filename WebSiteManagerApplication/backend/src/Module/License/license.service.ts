@@ -8,7 +8,8 @@ import { UpdateLicenseDto } from './dto/update-license.dto';
 
 @Injectable()
 export class LicenseService { 
-  private readonly baseUrl = 'http://127.0.0.1:8000/api';
+  // private readonly baseUrl = 'http://127.0.0.1:8000/api';
+  private readonly baseUrl = 'http://license-service:8000/api';
 
   private readonly logger = new Logger(LicenseService.name);
 

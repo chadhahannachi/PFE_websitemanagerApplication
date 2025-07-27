@@ -1,0 +1,22 @@
+/* AboutUsSection.css */
+
+.rendered-html {
+    font-family: Georgia, serif;
+    font-size: 16px;
+    line-height: 1.6;
+    white-space: normal;
+  }
+  
+  /* S'assurer que les listes soient bien rendues */
+  .rendered-html ol {
+    list-style-type: decimal;
+    margin-left: 1.5em;
+    padding-left: 1em;
+  }
+  
+  .rendered-html ul {
+    list-style-type: disc;
+    margin-left: 1.5em;
+    padding-left: 1em;
+  }
+  

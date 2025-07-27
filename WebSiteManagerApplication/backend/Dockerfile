@@ -1,9 +1,13 @@
-FROM node:18-alpine
+FROM node:18
 
 WORKDIR /app
 
 # Install build dependencies
-RUN apk add --no-cache python3 make g++ python3-dev
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set Node.js memory limit
 ENV NODE_OPTIONS="--max-old-space-size=4096"

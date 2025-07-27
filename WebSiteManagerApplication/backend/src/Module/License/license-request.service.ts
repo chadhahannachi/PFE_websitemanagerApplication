@@ -8,7 +8,8 @@ import { NotificationGateway } from '../notification/notification.gateway';
 
 @Injectable()
 export class LicenseRequestService {
-  private readonly baseUrl = 'http://127.0.0.1:8000/api';
+  // private readonly baseUrl = 'http://127.0.0.1:8000/api';
+  private readonly baseUrl = 'http://license-service:8000/api';
   private readonly logger = new Logger(LicenseRequestService.name);
 
   // constructor(private readonly httpService: HttpService) {}

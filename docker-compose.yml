@@ -2,20 +2,20 @@ version: '3.8'
 
 services:
   # API Gateway (NestJS)
-  api-gateway:
-    build:
-      context: ./api-gateway
-      dockerfile: Dockerfile
-    ports:
-      - "3001:3001"
-    environment:
-      - LICENSE_SERVICE_URL=http://license-service:8000
-      - WEBSITE_MANAGER_URL=http://website-manager-backend:5000
-    depends_on:
-      - license-service
-      - website-manager-backend
-    networks:
-      - app-network
+  # api-gateway:
+  #   build:
+  #     context: ./api-gateway
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3002:3002"
+  #   environment:
+  #     - LICENSE_SERVICE_URL=http://license-service:8000
+  #     - WEBSITE_MANAGER_URL=http://website-manager-backend:5000
+  #   depends_on:
+  #     - license-service
+  #     - website-manager-backend
+  #   networks:
+  #     - app-network
 
   # License Service (Laravel)
   license-service:
@@ -23,7 +23,7 @@ services:
       context: ./LicenceMicroservice
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       - ./LicenceMicroservice:/var/www/html
       - ./LicenceMicroservice/vendor:/var/www/html/vendor
@@ -50,6 +50,8 @@ services:
       - "5000:5000"
     environment:
       - MONGODB_URI=mongodb://mongodb:27017/website-manager
+      - GEMINI_API_KEY=AIzaSyBfNYWFViNdO9UG8_bszyR4Xc5dGAI8DBE
+
     depends_on:
       mongodb:
         condition: service_healthy
@@ -62,10 +64,36 @@ services:
       context: ./WebSiteManagerApplication/frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3001:80"
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_URL=http://localhost:5000
+      - REACT_APP_SOCKET_URL=http://localhost:5000
     volumes:
       - ./WebSiteManagerApplication/frontend:/app
       - /app/node_modules
+      - /app/build
+    depends_on:
+      - website-manager-backend
+    networks:
+      - app-network
+
+  # Frontend Backoffice (React)
+  frontend-backoffice:
+    build:
+      context: ./FrontendBackoffice
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_URL=http://localhost:5000
+      - REACT_APP_SOCKET_URL=http://localhost:5000
+      - NODE_PATH=./src
+    volumes:
+      - ./FrontendBackoffice:/app
+      - /app/node_modules
+      - /app/build
     depends_on:
       - website-manager-backend
     networks:

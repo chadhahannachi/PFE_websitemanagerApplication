@@ -52,8 +52,13 @@ Route::prefix('payments')->group(function () {
     Route::get('/licence/{licenceId}', [PaymentController::class, 'getLicencePayments']);
 });
 
-// Route de santé
-Route::get('/health', [HealthController::class, 'healthCheck']);
+// Route de santé temporaire
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'healthy',
+        'message' => 'Service is running'
+    ]);
+});
 
 // Route pour le webhook Stripe
 Route::post('stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);

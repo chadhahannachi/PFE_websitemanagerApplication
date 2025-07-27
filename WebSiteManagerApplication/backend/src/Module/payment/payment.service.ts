@@ -7,7 +7,8 @@ import { AxiosError } from 'axios';
 @Injectable()
 export class PaymentService {
   private readonly logger = new Logger(PaymentService.name);
-  private readonly laravelApiUrl= 'http://127.0.0.1:8000';
+  // private readonly laravelApiUrl= 'http://127.0.0.1:8000';
+  private readonly laravelApiUrl= 'http://license-service:8000';
 
   constructor(
     private readonly configService: ConfigService,
