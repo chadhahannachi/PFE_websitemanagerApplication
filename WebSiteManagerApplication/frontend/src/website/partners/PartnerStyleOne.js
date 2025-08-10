@@ -72,7 +72,7 @@ export default function PartnerStyleOne({ partenaires }) {
       width: '100%',
       maxWidth: '600px',
       textAlign: 'center',
-      marginBottom: '10px',
+      marginBottom: '0px',
     },
     partnersSubtitle: {
       color: '#000',
@@ -80,7 +80,7 @@ export default function PartnerStyleOne({ partenaires }) {
       fontFamily: 'Arial',
       fontWeight: '400',
       textAlign: 'center',
-      marginBottom: '30px',
+      marginBottom: '0px',
     },
   });
   const [texts, setTexts] = useState({

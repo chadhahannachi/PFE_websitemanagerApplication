@@ -408,7 +408,7 @@ const MasterLayout = ({ children }) => {
                 </li> 
                 )}
 
-                <li>
+                {/* <li>
                   <NavLink
                     to='/invoice-preview'
                     className={(navData) =>
@@ -418,7 +418,7 @@ const MasterLayout = ({ children }) => {
                     <i className='ri-circle-fill circle-icon text-warning-main w-auto' />
                     Invoice
                   </NavLink>
-                </li>     
+                </li>      */}
 
               </ul>
             </li>
@@ -563,7 +563,7 @@ const MasterLayout = ({ children }) => {
                     Events
                   </NavLink>
                 </li>    
-                <li>
+                {/* <li>
                   <NavLink
                     to='/invoice-add'
                     className={(navData) =>
@@ -573,7 +573,7 @@ const MasterLayout = ({ children }) => {
                     <i className='ri-circle-fill circle-icon text-info-main w-auto' />{" "}
                     News
                   </NavLink>
-                </li>    
+                </li>     */}
                 <li>
                   <NavLink
                     to='/FAQList'
@@ -1856,17 +1856,22 @@ const MasterLayout = ({ children }) => {
                 >
                   <Icon icon='heroicons:bars-3-solid' className='icon' />
                 </button>
-                <form className='navbar-search'>
+                {/* <form className='navbar-search'>
                   <input type='text' name='search' placeholder='Search' />
                   <Icon icon='ion:search-outline' className='icon' />
-                </form>
+                </form> */}
               </div>
             </div>
             <div className='col-auto'>
               <div className='d-flex flex-wrap align-items-center gap-3'>
                 {/* ThemeToggleButton */}
                 <ThemeToggleButton />
-                <div className='dropdown d-none d-sm-inline-block'>
+
+
+
+
+
+                {/* <div className='dropdown d-none d-sm-inline-block'>
                   <button
                     className='has-indicator w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center'
                     type='button'
@@ -2073,9 +2078,9 @@ const MasterLayout = ({ children }) => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 {/* Language dropdown end */}
-                <div className='dropdown'>
+                {/* <div className='dropdown'>
                   <button
                     className='has-indicator w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center'
                     type='button'
@@ -2262,7 +2267,7 @@ const MasterLayout = ({ children }) => {
                       </Link>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 {/* Message dropdown end */}
 
                 <NotificationBell />
@@ -2309,7 +2314,7 @@ const MasterLayout = ({ children }) => {
                           My Profile
                         </Link>
                       </li>
-                      <li>
+                      {/* <li>
                         <Link
                           className='dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3'
                           to='/email'
@@ -2320,8 +2325,8 @@ const MasterLayout = ({ children }) => {
                           />{" "}
                           Inbox
                         </Link>
-                      </li>
-                      <li>
+                      </li> */}
+                      {/* <li>
                         <Link
                           className='dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3'
                           to='/company'
@@ -2332,15 +2337,19 @@ const MasterLayout = ({ children }) => {
                           />
                           Setting
                         </Link>
-                      </li>
+                      </li> */}
                       <li>
-                        <Link
-                          className='dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3'
-                          to='#'
+                        <button
+                          onClick={() => {
+                            localStorage.removeItem('token');
+                            localStorage.removeItem('user');
+                            window.location.href = 'http://localhost:3001';
+                          }}
+                          className='dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3 w-100 border-0 bg-transparent'
                         >
                           <Icon icon='lucide:power' className='icon text-xl' />{" "}
                           Log Out
-                        </Link>
+                        </button>
                       </li>
                     </ul>
                   </div>

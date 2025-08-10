@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from "react";
 import DarkAndLightMode from "./DarkAndLightMode.tsx";
 
-import logoBlack from '../../images/logo-black.png';
-import logoWhite from '../../images/logo-white.png';
+import logoBlack from '../../images/logo.png';
+import logoWhite from '../../images/logo.png';
 
 
 import { Link, useLocation } from "react-router-dom";
@@ -99,14 +99,14 @@ const currentRoute = location.pathname;
           {/* others-options */}
           <div className="others-options style-two">
             <ul className="d-flex align-items-center">
-              <li>
+              {/* <li>
                 <button
                   className="search-icon border-0 bg-transparent p-0"
                   onClick={handleToggleSearchModal}
                 >
                   <i className="flaticon-loupe"></i>
                 </button>
-              </li>
+              </li> */}
               <li>
                 <Link
                   to="/authentication/"
@@ -128,7 +128,7 @@ const currentRoute = location.pathname;
       </nav>
 
       {/* Search Form */}
-      <div 
+      {/* <div 
         className={`offcanvas offcanvas-top src-form-wrapper ${
           isActive ? "show" : ""
         }`} 
@@ -147,7 +147,7 @@ const currentRoute = location.pathname;
         <button type="button" className="btn-close" onClick={handleToggleSearchModal}>
           <i className="ri-close-line"></i>
         </button>
-      </div>
+      </div> */}
     </>
   );
 };

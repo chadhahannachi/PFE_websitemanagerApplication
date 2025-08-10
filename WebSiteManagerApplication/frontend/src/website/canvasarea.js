@@ -20,10 +20,7 @@ import { jwtDecode } from 'jwt-decode';
 import ChatbotEntreprise from '../chatbot/ChatbotEntreprise';
 
 const CanvasArea = ({ styles, sectionOrder, sectionVisibility, customSections = [], onOpenGenModal, onOpenAIUpdate, navbarStyles, sliderStyles, onOpenSliderStyleForm, entrepriseId, chatbotLivePrefs }) => {
-  // console.log('[CanvasArea] styles.sliderStyle reçu:', styles.sliderStyle);
-  // console.log('[CanvasArea] sliderStyles reçu:', sliderStyles);
-  // console.log('[CanvasArea] sectionOrder:', sectionOrder);
-  // console.log('[CanvasArea] sectionVisibility:', sectionVisibility);
+  
   
   const sections = {
     home: () => (
@@ -130,7 +127,7 @@ const CanvasArea = ({ styles, sectionOrder, sectionVisibility, customSections = 
         )
       ))}
       {/* Afficher le bouton seulement si licence.type est 'enterprise' ou 'professional' */}
-      {!licenceLoading && licence && (licence.type === 'enterprise' || licence.type === 'professional') && (
+      {/* {!licenceLoading && licence && (licence.type === 'enterprise' || licence.type === 'professional') && (
         <div id="generate-content" style={{ textAlign: 'center', margin: '2rem 0' }}>
           <Button
             variant="contained"
@@ -141,7 +138,21 @@ const CanvasArea = ({ styles, sectionOrder, sectionVisibility, customSections = 
             + Générer du contenu
           </Button>
         </div>
-      )}
+      )} */}
+
+        <div id="generate-content" style={{ textAlign: 'center', margin: '2rem 0' }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onOpenGenModal}
+            style={{ fontSize: '1.2rem', padding: '1rem 2rem' }}
+          >
+            + Générer du contenu
+          </Button>
+        </div>
+     
+
+
       <Footer />
       {/* Intégration du chatbot entreprise en bas de page comme dans HomePage */}
       <div style={{ margin: '40px 0' }}>

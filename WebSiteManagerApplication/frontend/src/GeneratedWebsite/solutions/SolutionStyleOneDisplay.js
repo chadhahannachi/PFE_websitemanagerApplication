@@ -139,7 +139,7 @@ export default function SolutionStyleOneDisplay({ solutions = [], contentType = 
       fontFamily: 'Arial',
       fontWeight: 'normal',
       width: '100%',
-      maxWidth: '800px',
+      maxWidth: '800px', 
     },
     solutionGrid: {
       width: 1200,

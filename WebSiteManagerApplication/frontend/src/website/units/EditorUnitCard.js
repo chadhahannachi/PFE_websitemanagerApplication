@@ -918,8 +918,8 @@ export default function EditorUnitGrid({ unites, initialPosition = { top: 0, lef
                 className="unit-image-container"
                 style={{
                   width: '200px',
-                  height: '200px',
-                  borderRadius: '10px',
+                  height: '100%',
+                  borderRadius: '0px',
                   overflow: 'hidden',
                 }}
               >

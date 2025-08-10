@@ -117,7 +117,8 @@ export default function PartnersStyleOneDisplay({ entrepriseId }) {
               position: 'relative', 
               textAlign: isMobile() ? 'center' : 'left',
               ...styles.partnersSubtitle, 
-              ...positions.partnersSubtitle 
+              ...positions.partnersSubtitle,
+              marginTop: '-50px'
             }}
           >
             {texts.partnersSubtitle}

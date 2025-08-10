@@ -52,7 +52,7 @@ class PaymentStatusUpdated extends Notification implements ShouldQueue
                    ->line('Date de paiement : ' . $this->payement->payment_date->format('d/m/Y H:i'))
                    ->line('Méthode de paiement : ' . $this->payement->payment_method)
                 //    ->action('Voir les détails de votre licence', url('/licences'))
-                   ->action('Voir les détails de votre paiement', 'http://localhost:3000/pay-done/?licence_id=' . $this->licence->id . '&payment_id=' . $this->payement->id)
+                   ->action('Voir les détails de votre paiement', 'http://localhost:3001/pay-done/?licence_id=' . $this->licence->id . '&payment_id=' . $this->payement->id)
                    ->line('Merci de votre confiance !')
                    ->salutation('Cordialement,Abshore');
         } else if ($this->payement->status === 'failed') {

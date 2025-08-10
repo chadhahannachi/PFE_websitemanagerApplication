@@ -17,12 +17,12 @@ const EditorSolutionGrid = forwardRef(({ solutions = [], initialPosition = { top
     gap: initialStyles.gap || '15px 20px',
   });
   const [cardStyles, setCardStyles] = useState({
-    card: {
+    card: { 
       backgroundColor: initialStyles.card?.backgroundColor || '#ffffff',
       hoverBackgroundColor: initialStyles.card?.hoverBackgroundColor || '#f8f9fa',
       borderRadius: initialStyles.card?.borderRadius || '8px',
       width: initialStyles.card?.width || 300,
-      minHeight: initialStyles.card?.minHeight || 150,
+      minHeight: initialStyles.card?.minHeight || 190,
     },
     number: {
       color: initialStyles.number?.color || '#333333',

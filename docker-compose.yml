@@ -1,4 +1,4 @@
-version: '3.8'
+# version: '3.8'
 
 services:
   # API Gateway (NestJS)
@@ -25,8 +25,10 @@ services:
     ports:
       - "8001:8000"
     volumes:
-      - ./LicenceMicroservice:/var/www/html
+      # - ./LicenceMicroservice:/var/www/html
+      - .:/var/www/html
       - ./LicenceMicroservice/vendor:/var/www/html/vendor
+      - ./LicenceMicroservice/.env:/var/www/html/.env
     environment:
       - DB_CONNECTION=mysql
       # - DB_HOST=127.0.0.1

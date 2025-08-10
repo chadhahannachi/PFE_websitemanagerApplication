@@ -669,7 +669,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 
 const FIELD_TYPES = [
   { value: 'text', label: 'Texte' },
-  { value: 'number', label: 'ustre' },
+  { value: 'number', label: 'number' },
   { value: 'date', label: 'Date' },
   { value: 'email', label: 'Email' },
   { value: 'textarea', label: 'Zone de texte' },
@@ -921,9 +921,9 @@ const ContactUsSection = () => {
   const handleSave = async () => {
     try {
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      const htmlTitre = draftToHtml(convertToRaw(editorTitre.getCurrentContent()));
-      const htmlDescription = draftToHtml(convertToRaw(editorDescription.getCurrentContent()));
-      const dataToSave = { ...currentContact, titre: htmlTitre, description: htmlDescription };
+      // const htmlTitre = draftToHtml(convertToRaw(editorTitre.getCurrentContent()));
+      // const htmlDescription = draftToHtml(convertToRaw(editorDescription.getCurrentContent()));
+      const dataToSave = { ...currentContact };
       // On retire les champs inutiles
       delete dataToSave.datePublication;
       delete dataToSave.isPublished;
@@ -996,12 +996,15 @@ const ContactUsSection = () => {
           {contact ? (
             <div className="row align-items-center">
               <div className="col-md-12">
-                <div className="rendered-html" dangerouslySetInnerHTML={{ __html: contact.titre }} />
-                <div className="rendered-html" dangerouslySetInnerHTML={{ __html: contact.description }} />
+                {/* <div className="rendered-html" dangerouslySetInnerHTML={{ __html: contact.titre }} />
+                <div className="rendered-html" dangerouslySetInnerHTML={{ __html: contact.description }} /> */}
+                <div><b>Titre :</b> {contact.titre}</div>
+                <div><b>Description :</b> {contact.description}</div>
+
                 <div><b>Adresse :</b> {contact.adresse}</div>
                 <div><b>Téléphone :</b> {contact.phone}</div>
                 <div><b>Email :</b> {contact.email}</div>
-                {contact.links && Object.keys(contact.links).length > 0 && (
+                {/* {contact.links && Object.keys(contact.links).length > 0 && (
                   <div><b>Liens :</b>
                     <ul style={{ marginBottom: 0 }}>
                       {Object.entries(contact.links).map(([key, value]) => (
@@ -1009,7 +1012,7 @@ const ContactUsSection = () => {
                       ))}
                     </ul>
                   </div>
-                )}
+                )} */}
               </div>
             </div>
           ) : (
@@ -1231,14 +1234,25 @@ const ContactUsSection = () => {
                 <button type="button" className="btn-close" onClick={() => setModalOpen(false)}></button>
               </div>
               <div className="modal-body" style={{ overflowY: 'auto', maxHeight: '70vh' }}>
-                <div className="mb-3">
+                {/* <div className="mb-3">
                   <label className="form-label">Titre</label>
                   <Editor editorState={editorTitre} onEditorStateChange={setEditorTitre} wrapperClassName="demo-wrapper" editorClassName="demo-editor" />
-                </div>
-                <div className="mb-3">
+                </div> */}
+                {/* <div className="mb-3">
                   <label className="form-label">Description</label>
                   <Editor editorState={editorDescription} onEditorStateChange={setEditorDescription} wrapperClassName="demo-wrapper" editorClassName="demo-editor" />
+                </div> */}
+
+                <div className="mb-3">
+                  <label className="form-label">Titre</label>
+                  <input type="text" className="form-control" value={currentContact.titre} onChange={e => setCurrentContact(prev => ({ ...prev, titre: e.target.value }))} placeholder="titre" />
                 </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Description</label>
+                  <input type="text" className="form-control" value={currentContact.description} onChange={e => setCurrentContact(prev => ({ ...prev, description: e.target.value }))} placeholder="Description" />
+                </div>
+
                 <div className="mb-3">
                   <label className="form-label">Adresse</label>
                   <input type="text" className="form-control" value={currentContact.adresse} onChange={e => setCurrentContact(prev => ({ ...prev, adresse: e.target.value }))} placeholder="Adresse" />
@@ -1251,7 +1265,9 @@ const ContactUsSection = () => {
                   <label className="form-label">Email</label>
                   <input type="email" className="form-control" value={currentContact.email} onChange={e => setCurrentContact(prev => ({ ...prev, email: e.target.value }))} placeholder="Email" />
                 </div>
-                <div className="mb-3">
+
+                
+                {/* <div className="mb-3">
                   <label className="form-label">Liens</label>
                   <div className="d-flex gap-2 mb-2">
                     <input type="text" className="form-control" placeholder="Nom du lien (ex: Facebook)" value={currentLinkKey} onChange={e => setCurrentLinkKey(e.target.value)} />
@@ -1280,7 +1296,7 @@ const ContactUsSection = () => {
                       }}>Supprimer</button>
                     </div>
                   ))}
-                </div>
+                </div> */}
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary-600" onClick={() => setModalOpen(false)}>Annuler</button>

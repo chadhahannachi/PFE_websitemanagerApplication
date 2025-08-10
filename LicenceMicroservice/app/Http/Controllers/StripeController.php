@@ -36,6 +36,11 @@ class StripeController extends Controller
             'status' => Licence::STATUS_PENDING_VERIFICATION
         ]);
 
+        if ($licence->company_email) {
+            Notification::route('mail', $licence->company_email)
+                ->notify(new PaymentVerificationCode($licence, $verificationCode));
+        }
+
         $session = $this->stripe->checkout->sessions->create([
             'payment_method_types' => ['card'],
             'line_items' => [[
@@ -50,8 +55,13 @@ class StripeController extends Controller
                 'quantity' => 1,
             ]],
             'mode' => 'payment',
-            'success_url' => route('payment.verify') . '?session_id={CHECKOUT_SESSION_ID}',
-            // 'success_url' => 'http://localhost:3000/verifyPayement?session_id={CHECKOUT_SESSION_ID}',
+            // 'success_url' => route('payment.verify') . '?session_id={CHECKOUT_SESSION_ID}',
+
+            'success_url' => 'http://localhost:3001/verification-paiement?session_id={CHECKOUT_SESSION_ID}&licence_id=' . $licence->id,
+
+            // 'success_url' => 'http://localhost:3001/verification-paiement?session_id={CHECKOUT_SESSION_ID}',
+
+            
             'cancel_url' => route('payment.cancel'),
             'metadata' => [
                 'licence_id' => $licence->id,
@@ -121,6 +131,9 @@ class StripeController extends Controller
         return view('payment.success');
     }
 
+    /**
+     * Endpoint API pour la vérification du code de paiement (utilisé par NestJS/React)
+     */
     public function confirmVerification(Request $request)
     {
         $validator = Validator::make($request->all(), [

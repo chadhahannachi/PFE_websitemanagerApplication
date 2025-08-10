@@ -283,8 +283,8 @@ export default function UnitStyleTwoDisplay({ contentType = 'unite', styleKey = 
                 className="unit-image-container"
                 style={{
                   width: '200px',
-                  height: '200px',
-                  borderRadius: '10px',
+                  height: '100%',
+                  borderRadius: '0px',
                   overflow: 'hidden',
                 }}
               >

@@ -6,7 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 
 const API_URL = 'http://localhost:5000/couleurs';
 
-export default function EditorFaqList({
+export default function EditorFaqList({ 
   faqs,
   initialPosition,
   initialStyles,
@@ -530,7 +530,9 @@ export default function EditorFaqList({
                 onChange={(e) => handleStyleChange('backgroundColor', e.target.value, 'answer')}
               />
             </div>
-            <div>
+
+
+            {/* <div>
               <label>Text Color: </label>
               {loading ? (
                 <span>Chargement des couleurs...</span>
@@ -571,8 +573,11 @@ export default function EditorFaqList({
                 value={styles.answer.color}
                 onChange={(e) => handleStyleChange('color', e.target.value, 'answer')}
               />
-            </div>
-            <div>
+            </div> */}
+
+
+
+            {/* <div>
               <label>Font Size: </label>
               <input
                 type="range"
@@ -582,7 +587,7 @@ export default function EditorFaqList({
                 value={parseFloat(styles.answer.fontSize)}
                 onChange={(e) => handleStyleChange('fontSize', `${e.target.value}rem`, 'answer')}
               />
-            </div>
+            </div> */}
           </div>
         </div>
       )}

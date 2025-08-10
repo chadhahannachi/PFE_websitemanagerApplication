@@ -10,7 +10,11 @@ class LicenceController extends Controller
 {
     public function index()
     {
-        return Licence::with('licenceRequest')->get();
+        try {
+            return Licence::all();
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function show(Licence $licence)

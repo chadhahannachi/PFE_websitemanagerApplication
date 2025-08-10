@@ -10,7 +10,8 @@ export default function EventStyleThreeDisplay({ events = [], contentType = 'eve
   const [error, setError] = useState(null);
   const [positions, setPositions] = useState({
     sectionName: { top: 0, left: 0 },
-    eventGrid: { top: 50, left: 0 },
+    sectionDesc: { top: 50, left: 0 },
+    eventGrid: { top: 120, left: 0 },
   });
   const [styles, setStyles] = useState({
     sectionName: {
@@ -21,12 +22,19 @@ export default function EventStyleThreeDisplay({ events = [], contentType = 'eve
       width: '100%',
       maxWidth: '600px',
     },
+    sectionDesc: {
+      color: '#000',
+      fontSize: '38px',
+      fontFamily: 'inherit',
+      fontWeight: '600',
+    },
     eventGrid: {
       width: 1500,
     },
   });
   const [texts, setTexts] = useState({
     sectionName: 'NOS ÉVÉNEMENTS',
+    sectionDesc: 'Découvrez nos événements innovants et adaptés à vos besoins',
   });
   const [cardStyles, setCardStyles] = useState({
     title: {
@@ -82,15 +90,21 @@ export default function EventStyleThreeDisplay({ events = [], contentType = 'eve
         sectionName: isValidPosition(fetchedPreferences.positions?.sectionName)
           ? fetchedPreferences.positions.sectionName
           : positions.sectionName,
+        sectionDesc: isValidPosition(fetchedPreferences.positions?.sectionDesc)
+          ? fetchedPreferences.positions.sectionDesc
+          : positions.sectionDesc,
         eventGrid: isValidPosition(fetchedPreferences.positions?.eventGrid)
           ? fetchedPreferences.positions.eventGrid
-          : { top: 100, left: 0 }, // Adjusted default to avoid overlap
+          : positions.eventGrid,
       };
 
       const newStyles = {
         sectionName: isValidStyle(fetchedPreferences.styles?.sectionName)
           ? fetchedPreferences.styles.sectionName
           : styles.sectionName,
+        sectionDesc: isValidStyle(fetchedPreferences.styles?.sectionDesc)
+          ? fetchedPreferences.styles.sectionDesc
+          : styles.sectionDesc,
         eventGrid: isValidStyle(fetchedPreferences.styles?.eventGrid)
           ? fetchedPreferences.styles.eventGrid
           : styles.eventGrid,
@@ -100,6 +114,9 @@ export default function EventStyleThreeDisplay({ events = [], contentType = 'eve
         sectionName: isValidText(fetchedPreferences.texts?.sectionName)
           ? fetchedPreferences.texts.sectionName
           : texts.sectionName,
+        sectionDesc: isValidText(fetchedPreferences.texts?.sectionDesc)
+          ? fetchedPreferences.texts.sectionDesc
+          : texts.sectionDesc,
       };
 
       setPositions(newPositions);
@@ -161,6 +178,16 @@ export default function EventStyleThreeDisplay({ events = [], contentType = 'eve
       >
         {texts.sectionName}
       </h1>
+      <h2
+        className="eventthree-stack"
+        style={{
+          position: 'absolute',
+          ...styles.sectionDesc,
+          ...positions.sectionDesc,
+        }}
+      >
+        {texts.sectionDesc}
+      </h2>
       <div
         className="events-container style-three eventthree-grid"
         style={{

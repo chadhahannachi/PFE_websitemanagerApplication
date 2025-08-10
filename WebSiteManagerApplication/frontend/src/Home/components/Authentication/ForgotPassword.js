@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import banner from '../../images/page-banner/banner.jpeg'
+import banner from '../../images/logo-black.png'
 import { Link } from "react-router-dom";
 
 const ForgotPassword = () => {
@@ -44,17 +44,17 @@ const ForgotPassword = () => {
 
   return (
     <div className="banner-area banner-bg-2 bg-color-fff7ed overflow-hidden">
-      <div className="container-fluid mw-1640" style={{ marginTop: '-100px' }}>
-        <div className="row align-items-center" style={{ marginTop: '-80px' }}>
+      <div className="container-fluid mw-1640" >
+        <div className="row align-items-center" >
           {/* Colonne gauche */}
-          <div className="col-lg-6 col-md-6 d-flex flex-column justify-content-center ps-lg-5 ps-3" style={{ minHeight: '100vh', }}>
+          <div className="col-lg-6 col-md-6 d-flex flex-column justify-content-center ps-lg-6 ps-5" >
             <div className="page-banner-content mb-4">
-              <h2>Login Register</h2>
+              <h2>Forgot Password</h2>
               <ul className="p-0 mb-0 list-unstyled d-flex align-items-center">
                 <li>
                   <Link to='/'>Home</Link>
                 </li>
-                <li className="ms-2"> Login Register</li>
+                <li className="ms-2"> Forgot Password</li>
               </ul>
             </div>
             <div style={{ maxWidth: 550 }} >
@@ -95,8 +95,8 @@ const ForgotPassword = () => {
             </form></div>
           </div>
           {/* Colonne droite */}
-          <div className="col-lg-6 col-md-6 d-flex flex-column ps-lg-5 ps-3" style={{ marginTop: '-40px' }}>
-          <div className="page-banner-img position-relative z-1 mt-3 ps-lg-5" style={{ marginTop: '-40px' }}>
+          <div className="col-lg-6 col-md-6 d-flex flex-column ps-lg-1 ps-3" >
+          <div className="page-banner-img position-relative z-1 mt-3 ps-lg-1" >
               <img
                 src={banner}
                 alt="Page banner"

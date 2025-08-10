@@ -1057,7 +1057,7 @@ const CompanyDetail = () => {
                                                     </div>
                                                     <div className="col-md-6 mb-2">
                                                         <div className="fw-semibold text-primary-light">Prix :</div>
-                                                        <div className="text-secondary-light">{licence.price} €</div>
+                                                        <div className="text-secondary-light">{licence.price} DT</div>
                                                     </div>
                                                     <div className="col-md-6 mb-2">
                                                         <div className="fw-semibold text-primary-light">Clé de licence :</div>
@@ -1202,7 +1202,7 @@ const CompanyDetail = () => {
                                                     </div>
                                                     <div className="col-md-6 mb-2">
                                                         <div className="fw-semibold text-primary-light">Prix :</div>
-                                                        <div className="text-secondary-light">{licenceRequest.price} €</div>
+                                                        <div className="text-secondary-light">{licenceRequest.price} DT</div>
                                                     </div>
                                                     <div className="col-md-6 mb-2">
                                                         <div className="fw-semibold text-primary-light">ID de la demande :</div>

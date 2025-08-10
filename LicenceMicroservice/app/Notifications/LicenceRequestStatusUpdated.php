@@ -48,7 +48,7 @@ class LicenceRequestStatusUpdated extends Notification implements ShouldQueue
                    ->line('Type de licence : ' . $this->licenceRequest->type)
                    ->line('Prix : ' . $this->licenceRequest->price . ' DT')
                    ->line('Durée : ' . $this->licenceRequest->duration_months . ' mois')
-                   ->action('Passer au paiement', 'http://localhost:3000/licence/' . $this->licenceId)
+                   ->action('Passer au paiement', 'http://localhost:3001/licence/' . $this->licenceId)
                    ->line('Merci de votre confiance !');
         } else if ($this->licenceRequest->status === 'rejected') {
             $message->subject('Votre demande de licence a été rejetée')

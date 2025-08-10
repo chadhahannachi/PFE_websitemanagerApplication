@@ -14,7 +14,7 @@
                     </p>
 
                     <div class="text-left mt-4">
-                        <a href="http://localhost:3000/hometh" class="btn btn-primary px-4" style="background-color: #dc3545; border-color: #dc3545; font-weight: 600; height: 50px; width: 200px; border-radius: 10px;">
+                        <a href="http://localhost:3001" class="btn btn-primary px-4" style="background-color: #dc3545; border-color: #dc3545; font-weight: 600; height: 50px; width: 200px; border-radius: 10px;">
                             Retour à l'accueil
                         </a>
                     </div>

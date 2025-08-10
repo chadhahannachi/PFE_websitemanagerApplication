@@ -32,9 +32,9 @@ const styleOptions = {
     { name: 'Image Hover Side by Side', value: 2 },
   ],
   events: [
-    { name: 'Intro with Cards', value: 0 },
-    { name: 'Image Cards', value: 1 },
-    { name: 'Rounded Container', value: 2 },
+    // { name: 'Intro with Cards', value: 0 },
+    { name: 'Image Cards', value: 0 },
+    { name: 'Rounded Container', value: 1 },
   ],
   // news: [
   //   { name: 'Grid with Buttons', value: 0 },

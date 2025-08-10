@@ -95,6 +95,8 @@ import ProtectedRoute from "./ProtectedRoute.js";
 import PublicWebsite from "./GeneratedWebsite/PublicWebsite.js";
 import ComingSoon from "./Home/app/ComingSoon.js";
 import TypographyDisplay from "./TypographyDisplay.js";
+import PaymentVerif from "./Home/components/PaymentVerif/PaymentVerif.jsx";
+import PaymentSuccess from "./Home/components/PaymentVerif/PaymentSuccess.jsx";
 
 const tourSteps = [
   { selector: '.workspace-header', content: 'Bienvenue ! Ceci est l\'en-tête.' },
@@ -234,7 +236,8 @@ function App() {
         <Route path="/pay-done" element={<RootLayout>< PayDonePage/></RootLayout>} />
         <Route path="/new-password/:token" element={<NewPasswordPage />} />
         <Route path="/licence/:id" element={<LicenceDetail />} />
-        
+        <Route path="/verification-paiement" element={<PaymentVerif />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/ComingSoon" element={<RootLayout><ComingSoon /></RootLayout>} />
 
         <Route path="*" element={<Navigate to="/" replace />} />

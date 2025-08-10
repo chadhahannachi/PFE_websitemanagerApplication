@@ -5,7 +5,7 @@ import EditorSolutionGrid from './EditorSolutionGrid';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom'; 
 
 // Composant de notification de succès
 const SuccessNotification = ({ show, message }) => {
@@ -496,7 +496,7 @@ export default function SolutionStyleOne({ solutions, contentType = 'solutions',
         message="Modifications enregistrées avec succès" 
       />
       
-      <div style={{ backgroundColor: 'white', minHeight: '100vh', padding: '20px' }}>
+      <div style={{ backgroundColor: 'white', height:'relative', minHeight: '100vh', padding: '20px' }}>
       <div style={{ 
         display: 'flex', 
         justifyContent: 'space-between', 

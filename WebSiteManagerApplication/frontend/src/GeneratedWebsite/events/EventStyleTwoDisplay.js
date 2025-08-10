@@ -8,7 +8,7 @@ export default function EventStyleTwoDisplay({ events = [], contentType = 'event
   const [error, setError] = useState(null);
   const [positions, setPositions] = useState({
     sectionName: { top: 30, left: 0 },
-    // description: { top: 35, left: 0 },
+    sectionDesc: { top: 35, left: 0 },
     eventGrid: { top: 50, left: 0 },
   });
   const [styles, setStyles] = useState({
@@ -20,29 +20,63 @@ export default function EventStyleTwoDisplay({ events = [], contentType = 'event
       width: '100%',
       maxWidth: '600px',
     },
-    // description: {
-    //   color: 'black',
-    //   fontSize: '30px',
-    //   fontFamily: 'Arial',
-    //   fontWeight: '600',
-    //   width: '100%',
-    //   maxWidth: '100%',
-    // },
     eventGrid: {
       width: 1200,
       backgroundColor: '#ffffff',
       borderRadius: '10px',
     },
+    sectionDesc: {
+      color: 'black',
+      fontSize: '30px',
+      fontFamily: 'Arial',
+      fontWeight: '600',
+      width: '100%',
+      maxWidth: '100%',
+    },
     eventCard: {
-      backgroundColor: '#fff',
-      borderRadius: '10px',
-      width: 300,
-      height: 350,
+      backgroundColor: '#ffffff',
+      borderRadius: '16px',
+      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
+      width: '280px',
+      height: '440px',
+      hoverBackgroundColor: '#f59e0b',
+    },
+    title: {
+      color: '#014268',
+      fontSize: '25px',
+      fontFamily: 'Arial',
+      fontWeight: '700',
+      textAlign: 'left',
+      fontStyle: 'normal',
+      textDecoration: 'none',
+    },
+    description: {
+      color: '#555',
+      fontSize: '18px',
+      fontFamily: 'Arial',
+      textAlign: 'left',
+      fontWeight: 'normal',
+      fontStyle: 'normal',
+      textDecoration: 'none',
+    },
+    date: {
+      color: '#999',
+      fontSize: '14px',
+      fontFamily: 'Arial',
+      textAlign: 'left',
+      fontWeight: 'normal',
+      fontStyle: 'normal',
+      textDecoration: 'none',
+    },
+    image: {
+      borderRadius: '0px',
+      width: '100%',
+      height: '200px',
     },
   });
   const [texts, setTexts] = useState({
     sectionName: 'NOS ÉVÉNEMENTS',
-    // description: 'DISCOVER ALL THE NEWS AND NOVELTIES OF OUR COMPANY',
+    sectionDesc: 'DISCOVER ALL THE NEWS AND NOVELTIES OF OUR COMPANY',
   });
 
   useEffect(() => {
@@ -55,18 +89,22 @@ export default function EventStyleTwoDisplay({ events = [], contentType = 'event
         const fetchedPreferences = response.data.preferences?.[contentType]?.[styleKey] || {};
         setPositions({
           sectionName: fetchedPreferences.positions?.sectionName || positions.sectionName,
-          // description: fetchedPreferences.positions?.description || positions.description,
+          sectionDesc: fetchedPreferences.positions?.sectionDesc || positions.sectionDesc,
           eventGrid: fetchedPreferences.positions?.eventGrid || positions.eventGrid,
         });
         setStyles({
           sectionName: fetchedPreferences.styles?.sectionName || styles.sectionName,
-          // description: fetchedPreferences.styles?.description || styles.description,
-        //   eventGrid: fetchedPreferences.styles?.eventGrid || styles.eventGrid,
+          sectionDesc: fetchedPreferences.styles?.sectionDesc || styles.sectionDesc,
+          eventGrid: fetchedPreferences.styles?.eventGrid || styles.eventGrid,
           eventCard: fetchedPreferences.styles?.eventCard || styles.eventCard,
+          title: fetchedPreferences.styles?.title || styles.title,
+          description: fetchedPreferences.styles?.description || styles.description,
+          date: fetchedPreferences.styles?.date || styles.date,
+          image: fetchedPreferences.styles?.image || styles.image,
         });
         setTexts({
           sectionName: fetchedPreferences.texts?.sectionName || texts.sectionName,
-          // description: fetchedPreferences.texts?.description || texts.description,
+          sectionDesc: fetchedPreferences.texts?.sectionDesc || texts.sectionDesc,
         });
       } catch (err) {
         setError('Erreur lors du chargement des préférences.');
@@ -92,16 +130,16 @@ export default function EventStyleTwoDisplay({ events = [], contentType = 'event
       >
         {texts.sectionName}
       </h1>
-      {/* <h2
-        style={{
-          // position: 'absolute',
-          marginBottom: '20px',
-          ...styles.description,
-          ...positions.description,
-        }}
-      >
-        {texts.description}
-      </h2> */}
+             <h2
+         style={{
+           position: 'absolute',
+           marginBottom: '20px',
+           ...styles.sectionDesc,
+           ...positions.sectionDesc,
+         }}
+       >
+         {texts.sectionDesc}
+       </h2>
       <div
         className="events-container style-two eventtwo-grid"
         style={{
@@ -109,42 +147,108 @@ export default function EventStyleTwoDisplay({ events = [], contentType = 'event
           top: positions.eventGrid.top,
           left: positions.eventGrid.left,
           width: styles.eventGrid?.width || 1200,
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '5px',
-          padding: '20px',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '15px',
+          padding: '0 15px',
         }}
       >
         {events.map((event, index) => (
           <div
             key={event.id || index}
-            className="event-item"
+            className="event-card"
             style={{
               ...(event.styles?.card || styles.eventCard),
-              margin: 'auto',
+              padding: '0',
+              position: 'relative',
               overflow: 'hidden',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              transition: 'transform 0.2s ease',
+              transition: 'background-color 0.3s ease',
+              display: 'flex',
+              flexDirection: 'column',
+              height: (event.styles?.card?.height || styles.eventCard.height) || '440px',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = (event.styles?.card?.hoverBackgroundColor || styles.eventCard.hoverBackgroundColor);
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = (event.styles?.card?.backgroundColor || styles.eventCard.backgroundColor);
             }}
           >
-            <img
-              src={event.img}
-              alt={event.title}
-              className="event-image"
-              style={{ width: '100%', height: '200px', objectFit: 'cover' }}
-            />
-            <div className="event-content" style={{ padding: '20px' }}>
-              <h3 style={{
-                ...(event.styles?.title || styles.eventCard?.title || {}),
-                marginBottom: '10px',
-              }}>{event.title}</h3>
-              <p style={{
-                ...(event.styles?.description || styles.eventCard?.description || {}),
-                marginBottom: '15px',
-              }}>{event.desc}</p>
-              <div className="event-date" style={{ display: 'flex', alignItems: 'center' }}>
-                <CalendarMonthIcon className="calendar-icon" style={{ marginRight: '5px', color: (event.styles?.date?.color || styles.eventCard?.date?.color || '#999') }} />
-                <span style={{ ...(event.styles?.date || styles.eventCard?.date || {}) }}>{event.date}</span>
+            {/* Image at the top */}
+            <div
+              style={{
+                width: '100%',
+              }}
+            >
+              <img
+                src={event.img}
+                alt={event.title}
+                style={{
+                  width: '100%',
+                  height: '200px',
+                  objectFit: 'cover',
+                  borderRadius: (event.styles?.image?.borderRadius || styles.image.borderRadius),
+                  display: 'block',
+                }}
+              />
+            </div>
+            
+            {/* Content area with padding */}
+            <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+              {/* Title */}
+              <div
+                style={{
+                  marginBottom: '10px',
+                }}
+              >
+                <h3 style={{ 
+                  ...(event.styles?.title || styles.title), 
+                  margin: 0 
+                }}>
+                  {event.title}
+                </h3>
+              </div>
+              
+              {/* Description */}
+              <div
+                style={{
+                  flex: 1,
+                  marginBottom: '10px',
+                }}
+              >
+                <p style={{ 
+                  ...(event.styles?.description || styles.description), 
+                  margin: 0, 
+                  wordWrap: 'break-word' 
+                }}>
+                  {event.desc}
+                </p>
+              </div>
+              
+              {/* Date at the bottom */}
+              <div
+                style={{
+                  marginTop: 'auto',
+                }}
+              >
+                <div
+                  className="event-date"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <CalendarMonthIcon 
+                    className="calendar-icon" 
+                    style={{ 
+                      marginRight: '5px', 
+                      color: (event.styles?.date?.color || styles.date.color) 
+                    }} 
+                  />
+                  <span style={{ ...(event.styles?.date || styles.date) }}>
+                    {event.date}
+                  </span>
+                </div>
               </div>
             </div>
           </div>

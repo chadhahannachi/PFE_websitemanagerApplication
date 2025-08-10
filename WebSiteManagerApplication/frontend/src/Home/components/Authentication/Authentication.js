@@ -1,7 +1,7 @@
 
 import React from "react";
 import LoginForm from "./LoginForm.js";
-import banner from '../../images/page-banner/banner.jpeg'
+import banner from '../../images/logo-black.png'
 import { Link } from "react-router-dom";
 import mokup from '../../images/mokaup/mokup-11.png';
 
@@ -11,15 +11,15 @@ const Authentication = () => {
       <div className="container-fluid mw-1640">
         <div className="row align-items-start" >
           {/* Colonne gauche avec padding */}
-          <div className="col-lg-6 col-md-6 d-flex flex-column ps-lg-5 ps-3" style={{ marginTop: '-40px' }}>
+          <div className="col-lg-6 col-md-6 d-flex flex-column mt-5 ps-lg-5 ps-3" >
             {/* Textes en haut */}
             
             {/* Images en dessous avec largeur réduite */}
-            <div className="page-banner-img position-relative z-1 mt-3 ps-lg-5" style={{ marginTop: '-40px' }}>
+            <div className="page-banner-img position-relative z-1 mt-5 ps-lg-5" >
               <img
                 src={banner}
                 alt="Page banner"
-                style={{ width: "100%", maxWidth: 700, height: "50%",  maxHeight: 500, borderRadius: '30px' }}
+                // style={{ width: "100%", maxWidth: 700, height: "50%",  maxHeight: 500, borderRadius: '30px' }}
               />
               {/* <img
                 src={mokup}

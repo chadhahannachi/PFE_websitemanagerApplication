@@ -2,6 +2,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const LicenceDetail = () => {
 
@@ -13,6 +14,24 @@ const LicenceDetail = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, isExpired: false });
+    const [showModal, setShowModal] = useState(false);
+    const [upgradeData, setUpgradeData] = useState({
+        plan: licence?.type || '',
+        startDate: new Date().toISOString().slice(0, 10),
+        endDate: '',
+    });
+    const TYPE_BASIC = 'basic';
+    const TYPE_PROFESSIONAL = 'professional';
+    const TYPE_ENTERPRISE = 'enterprise';
+    const PRICE_BASIC = 50;
+    const PRICE_PROFESSIONAL = 100;
+    const PRICE_ENTERPRISE = 150;
+
+    const [plans, setPlans] = useState([
+        { name: TYPE_BASIC, price: PRICE_BASIC },
+        { name: TYPE_PROFESSIONAL, price: PRICE_PROFESSIONAL },
+        { name: TYPE_ENTERPRISE, price: PRICE_ENTERPRISE },
+    ]);
 
     // Récupérer la licence par ID et l'entreprise associée
     useEffect(() => {
@@ -53,6 +72,17 @@ const LicenceDetail = () => {
 
         fetchLicenceAndCompany();
     }, [id]);
+
+    // Mettre à jour upgradeData quand la licence change
+    useEffect(() => {
+        if (licence) {
+            setUpgradeData({
+                plan: licence.type || '',
+                startDate: new Date().toISOString().slice(0, 10),
+                endDate: '',
+            });
+        }
+    }, [licence]);
 
     // Compte à rebours pour la licence
     useEffect(() => {
@@ -437,18 +467,128 @@ const LicenceDetail = () => {
                     </div>
                     <div className="card-body">
                         <div className="d-grid gap-2">
-                            <button className="btn btn-outline-primary btn-sm">
-                                <Icon icon="solar:download-outline" className="me-2" />
-                                Télécharger la licence
+                            <button className="btn btn-outline-primary btn-sm" onClick={() => setShowModal(true)}>
+                                <Icon icon="material-symbols:upgrade" width="24" height="24" />
+                                Mettre à niveau la licence
                             </button>
-                            <button className="btn btn-outline-secondary btn-sm">
+                            {/* <button className="btn btn-outline-secondary btn-sm">
                                 <Icon icon="solar:question-circle-outline" className="me-2" />
                                 Aide et support
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                 </div>
             </div>
+            {showModal && (
+                <div className="modal-backdrop fade show" style={{position:'fixed',top:0,left:0,width:'100vw',height:'100vh',zIndex:1000,background:'rgba(0,0,0,0.3)'}}></div>
+            )}
+            {showModal && (
+                <div className="modal fade show" style={{display:'block',zIndex:1100}} tabIndex="-1">
+                    <div className="modal-dialog modal-dialog-centered">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h6 className="modal-title fw-semibold">Mettre à niveau la licence</h6>
+                                <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                            </div>
+                            <form
+                                onSubmit={async (e) => {
+                                    e.preventDefault();
+                                    const planObj = plans.find(p => p.name === upgradeData.plan);
+                                    const start = new Date(upgradeData.startDate);
+                                    const end = new Date(upgradeData.endDate);
+                                    // Calcul du nombre de mois entiers ou partiels (arrondi au supérieur)
+                                    const months = Math.ceil((end.getFullYear() * 12 + end.getMonth() - (start.getFullYear() * 12 + start.getMonth()) + 1));
+                                    const price = planObj ? months * planObj.price : 0;
+                                    try {
+                                        const token = localStorage.getItem('token');
+                                        await axios.put(
+                                            `http://localhost:5000/licences/${licence.id}`,
+                                            {
+                                                type: upgradeData.plan,
+                                                start_date: upgradeData.startDate,
+                                                end_date: upgradeData.endDate,
+                                                price,
+                                                status: 'pending'
+                                            },
+                                            {
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'Authorization': `Bearer ${token}`
+                                                }
+                                            }
+                                        );
+                                        setShowModal(false);
+                                        window.location.reload();
+                                    } catch (err) {
+                                        toast.error('Erreur lors de la mise à niveau');
+                                    }
+                                }}
+                            >
+                                <div className="modal-body">
+                                    <div className="mb-3">
+                                        <label className="form-label">Type de licence</label>
+                                        <select
+                                            className="form-control"
+                                            value={upgradeData.plan}
+                                            onChange={e => setUpgradeData({ ...upgradeData, plan: e.target.value })}
+                                            required
+                                        >
+                                            <option value="">Choisir un type</option>
+                                            {plans.map(plan => (
+                                                <option key={plan.name} value={plan.name}>{plan.name} ({plan.price} DT/mois)</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Date de début</label>
+                                        <input
+                                            type="date"
+                                            className="form-control"
+                                            value={upgradeData.startDate}
+                                            onChange={e => setUpgradeData({ ...upgradeData, startDate: e.target.value })}
+                                            required
+                                            min={new Date().toISOString().slice(0, 10)}
+                                        />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Date de fin</label>
+                                        <input
+                                            type="date"
+                                            className="form-control"
+                                            value={upgradeData.endDate}
+                                            onChange={e => setUpgradeData({ ...upgradeData, endDate: e.target.value })}
+                                            required
+                                            min={upgradeData.startDate}
+                                        />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Prix calculé</label>
+                                        <div className="form-control bg-light">
+                                            {(() => {
+                                                const planObj = plans.find(p => p.name === upgradeData.plan);
+                                                if (!planObj || !upgradeData.startDate || !upgradeData.endDate) return '—';
+                                                const start = new Date(upgradeData.startDate);
+                                                const end = new Date(upgradeData.endDate);
+                                                // Calcul du nombre de mois entiers ou partiels (arrondi au supérieur)
+                                                const months = Math.ceil((end.getFullYear() * 12 + end.getMonth() - (start.getFullYear() * 12 + start.getMonth()) + 1));
+                                                return months > 0 ? `${months * planObj.price} DT` : '—';
+                                            })()}
+                                        </div>
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Statut</label>
+                                        <div className="form-control bg-light">pending</div>
+                                    </div>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Annuler</button>
+                                    <button type="submit" className="btn btn-primary">Valider</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

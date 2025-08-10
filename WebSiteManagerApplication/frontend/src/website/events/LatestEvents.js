@@ -7,7 +7,7 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
 const styles = [
-  { name: 'Intro with Cards', component: EventStyleOne },
+  // { name: 'Intro with Cards', component: EventStyleOne },
   { name: 'Image Cards', component: EventStyleTwo },
   { name: 'Rounded Container', component: EventStyleThree },
 ];
@@ -17,7 +17,7 @@ export default function LatestEvents({ styleIndex }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userEntreprise, setUserEntreprise] = useState(null);
-  const EventComponent = styles[styleIndex]?.component || EventStyleOne;
+  const EventComponent = styles[styleIndex]?.component || EventStyleTwo;
   // console.log('StyleIndex reçu dans LatestEvents:', styleIndex);
 
   // Récupération du token et décodage pour obtenir l'ID de l'utilisateur

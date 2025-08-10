@@ -124,168 +124,15 @@ export class AuthService {
     // Envoi d'un email de bienvenue avec template
     const loginUrl = 'http://localhost:3000/login';
     
-    // try {
-    //   // HTML inline en attendant que les templates soient configurés
-    //   const htmlContent = `
-    //     <!DOCTYPE html>
-    //     <html lang="fr">
-    //     <head>
-    //         <meta charset="UTF-8">
-    //         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    //         <title>Bienvenue sur Abshore WebsiteManager</title>
-    //         <style>
-    //             body {
-    //                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    //                 line-height: 1.6;
-    //                 color: #333;
-    //                 max-width: 600px;
-    //                 margin: 0 auto;
-    //                 padding: 20px;
-    //                 background-color: #f4f4f4;
-    //             }
-    //             .email-container {
-    //                 background-color: #ffffff;
-    //                 border-radius: 10px;
-    //                 padding: 30px;
-    //                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    //             }
-    //             .header {
-    //                 text-align: center;
-    //                 margin-bottom: 30px;
-    //             }
-    //             .logo {
-    //                 max-width: 200px;
-    //                 height: auto;
-    //                 margin-bottom: 20px;
-    //             }
-    //             .welcome-title {
-    //                 color: #1976d2;
-    //                 font-size: 24px;
-    //                 font-weight: bold;
-    //                 margin-bottom: 10px;
-    //             }
-    //             .content {
-    //                 margin-bottom: 30px;
-    //             }
-    //             .credentials-box {
-    //                 background-color: #f8f9fa;
-    //                 border: 1px solid #e9ecef;
-    //                 border-radius: 8px;
-    //                 padding: 20px;
-    //                 margin: 20px 0;
-    //             }
-    //             .credentials-title {
-    //                 font-weight: bold;
-    //                 color: #495057;
-    //                 margin-bottom: 10px;
-    //             }
-    //             .credential-item {
-    //                 margin: 8px 0;
-    //             }
-    //             .credential-label {
-    //                 font-weight: 600;
-    //                 color: #6c757d;
-    //             }
-    //             .credential-value {
-    //                 color: #495057;
-    //                 font-family: 'Courier New', monospace;
-    //                 background-color: #e9ecef;
-    //                 padding: 4px 8px;
-    //                 border-radius: 4px;
-    //             }
-    //             .login-button {
-    //                 display: inline-block;
-    //                 background-color: #1976d2;
-    //                 color: #ffffff;
-    //                 text-decoration: none;
-    //                 padding: 12px 30px;
-    //                 border-radius: 6px;
-    //                 font-weight: 600;
-    //                 text-align: center;
-    //                 margin: 20px 0;
-    //                 transition: background-color 0.3s;
-    //             }
-    //             .login-button:hover {
-    //                 background-color: #1565c0;
-    //             }
-    //             .footer {
-    //                 text-align: center;
-    //                 margin-top: 30px;
-    //                 padding-top: 20px;
-    //                 border-top: 1px solid #e9ecef;
-    //                 color: #6c757d;
-    //                 font-size: 14px;
-    //             }
-    //             .security-note {
-    //                 background-color: #fff3cd;
-    //                 border: 1px solid #ffeaa7;
-    //                 border-radius: 6px;
-    //                 padding: 15px;
-    //                 margin: 20px 0;
-    //                 color: #856404;
-    //             }
-    //         </style>
-    //     </head>
-    //     <body>
-    //         <div class="email-container">
-    //             <div class="header">
-    //                 <img src="https://res.cloudinary.com/duvcpe6mx/image/upload/v1751908338/kgnqv73cahjes5yhjlsp.png" alt="Abshore Logo" class="logo">
-    //                 <div class="welcome-title">Bienvenue sur Abshore WebsiteManager</div>
-    //             </div>
-                
-    //             <div class="content">
-    //                 <p>Bonjour <strong>${nom}</strong>,</p>
-                    
-    //                 <p>Votre compte a été créé avec succès sur <strong>Abshore WebsiteManager Application</strong> !</p>
-                    
-    //                 <p>Voici vos identifiants de connexion :</p>
-                    
-    //                 <div class="credentials-box">
-    //                     <div class="credentials-title">🔐 Vos identifiants :</div>
-    //                     <div class="credential-item">
-    //                         <span class="credential-label">Email :</span>
-    //                         <span class="credential-value">${email}</span>
-    //                     </div>
-    //                     <div class="credential-item">
-    //                         <span class="credential-label">Mot de passe :</span>
-    //                         <span class="credential-value">${password}</span>
-    //                     </div>
-    //                 </div>
-                    
-    //                 <div class="security-note">
-    //                     <strong>⚠️ Important :</strong> Pour des raisons de sécurité, nous vous recommandons de changer votre mot de passe après votre première connexion.
-    //                 </div>
-                    
-    //                 <p>Cliquez sur le bouton ci-dessous pour accéder à votre espace :</p>
-                    
-    //                 <div style="text-align: center;">
-    //                     <a href="${loginUrl}" class="login-button">Se connecter</a>
-    //                 </div>
-    //             </div>
-                
-    //             <div class="footer">
-    //                 <p>Si vous n'êtes pas à l'origine de cette inscription, veuillez ignorer cet email.</p>
-    //                 <p>© 2024 Abshore WebsiteManager. Tous droits réservés.</p>
-    //             </div>
-    //         </div>
-    //     </body>
-    //     </html>
-    //   `;
-      
-    //   await this.mailerService.sendMail({
-    //     to: email,
-    //     subject: 'Bienvenue sur Abshore WebsiteManager Application',
-    //     html: htmlContent,
-    //   });
-    //   console.log('Email de bienvenue envoyé avec succès à:', email);
-    // } 
+  
     try {
       const rawTemplate = loadTemplate('welcome-email.html');
       const htmlContent = fillTemplate(rawTemplate, {
         nom,
         email,
         password,
-        loginUrl: 'http://localhost:3000/login',
+        // loginUrl: 'http://localhost:3000/login',
+        loginUrl: 'http://localhost:3001/authentication',
       });
     
       await this.mailerService.sendMail({
@@ -569,18 +416,27 @@ async findSuperAdminABshore(): Promise<User[]> {
     }
   
     const token = this.jwtService.sign({ userId: user._id, role: user.role }, { expiresIn: '1h' });
-    const url = `http://localhost:3001/new-password/${token}`;
-    const htmlContent = `
-      <p>Bonjour ${user.nom},</p>
-      <p>Vous avez demandé à réinitialiser votre mot de passe. Veuillez cliquer sur le lien ci-dessous pour réinitialiser votre mot de passe :</p>
-      <p><a href="${url}">Réinitialiser le mot de passe</a></p>
-      <p>Ce lien expire dans une heure.</p>
-    `;
-    await this.mailerService.sendMail({ 
-      to: email,
-      subject: 'Password Reset',
-      html: htmlContent,
-    });
+    const resetUrl = `http://localhost:3001/new-password/${token}`;
+    
+    try {
+      const rawTemplate = loadTemplate('reset-password-email.html');
+      const htmlContent = fillTemplate(rawTemplate, {
+        nom: user.nom,
+        resetUrl: resetUrl,
+        logoUrl: 'https://res.cloudinary.com/duvcpe6mx/image/upload/v1751908338/kgnqv73cahjes5yhjlsp.png',
+      });
+    
+      await this.mailerService.sendMail({
+        to: email,
+        subject: 'Réinitialisation de mot de passe - ABSHORE WebsiteManager',
+        html: htmlContent,
+      });
+    
+      console.log('Email de réinitialisation envoyé avec succès à:', email);
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi de l\'email de réinitialisation:', error.message);
+      throw new Error('Erreur lors de l\'envoi de l\'email de réinitialisation');
+    }
   }
   
   private async findUserByEmail(email: string): Promise<any> {

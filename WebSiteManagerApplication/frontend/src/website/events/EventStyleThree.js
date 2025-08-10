@@ -58,21 +58,17 @@ export default function EventStyleThree({ events, contentType = 'events', styleK
   const [error, setError] = useState(null);
   const [positions, setPositions] = useState({
     sectionName: { top: 0, left: 0 },
-    sectionDesc: { top: 5, left: 0 },
-    eventGrid: { top: 70, left: 0 },
+    sectionDesc: { top: 50, left: 0 },
+    eventGrid: { top: 120, left: 0 },
   });
   const [styles, setStyles] = useState({
     sectionName: {
-      // color: '#f59e0b',
-      // fontSize: '20px',
-      // fontFamily: 'Arial',
-      // fontWeight: '600',
-      // width: '100%',
-      // maxWidth: '600px',
-      color: '#000',
-      fontSize: '38px',
-      fontFamily: 'inherit',
+      color: '#f59e0b',
+      fontSize: '20px',
+      fontFamily: 'Arial',
       fontWeight: '600',
+      width: '100%',
+      maxWidth: '600px',
     },
     sectionDesc: {
       // color: '#f59e0b',
@@ -452,40 +448,44 @@ export default function EventStyleThree({ events, contentType = 'events', styleK
       >
                 {/* <div style={{width: '35%'}}> */}
                 
-        <EditorText
-          elementType="h1"
-          initialPosition={positions.sectionName}
-          initialStyles={styles.sectionName}
-          onSelect={setSelectedElement}
-          onPositionChange={(newPosition) => handlePositionChange('sectionName', newPosition)}
-          onStyleChange={(newStyles) => handleStyleChange('sectionName', newStyles)}
-          onTextChange={(newText) => handleTextChange('sectionName', newText)}
-        >
-          {texts.sectionName}
-        </EditorText>
-        {/* <EditorText
-          elementType="h1"
-          initialPosition={positions.sectionDesc}
-          // initialStyles={styles.sectionDesc}
-          initialStyles={{ ...styles.sectionDesc, border: '2px solid red', zIndex: 10 }}
-          onSelect={setSelectedElement}
-          onPositionChange={(newPosition) => handlePositionChange('sectionDesc', newPosition)}
-          onStyleChange={(newStyles) => handleStyleChange('sectionDesc', newStyles)}
-          onTextChange={(newText) => handleTextChange('sectionDesc', newText)}
-        >
-          {texts.sectionDesc}
-        </EditorText> */}
+        <div style={{ position: 'relative', zIndex: 10 }}>
+          <EditorText
+            elementType="h1"
+            initialPosition={positions.sectionName}
+            initialStyles={styles.sectionName}
+            onSelect={setSelectedElement}
+            onPositionChange={(newPosition) => handlePositionChange('sectionName', newPosition)}
+            onStyleChange={(newStyles) => handleStyleChange('sectionName', newStyles)}
+            onTextChange={(newText) => handleTextChange('sectionName', newText)}
+          >
+            {texts.sectionName}
+          </EditorText>
+
+          <EditorText
+            elementType="h1"
+            initialPosition={positions.sectionDesc}
+            initialStyles={styles.sectionDesc}
+            onSelect={setSelectedElement}
+            onPositionChange={(newPosition) => handlePositionChange('sectionDesc', newPosition)}
+            onStyleChange={(newStyles) => handleStyleChange('sectionDesc', newStyles)}
+            onTextChange={(newText) => handleTextChange('sectionDesc', newText)}
+          >
+            {texts.sectionDesc}
+          </EditorText>
+        </div>
         
         {/* </div> */}
-        <EditorEventGrid
-          events={events}
-          initialPosition={positions.eventGrid}
-          initialStyles={styles.eventGrid}
-          onSelect={setSelectedElement}
-          onPositionChange={(newPosition) => handlePositionChange('eventGrid', newPosition)}
-          onStyleChange={handleEventStyleChange}
-          onUpdate={handleEventPositionChange}
-        />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <EditorEventGrid
+            events={events}
+            initialPosition={positions.eventGrid}
+            initialStyles={styles.eventGrid}
+            onSelect={setSelectedElement}
+            onPositionChange={(newPosition) => handlePositionChange('eventGrid', newPosition)}
+            onStyleChange={handleEventStyleChange}
+            onUpdate={handleEventPositionChange}
+          />
+        </div>
         {/* <button onClick={saveAllChanges}>Enregistrer les modifications</button> */}
       </div>
     </section>

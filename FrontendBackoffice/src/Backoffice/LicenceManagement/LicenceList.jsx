@@ -115,6 +115,31 @@ const LicenceList = () => {
     setCurrentPage(pageNumber);
   };
 
+  // Fonction pour supprimer une licence
+  const handleDeleteLicence = async (licenceId) => {
+    const isConfirmed = window.confirm(
+      `Êtes-vous sûr de vouloir supprimer cette licence ?\n\nCette action est irréversible.`
+    );
+
+    if (!isConfirmed) {
+      return;
+    }
+
+    try {
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      await axios.delete(`http://localhost:5000/licences/${licenceId}`, config);
+      
+      // Rafraîchir la liste après suppression
+      fetchLicences();
+      
+      // Afficher un message de succès (optionnel)
+      alert('Licence supprimée avec succès !');
+    } catch (error) {
+      console.error('Erreur lors de la suppression:', error);
+      alert('Erreur lors de la suppression de la licence. Veuillez réessayer.');
+    }
+  };
+
   // Obtenir les types uniques pour le filtre
   const uniqueTypes = [...new Set(licences.map(licence => licence.type).filter(Boolean))];
 
@@ -255,13 +280,22 @@ const LicenceList = () => {
                           </td>
                           <td>{licence.created_at ? new Date(licence.created_at).toLocaleString() : ''}</td>
                           <td className="text-center">
-                            <Link
-                              to={`/LicenceDetail/${licence.id || licence._id}`}
-                              className="w-32-px h-32-px me-8 bg-primary-light text-info-pressed rounded-circle d-inline-flex align-items-center justify-content-center"
-                              title="Voir les détails"
-                            >
-                              <Icon icon="iconamoon:eye-light" />
-                            </Link>
+                            <div className="d-flex align-items-center justify-content-center gap-2">
+                              <Link
+                                to={`/LicenceDetail/${licence.id || licence._id}`}
+                                className="w-32-px h-32-px bg-primary-light text-info-pressed rounded-circle d-inline-flex align-items-center justify-content-center"
+                                title="Voir les détails"
+                              >
+                                <Icon icon="iconamoon:eye-light" />
+                              </Link>
+                              <button
+                                onClick={() => handleDeleteLicence(licence.id || licence._id)}
+                                className="w-32-px h-32-px bg-danger-light text-danger rounded-circle d-inline-flex align-items-center justify-content-center border-0"
+                                title="Supprimer la licence"
+                              >
+                                <Icon icon="solar:trash-bin-trash-outline" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}

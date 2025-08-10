@@ -9,7 +9,7 @@ import EventStyleTwoDisplay from './EventStyleTwoDisplay';
 import EventStyleOneDisplay from './EventStyleOneDisplay';
 
 const styles = [
-  { name: 'Intro with Cards', component: EventStyleOneDisplay },
+  // { name: 'Intro with Cards', component: EventStyleOneDisplay },
   { name: 'Image Cards', component: EventStyleTwoDisplay },
   { name: 'Rounded Container', component: EventStyleThreeDisplay },
 ];
@@ -19,7 +19,7 @@ export default function LatestEventsDisplay({ styleIndex, entrepriseId }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userEntreprise, setUserEntreprise] = useState(null);
-  const EventComponent = styles[styleIndex]?.component || EventStyleOne;
+  const EventComponent = styles[styleIndex]?.component || EventStyleTwoDisplay;
   console.log('StyleIndex reçu dans LatestEvents:', styleIndex);
 
   // Récupération du token et décodage pour obtenir l'ID de l'utilisateur

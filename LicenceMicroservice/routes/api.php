@@ -50,6 +50,8 @@ Route::prefix('payments')->group(function () {
     Route::delete('/{id}', [PaymentController::class, 'destroy']);
     Route::put('/{id}/status', [PaymentController::class, 'updateStatus']);
     Route::get('/licence/{licenceId}', [PaymentController::class, 'getLicencePayments']);
+    Route::post('/payment/confirm-verification', [StripeController::class, 'confirmVerification']);
+
 });
 
 // Route de santé temporaire

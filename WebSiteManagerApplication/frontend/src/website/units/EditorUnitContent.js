@@ -34,8 +34,8 @@ export default function EditorUnitContent({
           color: initialStyles.description?.color || '#666',
           fontSize: initialStyles.description?.fontSize || '18px',
         },
-        width: initialPosition.width || '45%',
       },
+      width: initialStyles.width || '45%',
     }))
   );
 
@@ -122,20 +122,33 @@ export default function EditorUnitContent({
   const handleStyleChange = (property, value, subProperty) => {
   setUnitData((prevUnits) => {
     const newUnits = prevUnits.map((unit) => {
-      const updatedStyles = {
-        ...unit.styles,
-        [subProperty]: {
-          ...unit.styles[subProperty],
-          [property]: value,
-        },
-      };
+      let updatedStyles;
+      let updatedWidth = unit.width;
+      
+      if (subProperty === 'width') {
+        // Si c'est la largeur, on la met à jour directement
+        updatedWidth = value;
+        updatedStyles = { ...unit.styles };
+      } else {
+        // Sinon, on met à jour les styles normaux
+        updatedStyles = {
+          ...unit.styles,
+          [subProperty]: {
+            ...unit.styles[subProperty],
+            [property]: value,
+          },
+        };
+      }
+      
       const unitId = unit._id || unit.id;
       if (unitId) {
-        onStyleChange?.(unitId, updatedStyles);
+        onStyleChange?.(unitId, { ...updatedStyles, width: updatedWidth });
       }
+      
       return {
         ...unit,
         styles: updatedStyles,
+        width: updatedWidth,
       };
     });
     return newUnits;
@@ -255,10 +268,10 @@ export default function EditorUnitContent({
   }, [userEntreprise]);
 
   // Récupérer les styles courants de la première unité pour le panneau d'édition
-  const currentStyles = unitData[0]?.styles || {
-    title: { color: '#358dcc', fontSize: '20px', fontWeight: '600' },
-    description: { color: '#666', fontSize: '18px' },
-    width: '45%',
+  const currentStyles = {
+    title: unitData[0]?.styles?.title || { color: '#358dcc', fontSize: '20px', fontWeight: '600' },
+    description: unitData[0]?.styles?.description || { color: '#666', fontSize: '18px' },
+    width: unitData[0]?.width || '45%',
   };
 
   return (
@@ -433,10 +446,10 @@ export default function EditorUnitContent({
                 min="20"
                 max="80"
                 step="5"
-                value={parseInt(currentStyles.width)}
+                value={parseInt(currentStyles.width) || 45}
                 onChange={(e) => handleStyleChange('width', `${e.target.value}%`, 'width')}
               />
-              <span> {currentStyles.width}</span>
+              <span> {currentStyles.width || '45%'}</span>
             </div>
           </div>
         </div>
@@ -447,7 +460,7 @@ export default function EditorUnitContent({
           position: 'absolute',
           top: position.top,
           left: position.left,
-          width: currentStyles.width,
+          width: currentStyles.width || '45%',
           flex: 1,
           minWidth: '250px',
           cursor: 'pointer',

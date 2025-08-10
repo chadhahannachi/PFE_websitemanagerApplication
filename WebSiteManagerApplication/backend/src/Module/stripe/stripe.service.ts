@@ -6,7 +6,8 @@ import { firstValueFrom } from 'rxjs';
 @Injectable()
 export class StripeService {
   private readonly logger = new Logger(StripeService.name);
-  private readonly laravelApiUrl = 'http://127.0.0.1:8000';
+  // private readonly laravelApiUrl = 'http://127.0.0.1:8000';
+  private readonly laravelApiUrl = 'http://license-service:8000';
 
   constructor(
     private readonly configService: ConfigService,

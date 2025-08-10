@@ -10,6 +10,7 @@ const UsersList = () => {
   const [companyFilter, setCompanyFilter] = useState("");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   // Fetch all users
   useEffect(() => {
@@ -38,6 +39,21 @@ const UsersList = () => {
     };
     fetchEntreprises();
   }, []);
+
+  // Delete user function
+  const handleDeleteUser = async (userId, userName) => {
+    if (window.confirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur "${userName}" ? Cette action est irréversible.`)) {
+      try {
+        await axios.delete(`http://localhost:5000/auth/users/${userId}`);
+        // Remove user from local state
+        setUsers(users.filter(user => user._id !== userId));
+        alert('Utilisateur supprimé avec succès');
+      } catch (error) {
+        console.error('Erreur lors de la suppression:', error);
+        alert('Erreur lors de la suppression de l\'utilisateur');
+      }
+    }
+  };
 
   // Filtered users
   const filteredUsers = users.filter(user => {
@@ -128,12 +144,22 @@ const UsersList = () => {
                       : user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                   </td>
                   <td>
-                    <Link
-                      to={`/UserDetail/${user._id}`}
-                      className="w-32-px h-32-px me-8 bg-primary-light text-info-pressed rounded-circle d-inline-flex align-items-center justify-content-center"
-                    >
-                      <Icon icon="iconamoon:eye-light" />
-                    </Link>
+                    <div className="d-flex gap-2">
+                      <Link
+                        to={`/UserDetail/${user._id}`}
+                        className="w-32-px h-32-px bg-primary-light text-info-pressed rounded-circle d-inline-flex align-items-center justify-content-center"
+                        title="Voir les détails"
+                      >
+                        <Icon icon="iconamoon:eye-light" />
+                      </Link>
+                      <button
+                        onClick={() => handleDeleteUser(user._id, user.nom)}
+                        className="w-32-px h-32-px bg-danger-light text-danger rounded-circle d-inline-flex align-items-center justify-content-center border-0"
+                        title="Supprimer l'utilisateur"
+                      >
+                        <Icon icon="ion:trash-outline" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

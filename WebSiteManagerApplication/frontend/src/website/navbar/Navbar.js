@@ -112,7 +112,7 @@ const Navbar = ({ sectionOrder = [], customSections = [], sectionVisibility = {}
   const dropdownPanelStyle = {
     background: navbarStyles?.dropdownPanelBg || '#111',
     borderRadius: '8px',
-    padding: '8px 0',
+    padding: '0',
     minWidth: 180,
     boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
   };
@@ -120,7 +120,7 @@ const Navbar = ({ sectionOrder = [], customSections = [], sectionVisibility = {}
   const dropdownNavlinkStyle = {
     ...navLinkStyle,
     display: 'block',
-    padding: '8px 16px',
+    padding: '0px 0px',
   };
 
   const navbarContainerStyle = {

@@ -8,7 +8,8 @@ import { PredefinedComponent, predefinedComponents } from '../interfaces/predefi
 export class GeminiService {
   private readonly logger = new Logger(GeminiService.name);
   private readonly genAI: GoogleGenerativeAI;
-  private readonly model: string = 'gemini-2.5-flash';
+  private readonly model: string = 'gemini-2.0-flash';
+
 
   constructor(private configService: ConfigService) {
     const apiKey = this.configService.get<string>('GEMINI_API_KEY');
