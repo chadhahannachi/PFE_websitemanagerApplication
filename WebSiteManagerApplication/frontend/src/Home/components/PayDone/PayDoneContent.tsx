@@ -196,38 +196,6 @@ const PayDoneContent = () => {
                   </div>
 
                   <div className="flex-grow-1 ms-4">
-                    {/* <ul className="ps-0 pe-0 mb-3 list-unstyled d-flex align-items-center">
-                      <li className="me-1">
-                        <i
-                          className="ri-shield-check-fill"
-                          style={{ color: "#FFC107", fontSize: "18px" }}
-                        ></i>
-                      </li>
-                      <li className="me-1">
-                        <i
-                          className="ri-star-fill"
-                          style={{ color: "#FFC107", fontSize: "18px" }}
-                        ></i>
-                      </li>
-                      <li className="me-1">
-                        <i
-                          className="ri-star-fill"
-                          style={{ color: "#FFC107", fontSize: "18px" }}
-                        ></i>
-                      </li>
-                      <li className="me-1">
-                        <i
-                          className="ri-star-fill"
-                          style={{ color: "#FFC107", fontSize: "18px" }}
-                        ></i>
-                      </li>
-                      <li className="me-1">
-                        <i
-                          className="ri-star-fill"
-                          style={{ color: "#FFC107", fontSize: "18px" }}
-                        ></i>
-                      </li>
-                    </ul> */}
                     <div className="d-flex align-items-center">
                       <h6 className="me-2">Licence Type:</h6>
                       <span>{licence.type}</span>
