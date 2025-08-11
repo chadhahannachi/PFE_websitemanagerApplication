@@ -3,7 +3,7 @@
 services:
   # License Service (Laravel)
   license-service:
-    # image: chadhahannachi/license-service:latest
+    image: chadhahannachi/license-service:latest
     build:
       context: ./LicenceMicroservice
       dockerfile: Dockerfile
@@ -30,7 +30,7 @@ services:
 
   # Website Manager Backend (NestJS)
   website-manager-backend:
-    # image: chadhahannachi/website-manager-backend:latest
+    image: chadhahannachi/website-manager-backend:latest
     build:
       context: ./WebSiteManagerApplication/backend
       dockerfile: Dockerfile
@@ -48,7 +48,7 @@ services:
 
   # Website Manager Frontend (React)
   website-manager-frontend:
-    # image: chadhahannachi/website-manager-frontend:latest
+    image: chadhahannachi/website-manager-frontend:latest
     build:
       context: ./WebSiteManagerApplication/frontend
       dockerfile: Dockerfile
@@ -69,7 +69,7 @@ services:
 
   # Frontend Backoffice (React)
   frontend-backoffice:
-    # image: chadhahannachi/frontend-backoffice:latest
+    image: chadhahannachi/frontend-backoffice:latest
     build:
       context: ./FrontendBackoffice
       dockerfile: Dockerfile

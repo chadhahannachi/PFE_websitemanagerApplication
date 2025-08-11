@@ -1,0 +1,54 @@
+# GitHub Actions workflow: build & push Docker images for project services
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Docker Hub registry and namespace (set DOCKER_HUB_USERNAME/DOCKER_HUB_TOKEN secrets in repo)
+env:
+  REGISTRY: docker.io
+  IMAGE_NAMESPACE: ${{ secrets.DOCKER_HUB_USERNAME }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        service:
+          # Service definition: context path relative to repo root & resulting image name/tag
+          - {name: license-service,          context: ./LicenceMicroservice,             dockerfile: Dockerfile, tag: license-service}
+          - {name: website-manager-backend,    context: ./WebSiteManagerApplication/backend,     dockerfile: Dockerfile, tag: website-manager-backend}
+          - {name: website-manager-frontend,   context: ./WebSiteManagerApplication/frontend,    dockerfile: Dockerfile, tag: website-manager-frontend}
+          - {name: frontend-backoffice,        context: ./FrontendBackoffice,                   dockerfile: Dockerfile, tag: frontend-backoffice}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU (multi-arch builds)
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push ${{ matrix.service.name }} image
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.service.context }}
+          file: ${{ matrix.service.context }}/${{ matrix.service.dockerfile }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAMESPACE }}/${{ matrix.service.tag }}:latest
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAMESPACE }}/${{ matrix.service.tag }}:cache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAMESPACE }}/${{ matrix.service.tag }}:cache,mode=max
