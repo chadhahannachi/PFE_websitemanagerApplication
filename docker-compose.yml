@@ -4,9 +4,9 @@ services:
   # License Service (Laravel)
   license-service:
     image: chadhahannachi/license-service:latest
-    build:
-      context: ./LicenceMicroservice
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./LicenceMicroservice
+    #   dockerfile: Dockerfile
     ports:
       - "8001:8000"
     volumes:
@@ -31,15 +31,15 @@ services:
   # Website Manager Backend (NestJS)
   website-manager-backend:
     image: chadhahannachi/website-manager-backend:latest
-    build:
-      context: ./WebSiteManagerApplication/backend
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./WebSiteManagerApplication/backend
+    #   dockerfile: Dockerfile
     ports:
       - "5000:5000"
     environment:
       - MONGODB_URI=mongodb://mongodb:27017/website-manager
       - GEMINI_API_KEY=AIzaSyBfNYWFViNdO9UG8_bszyR4Xc5dGAI8DBE
-
+      - NODE_ENV=production
     depends_on:
       mongodb:
         condition: service_healthy
@@ -49,9 +49,9 @@ services:
   # Website Manager Frontend (React)
   website-manager-frontend:
     image: chadhahannachi/website-manager-frontend:latest
-    build:
-      context: ./WebSiteManagerApplication/frontend
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./WebSiteManagerApplication/frontend
+    #   dockerfile: Dockerfile
     ports:
       - "3001:80"
     environment:
@@ -70,9 +70,9 @@ services:
   # Frontend Backoffice (React)
   frontend-backoffice:
     image: chadhahannachi/frontend-backoffice:latest
-    build:
-      context: ./FrontendBackoffice
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./FrontendBackoffice
+    #   dockerfile: Dockerfile
     ports:
       - "3000:80"
     environment:
