@@ -393,6 +393,11 @@ const MasterLayout = ({ children }) => {
                   </NavLink>
                 </li>     
 
+
+               
+
+
+
                 {!loadingRole && userRole === 'superadminabshore' && (
 
                 <li>
@@ -403,11 +408,27 @@ const MasterLayout = ({ children }) => {
                     }
                   >
                     <i className='ri-circle-fill circle-icon text-warning-main w-auto' />
-                    Invoices
+                    Billing Management
                   </NavLink>
                 </li> 
                 )}
 
+
+              {!loadingRole && ['superadminabshore', 'superadminentreprise'].includes(userRole) && (
+
+                <li>
+                  <NavLink
+                    to='/MyPaymentList'
+                    className={(navData) =>
+                      navData.isActive ? "active-page" : ""
+                    }
+                  >
+                    <i className='ri-circle-fill circle-icon text-warning-main w-auto' />
+                    My Company Billing 
+                  </NavLink>
+                </li>     
+              )}
+                    
                 {/* <li>
                   <NavLink
                     to='/invoice-preview'

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Attendre que MySQL soit prêt
-while ! mysqladmin ping -h mysql -u root -proot --silent; do
+while ! mysqladmin ping -h mysql -u root -proot --skip-ssl --silent; do
     echo "En attente de MySQL..."
     sleep 1
     done

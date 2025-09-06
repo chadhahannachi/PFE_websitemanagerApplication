@@ -215,7 +215,7 @@ const PaymentList = () => {
                       <th>Devise</th>
                       <th>Stripe Intent</th>
                       <th>Stripe Session</th>
-                      <th className="text-center">Actions</th>
+                      <th className="text-center">Invoices</th>
                     </tr>
                   </thead>
                   <tbody>

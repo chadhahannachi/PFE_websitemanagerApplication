@@ -141,6 +141,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import WebsitesList from "./Backoffice/WebSite/WebsitesList";
+import MyPaymentList from "./Backoffice/LicenceManagement/MyPaymentList";
 
 
 function RedirectByRole() {
@@ -222,7 +223,8 @@ function App() {
         <Route exact path='/LicenceDetail/:id' element={<MasterLayout><Breadcrumb title="Licence Detail" /><ProtectedRoute><LicenceDetail/></ProtectedRoute></MasterLayout>} />
         <Route exact path='/PaymentList' element={<MasterLayout><Breadcrumb title="Invoices" /><ProtectedSuperAdminAbshoreRoute><PaymentList/></ProtectedSuperAdminAbshoreRoute></MasterLayout>} />
         <Route exact path='/PaymentDetail/:id' element={<MasterLayout><Breadcrumb title="Invoices" /><ProtectedRoute><PaymentDetail/></ProtectedRoute></MasterLayout>} />
-        
+        <Route exact path='/MyPaymentList' element={<MasterLayout><Breadcrumb title="MyInvoices" /><ProtectedRoute><MyPaymentList/></ProtectedRoute></MasterLayout>} />
+
         <Route exact path='/SlidesList' element={<MasterLayout><Breadcrumb title="Slides" /><ProtectedRoute><SlidesList/></ProtectedRoute></MasterLayout>} />
         <Route exact path='/PartnersList' element={<MasterLayout><Breadcrumb title="Partners" /><ProtectedRoute><PartnersList/></ProtectedRoute></MasterLayout>} />
         <Route exact path='/ServicesList' element={<MasterLayout><Breadcrumb title="Services" /><ProtectedRoute><ServicesList/></ProtectedRoute></MasterLayout>} />

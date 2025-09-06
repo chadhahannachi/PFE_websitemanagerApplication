@@ -136,55 +136,91 @@ class StripeController extends Controller
      */
     public function confirmVerification(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'licence_id' => 'required|exists:licences,id',
-            'verification_code' => 'required|string|size:6'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $licence = Licence::findOrFail($request->licence_id);
-
-        if ($licence->verification_code !== $request->verification_code) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Code de vérification invalide'
-            ], 400);
-        }
-
-        // Mettre à jour le statut de la licence
-        $licence->update([
-            'status' => Licence::STATUS_PAID,
-            'activated_at' => now(),
-            'verification_code' => null
-        ]);
-
-        // Mettre à jour le statut du paiement
-        $payment = Payement::where('licence_id', $licence->id)
-            ->where('status', Payement::STATUS_PENDING_VERIFICATION)
-            ->first();
-
-        if ($payment) {
-            $payment->update([
-                'status' => Payement::STATUS_SUCCEEDED
+        \DB::beginTransaction();
+        try {
+            $validator = Validator::make($request->all(), [
+                'licence_id' => 'required|exists:licences,id',
+                'verification_code' => 'required|string|size:6'
             ]);
-        }
 
-        // Envoyer la notification de confirmation
-        if ($licence->company_email) {
-            Notification::route('mail', $licence->company_email)
-                ->notify(new PaymentStatusUpdated($payment, $licence));
-        }
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Paiement vérifié avec succès'
-        ]);
+            $licence = Licence::findOrFail($request->licence_id);
+
+            if ($licence->verification_code !== $request->verification_code) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Code de vérification invalide'
+                ], 400);
+            }
+
+            // Mettre à jour le statut de la licence
+            $licence->update([
+                'status' => Licence::STATUS_PAID,
+                'activated_at' => now(),
+                'verification_code' => null
+            ]);
+
+            // Mettre à jour le statut du paiement
+            $payment = Payement::where('licence_id', $licence->id)
+                ->where('status', Payement::STATUS_PENDING_VERIFICATION)
+                ->first();
+
+            if (!$payment) {
+                // Créer un nouveau paiement si aucun n'existe
+                $payment = Payement::create([
+                    'licence_id' => $licence->id,
+                    'amount' => $licence->price,
+                    'payment_date' => now(),
+                    'payment_method' => 'stripe',
+                    'status' => Payement::STATUS_SUCCEEDED,
+                    'currency' => 'eur'
+                ]);
+            } else {
+                // Mettre à jour le paiement existant
+                $payment->update([
+                    'status' => Payement::STATUS_SUCCEEDED,
+                    'payment_date' => now()
+                ]);
+            }
+
+            // Envoyer la notification de confirmation
+            if ($licence->company_email) {
+                try {
+                    Notification::route('mail', $licence->company_email)
+                        ->notify(new PaymentStatusUpdated($payment, $licence));
+                } catch (\Exception $e) {
+                    \Log::error('Erreur lors de l\'envoi du mail de confirmation: ' . $e->getMessage());
+                }
+            }
+
+            \DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Paiement vérifié avec succès',
+                'data' => [
+                    'licence' => $licence,
+                    'payment' => $payment
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            \Log::error('Erreur lors de la confirmation de vérification: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Une erreur est survenue lors de la vérification du paiement',
+                'error' => config('app.debug') ? $e->getMessage() : null
+            ], 500);
+        }
     }
 
     public function cancel()

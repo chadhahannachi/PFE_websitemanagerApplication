@@ -136,13 +136,13 @@ const handlePrint = useReactToPrint({
 
       <div className="card-header">
         <div className="d-flex flex-wrap align-items-center justify-content-end gap-2">
-          <Link
+          {/* <Link
             to="#"
             className="btn btn-sm btn-primary-600 radius-8 d-inline-flex align-items-center gap-1"
           >
             <Icon icon="pepicons-pencil:paper-plane" className="text-xl" />
             Envoyer le reçu
-          </Link>
+          </Link> */}
 
           <button className="btn btn-sm btn-warning radius-8 d-inline-flex align-items-center gap-1" onClick={handleDownloadPDF}>
           <Icon icon="solar:download-linear" className="text-xl" />
@@ -150,10 +150,10 @@ const handlePrint = useReactToPrint({
               </button>
 
 
-              <button className="btn btn-sm btn-danger radius-8 d-inline-flex align-items-center gap-1" onClick={handlePrint}>
+              {/* <button className="btn btn-sm btn-danger radius-8 d-inline-flex align-items-center gap-1" onClick={handlePrint}>
               <Icon icon="basil:printer-outline" className="text-xl" />
                 <span className="iconify" data-icon="mdi:printer" /> Imprimer
-              </button>
+              </button> */}
 
 
           {/* <button

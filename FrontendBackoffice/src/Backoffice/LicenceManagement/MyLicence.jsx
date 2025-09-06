@@ -15,7 +15,8 @@ const MyLicence = () => {
     const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
     const [processingPayment, setProcessingPayment] = useState(false);
-
+    const [userRole, setUserRole] = useState(null);
+    const [loadingRole, setLoadingRole] = useState(true);
     const [upgradeData, setUpgradeData] = useState({
       plan: licence?.type || '',
       startDate: new Date().toISOString().slice(0, 10),
@@ -101,7 +102,7 @@ const MyLicence = () => {
                 throw new Error('Token d\'authentification manquant');
             }
             if (!licence?.price) {
-                throw new Error('Prix de la licence manquant');
+                throw new Error('Prix de la licence manquant'); 
             }
     
             const response = await axios.post(
@@ -163,6 +164,33 @@ const MyLicence = () => {
 
         return () => clearInterval(interval);
     }, [licence]);
+
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          try {
+            const decodedToken = jwtDecode(token);
+            const userId = decodedToken.sub;
+            axios.get(`http://localhost:5000/auth/user/${userId}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            }).then(response => {
+              setUserRole(response.data.role);
+              setLoadingRole(false);
+            }).catch(() => {
+              setUserRole(null);
+              setLoadingRole(false);
+            });
+          } catch {
+            setUserRole(null);
+            setLoadingRole(false);
+          }
+        } else {
+          setLoadingRole(false);
+        }
+      }, []);
+
+
 
     if (loading) {
         return (
@@ -506,6 +534,7 @@ const MyLicence = () => {
                 </div>
 
                 {/* Actions rapides */}
+                {!loadingRole && ['superadminabshore', 'superadminentreprise'].includes(userRole) && (
                 <div className="card mt-3">
                     <div className="card-header">
                         <h6 className="card-title mb-0">
@@ -520,11 +549,6 @@ const MyLicence = () => {
                                 Mettre à niveau la licence
                             </button>
                             
-                            {/* <button className="btn btn-outline-secondary btn-sm" disabled={licence && licence.status === 'paid'}>
-                                <Icon icon="hugeicons:payment-02" width="24" height="24" />
-                                Payer la licence
-                            </button> */}
-
                             <button 
                                 className="btn btn-outline-secondary btn-sm" 
                                 onClick={handlePayment}
@@ -536,6 +560,8 @@ const MyLicence = () => {
                         </div>
                     </div>
                 </div>
+
+                )}
             </div>
             {showModal && (
                 <div className="modal-backdrop fade show" style={{position:'fixed',top:0,left:0,width:'100vw',height:'100vh',zIndex:1000,background:'rgba(0,0,0,0.3)'}}></div>

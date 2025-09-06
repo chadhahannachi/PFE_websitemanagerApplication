@@ -41,5 +41,7 @@ EXPOSE 8000
 # Use custom entrypoint
 ENTRYPOINT ["/var/www/docker-entrypoint.sh"]
 
+
 # Start PHP artisan serve
 CMD php artisan serve --host=0.0.0.0 --port=8000
+

@@ -74,16 +74,37 @@ async createCheckoutSession(
   async confirmVerification(
     @Body() body: { licenceId: string; verificationCode: string },
   ) {
-    this.logger.log(`Confirming verification for licence ${body.licenceId}`);
+    const { licenceId, verificationCode } = body;
+    this.logger.log(`[ConfirmVerification] Début de la vérification pour la licence ${licenceId}`);
+    
     try {
+      if (!licenceId || !verificationCode) {
+        this.logger.error(`[ConfirmVerification] Paramètres manquants: licenceId=${!!licenceId}, verificationCode=${!!verificationCode}`);
+        throw new Error('Licence ID et code de vérification sont requis');
+      }
+
+      this.logger.debug(`[ConfirmVerification] Appel du service pour la licence ${licenceId}`);
       const result = await this.stripeService.confirmVerification(
-        body.licenceId,
-        body.verificationCode,
+        licenceId,
+        verificationCode,
       );
+      
+      this.logger.log(`[ConfirmVerification] Vérification réussie pour la licence ${licenceId}`);
       return result;
+      
     } catch (error) {
-      this.logger.error(`Error confirming verification: ${error.message}`);
-      throw error;
+      const errorMessage = error.response?.data?.message || error.message;
+      this.logger.error(`[ConfirmVerification] Erreur lors de la vérification: ${errorMessage}`, error.stack);
+      
+      if (error.response?.data) {
+        this.logger.error(`[ConfirmVerification] Détails de l'erreur: ${JSON.stringify(error.response.data)}`);
+      }
+      
+      throw {
+        status: error.response?.status || 500,
+        message: errorMessage,
+        details: error.response?.data || null
+      };
     }
   }
 } 

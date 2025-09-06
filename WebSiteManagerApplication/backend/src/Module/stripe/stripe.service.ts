@@ -62,20 +62,38 @@ export class StripeService {
 
   async confirmVerification(licenceId: string, verificationCode: string) {
     try {
+      this.logger.log(`Confirming verification for licence ${licenceId}`);
+      
       const response = await firstValueFrom(
         this.httpService.post(
-          `${this.laravelApiUrl}/payment/confirm-verification`,
+          `${this.laravelApiUrl}/api/payments/confirm-verification`,
           {
             licence_id: licenceId,
             verification_code: verificationCode
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            timeout: 30000 // 30 secondes de timeout
           }
         )
       );
 
+      this.logger.log(`Verification confirmed for licence ${licenceId}`);
       return response.data;
+      
     } catch (error) {
-      this.logger.error(`Error confirming verification: ${error.message}`);
-      throw new Error(`Erreur lors de la confirmation de la vérification: ${error.message}`);
+      const errorMessage = error.response?.data?.message || error.message;
+      this.logger.error(`Error confirming verification: ${errorMessage}`, error.stack);
+      
+      if (error.response?.data) {
+        this.logger.error('Error response data:', error.response.data);
+      }
+      
+      throw new Error(`Erreur lors de la confirmation de la vérification: ${errorMessage}`);
     }
   }
 

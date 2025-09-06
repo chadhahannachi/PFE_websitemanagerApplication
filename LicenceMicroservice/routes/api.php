@@ -6,6 +6,7 @@ use App\Http\Controllers\LicenceRequestController;
 use App\Http\Controllers\LicenceController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\StripeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,7 +51,7 @@ Route::prefix('payments')->group(function () {
     Route::delete('/{id}', [PaymentController::class, 'destroy']);
     Route::put('/{id}/status', [PaymentController::class, 'updateStatus']);
     Route::get('/licence/{licenceId}', [PaymentController::class, 'getLicencePayments']);
-    Route::post('/payment/confirm-verification', [StripeController::class, 'confirmVerification']);
+    Route::post('/confirm-verification', [StripeController::class, 'confirmVerification']);
 
 });
 
