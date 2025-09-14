@@ -3,10 +3,10 @@
 services:
   # License Service (Laravel)
   license-service:
-    # image: chadhahannachi/license-service:latest
-    build:
-      context: ./LicenceMicroservice
-      dockerfile: Dockerfile
+    image: chadhahannachi/license-service:latest
+    # build:
+    #   context: ./LicenceMicroservice
+    #   dockerfile: Dockerfile
     ports:
       - "8001:8000"
     volumes:
@@ -30,17 +30,16 @@ services:
 
   # Website Manager Backend (NestJS)
   website-manager-backend:
-    # image: chadhahannachi/website-manager-backend:latest
-    build:
-      context: ./WebSiteManagerApplication/backend
-      dockerfile: Dockerfile
+    image: chadhahannachi/website-manager-backend:latest
+    # build:
+    #   context: ./WebSiteManagerApplication/backend
+    #   dockerfile: Dockerfile
     ports:
       - "5000:5000"
     environment:
       - MONGODB_URI=mongodb://mongodb:27017/website-manager
       - GEMINI_API_KEY=AIzaSyBfNYWFViNdO9UG8_bszyR4Xc5dGAI8DBE
-      - DEEPSEEK_API_KEY=sk-1f01537c474b4343828b68a67be5986d
-
+      - NODE_ENV=production
     depends_on:
       mongodb:
         condition: service_healthy
@@ -49,10 +48,10 @@ services:
 
   # Website Manager Frontend (React)
   website-manager-frontend:
-    # image: chadhahannachi/website-manager-frontend:latest
-    build:
-      context: ./WebSiteManagerApplication/frontend
-      dockerfile: Dockerfile
+    image: chadhahannachi/website-manager-frontend:latest
+    # build:
+    #   context: ./WebSiteManagerApplication/frontend
+    #   dockerfile: Dockerfile
     ports:
       - "3001:80"
     environment:
@@ -70,10 +69,10 @@ services:
 
   # Frontend Backoffice (React)
   frontend-backoffice:
-    # image: chadhahannachi/frontend-backoffice:latest
-    build:
-      context: ./FrontendBackoffice
-      dockerfile: Dockerfile
+    image: chadhahannachi/frontend-backoffice:latest
+    # build:
+    #   context: ./FrontendBackoffice
+    #   dockerfile: Dockerfile
     ports:
       - "3000:80"
     environment:
@@ -108,7 +107,7 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
-    command: --default-authentication-plugin=mysql_native_password --ssl=0
+    command: --default-authentication-plugin=mysql_native_password
     networks:
       - app-network
 
@@ -125,18 +124,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
-    networks:
-      - app-network
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    ports:
-      - "8081:80"
-    environment:
-      - PMA_HOST=mysql
-      - PMA_PORT=3306
-    depends_on:
-      - mysql
     networks:
       - app-network
 
