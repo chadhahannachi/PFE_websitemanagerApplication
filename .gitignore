@@ -1,0 +1,9 @@
+# Ignorer docker-compose override
+docker-compose.override.yml
+
+# Ignorer tous les fichiers docker-compose
+docker-compose*.yml
+
+# Ignorer les dossiers générés par docker (si tu en as)
+data/
+logs/

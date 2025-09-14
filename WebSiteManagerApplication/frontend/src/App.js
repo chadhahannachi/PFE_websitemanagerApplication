@@ -142,19 +142,19 @@ function App() {
           <Routes>
 
           {/* Routes avec Layout (Sidebar et Topbar) */}
-          <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
-          <Route path="/team" element={<Layout><Team /></Layout>} />
-          <Route path="/contacts" element={<Layout><Contacts /></Layout>} />
-          <Route path="/invoices" element={<Layout><Invoices /></Layout>} />
-          <Route path="/form" element={<Layout><Form /></Layout> } />
-          <Route path="/bar" element={<Layout><Bar /></Layout> } />
+          {/* <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} /> */}
+          {/* <Route path="/team" element={<Layout><Team /></Layout>} /> */}
+          {/* <Route path="/contacts" element={<Layout><Contacts /></Layout>} /> */}
+          {/* <Route path="/invoices" element={<Layout><Invoices /></Layout>} /> */}
+          {/* <Route path="/form" element={<Layout><Form /></Layout> } /> */}
+          {/* <Route path="/bar" element={<Layout><Bar /></Layout> } />
           <Route path="/pie" element={<Layout><Pie /></Layout> } />
           <Route path="/line" element={<Layout><Line /></Layout> } />
           <Route path="/line" element={ <Layout><Line /></Layout>}/>
           <Route path="/faq" element={<Layout><FAQ /></Layout>}/>
           <Route path="/calendar" element={<Layout><Calendar/></Layout>}/>
-          <Route path="/geography" element={<Layout><Geography /></Layout>}/>
-          <Route path="/ListSuperAdminABshore" element={<Layout><ListAdminABshore /></Layout>}/>
+          <Route path="/geography" element={<Layout><Geography /></Layout>}/> */}
+          {/* <Route path="/ListSuperAdminABshore" element={<Layout><ListAdminABshore /></Layout>}/>
           <Route path="/update-user/:id" element={<Layout> <UpdateUser /> </Layout>}/>
           <Route path="/registration" element={<Layout><SignupForm /></Layout> }/>
           <Route path="/AddMemberByAdminEnt" element={<Layout><AddMemberByAdminEnt /></Layout>} />
@@ -182,24 +182,24 @@ function App() {
           <Route path="/languages" element={<Layout> <LanguagesManagement/></Layout>}/>
           <Route path="/keywordsreferencement" element={<Layout> <KeywordsManagement/></Layout>}/>
           <Route path="/cookiesmanagement" element={<Layout> <CookiesManagement/></Layout>}/>
-          <Route path="/contactus" element={<Layout> <ContactUsSection/></Layout>}/>
+          <Route path="/contactus" element={<Layout> <ContactUsSection/></Layout>}/> */}
 
-          <Route path="/add-super-admin-company/:entrepriseId" element={<Layout><AddSuperAdminCompany /></Layout>} />
-          <Route path="/mycompany" element={<Layout><MyCompany /></Layout>} />
+          {/* <Route path="/add-super-admin-company/:entrepriseId" element={<Layout><AddSuperAdminCompany /></Layout>} />
+          <Route path="/mycompany" element={<Layout><MyCompany /></Layout>} /> */}
 
           {/* Routes sans Layout (pas de Sidebar ni Topbar) */}
-          <Route path="/login" element={<LoginForm />} />
+          {/* <Route path="/login" element={<LoginForm />} />
           <Route path="/requestresetpwd" element={<RequestPasswordReset />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} /> */}
 
-          <Route path="/frontoffice" element={<SectionRenderer sections={sections}/>} />
+          {/* <Route path="/frontoffice" element={<SectionRenderer sections={sections}/>} />
 
           <Route path="/carroussels" element={<Carroussel sections={sections}/>} />
           <Route path="/addcarroussel" element={<AddCarroussel/>} />
           <Route path="/contentm" element={<ContentManager />} />
           <Route path="/licenceRequestList" element={<Layout><LicenceRequestManagement /></Layout>} />
           <Route path="/licence-requests/:id" element={<LicenceRequestDetails />} />
-          <Route path="/CharteGraphique" element={<CharteGraphique />} />
+          <Route path="/CharteGraphique" element={<CharteGraphique />} /> */}
           <Route path="/contenugenerator/:entrepriseId" element={<ContenuGenerator />}/>
 
           {/* <Route path="/contenu" element={<ContenuPage/>} /> */}

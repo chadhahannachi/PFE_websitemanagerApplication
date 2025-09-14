@@ -22,9 +22,12 @@ class CancelLicences extends Command
         $thirtyDaysAgo = Carbon::now()->subDays(30);
         
         $licencesToCancel = Licence::where('created_at', '<', $thirtyDaysAgo)
-            ->where('status', '!=', 'canceled')
+            ->where('status', 'pending')
+            ->whereNull('updated_at')
             ->get();
 
+        $count = 0;
+        
         foreach ($licencesToCancel as $licence) {
             try {
                 // Supprimer d'abord les paiements associés
@@ -34,11 +37,12 @@ class CancelLicences extends Command
                 $licence->delete();
                 
                 $this->info("Successfully canceled and deleted Licence ID {$licence->id}");
+                $count++;
             } catch (\Exception $e) {
                 $this->error("Error processing Licence ID {$licence->id}: " . $e->getMessage());
             }
         }
 
-        $this->info("Processed {$licencesToCancel->count()} licences.");
+        $this->info("Processed {$count} pending licences older than 30 days that were never updated.");
     }
 } 
