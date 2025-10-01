@@ -54,15 +54,36 @@ Le projet repose sur une architecture microservices, garantissant **scalabilité
    ```
    Adapter les variables pour le microservice Laravel.
 
-3. Lancer les services avec Docker :  
+2. installer tous les modules necessaires :
+   Installer les modules necessaires pour le backend nest.
    ```bash
-   docker-compose up --build
+   cd WebSiteManagerApplication/backend
+   npm install
+   ```
+   
+   Installer les modules necessaires pour le premier frontend react.
+   ```bash
+   cd WebSiteManagerApplication/frontend
+   npm install
+   ```
+   
+   Installer les modules necessaires pour le deuxieme frontend react.
+   ```bash
+   cd FrontendBackoffice
+   npm install
+   ```
+   
+
+4. Lancer les services avec Docker :  
+   ```bash
+   docker-compose build
+   docker-compose up -d
    ```
 
-4. Accéder aux interfaces :  
+5. Accéder aux interfaces :  
    - **Backoffice (admin)** : [http://localhost:3000](http://localhost:3000)  
    - **Client (site généré)** : [http://localhost:3001](http://localhost:3001)  
-   - **API principale (NestJS)** : [http://localhost:5000/api-docs](http://localhost:5000/api-docs)  
+   - **API principale (NestJS)** : [http://localhost:5000/api-docs](http://localhost:5000)  
 
 ---
 
@@ -104,12 +125,19 @@ Le projet repose sur une architecture microservices, garantissant **scalabilité
 ---
 
 ## 📌 Maintenance
+
+- Construction des services :  
+  ```bash
+  git pull
+  docker-compose build
+  docker-compose up -d
+  ```
+  
 - Mise à jour du projet :  
   ```bash
   git pull
   docker-compose up --build
   ```
-- Sauvegardes des bases : via scripts ou outils externes.  
 
 ---
 
